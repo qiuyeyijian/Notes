@@ -143,7 +143,8 @@
 15. 删除分支
 
     ```c
-    git branch -d <分支名>
+    git branch -d <分支名>                      //删除本地分支
+    git push origin --delete [branchname]      //删除远程分支
     ```
 
 16. 匿名分支
@@ -165,6 +166,17 @@
     git push -u origin master                                   //提交到其他仓库
     ```
 
+
+18. 解决合并冲突
+
+    ``` 
+    git status         //查看状态
+    cat <file name>    //查看冲突文件
+    vi  <file name>    //修复冲突文件
+    git add <file>     //单独添加冲突文件
+    git commit -m "confict fixed"   //提价
+    git log --graph --pretty=oneline --abbrev-commit          //查看分支合并情况             
+    ```
+
     
 
-​       
