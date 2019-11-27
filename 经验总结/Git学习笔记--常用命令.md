@@ -178,5 +178,17 @@
     git log --graph --pretty=oneline --abbrev-commit          //查看分支合并情况             
     ```
 
-    
+19. 生成ssh秘钥
+
+```
+ssh-keygen -t rsa -C "shuishoujun@gmail.com"
+```
+
+20. 关联远程仓库
+
+```
+git remote add origin url
+```
+
+
 

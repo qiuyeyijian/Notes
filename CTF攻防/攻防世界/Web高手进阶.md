@@ -1,6 +1,6 @@
 ## 攻防世界Web进阶区
 
-### 一. Cat
+### 0x01. Cat
 
 > * 难度系数 1.0
 > * 题目来源： `XCTF 4th-WHCTF-2017 `
@@ -46,7 +46,7 @@
 curl 'http://111.198.29.45:43180/index.php?url=@/opt/api/database.sqlite3' | xxd | grep -A 5 -B 5 WHCTF
 ```
 
-### 二.  ics-05
+### 0x02.  ics-05
 
 > * 难度系数 1.0
 > * 题目来源： ` XCTF 4th-CyberEarth `
@@ -99,3 +99,35 @@ curl 'http://111.198.29.45:43180/index.php?url=@/opt/api/database.sqlite3' | xxd
    
 
 5. 搜索 subject 中匹配 pattern 的部分， 以 replacement 进行替换。此处明显考察的是preg_replace 函数使用 /e 模式，导致代码执行的问题。也就是说，pat值和sub值相同，rep的代码就会执行。这里的XFF要改成127.0.0.1，GET三个参数进来，这里调用了preg_replace函数。并且没有对pat进行过滤，所以可以传入"/e"触发漏洞,触发后replacement的语句是会得到执行的，首先执行一下phpinfo
+
+### 0x03.  mfw 
+
+> * 难度系数 1.0
+> * 题目来源： **csaw-ctf-2016-quals ** 
+> * 题目描述： 无
+> * 题目场景： http://111.198.29.45:40481/ 具体参见攻防世界
+> * 题目附件：无
+
+#### 解题思路
+
+1. 打开页面，查看源码，发现被注释掉的页面flag页面
+
+```css
+<div id="navbar" class="collapse navbar-collapse">
+		          	<ul class="nav navbar-nav">
+		            	<li class="active"><a href="?page=home">Home</a></li>
+		            	<li ><a href="?page=about">About</a></li>
+		            	<li ><a href="?page=contact">Contact</a></li>
+						<!--<li ><a href="?page=flag">My secrets</a></li> -->
+		          	</ul>
+		        </div>
+```
+
+2. 然而构造参数 `http://111.198.29.45:40481/?page=flag`访问并没有什么发现
+3. 随便看看，在About页面看到网站有用到Git, 想到Git源码泄露，用`dirsearch`扫一下后台,
+
+```php
+python3 dirsearch.py -u http://111.198.29.45:40481/ -e php
+```
+
+![image-20191117191635968](Web%E9%AB%98%E6%89%8B%E8%BF%9B%E9%98%B6.assets/image-20191117191635968.png)
