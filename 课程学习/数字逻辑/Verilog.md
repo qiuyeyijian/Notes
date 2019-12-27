@@ -6,4 +6,6 @@
 6. begin  end: 相当于大括号
 7. posedge,negedge, or 这三个关键字和always联合使用，posedge是向上升沿触发，negedge是下降沿触发，
 8. case endcase default ：
-9. 
+
+
+

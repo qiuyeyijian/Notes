@@ -1,79 +1,76 @@
-> 学习Git时记录的一些笔记，
 
-1. Git全局配置
+> 学习Git时记录的一些笔记
 
-   ```c
-   git config --global user.name "用户名"
-   git config --global user.email "邮箱"
-   ```
+### 1. Git全局配置
+```bash
+git config --global user.name "用户名"
+git config --global user.email "邮箱"
+```
 
-2. Git初始化
+### 2. Git初始化
 
-   ```c
-   git init
-   ```
+```bash
+git init
+```
 
-3. 将需要进行版本管理的文件放入暂存区域
+### 3. 将需要进行版本管理的文件放入暂存区域
 
-   ```
-   git add .
-   ```
+```bash
+git add .
+```
 
-4. 必须为你的修改做一些说明
+### 4. 必须为你的修改做一些说明
 
-   ```c
-   git commit -m "first commit"    //将first commit 替换成你的一些说明
-   ```
+```bash
+git commit -m "first commit"    //将first commit 替换成你的一些说明
+```
 
-5. 将暂存区域中的文件提交到Git仓库
+### 5. 将暂存区域中的文件提交到Git仓库
 
-   ```
-   git remote add origin git@github.com:qiuyeyijian/test.git  //换成你要提交的GitHub仓库SSH地址
-   git push -u origin master
-   ```
+```bash
+git remote add origin git@github.com:qiuyeyijian/test.git  //换成你要提交的GitHub仓库SSH地址
+git push -u origin master
+```
 
-6. 查看Git状态
+### 6. 查看Git状态
 
-   ```c
-   git status
-   ```
+```bash
+git status
+```
 
-7. 查看历史提交
+### 7. 查看历史提交
+```bash
+git log
+git log --decorate                      //显示指向这个提交的所有引用，比单独的git log 显示信息更多
+git log --decorate --oneline --graph --all  //以图形的形式显示分支信息
 
-   ```c
-   git log
-   git log --decorate                      //显示指向这个提交的所有引用，比单独的git log 显示信息更多
-   git log --decorate --oneline --graph --all  //以图形的形式显示分支信息
-   ```
+git log --oneline 
+git log --pretty=oneline 	//都能发挥log， 没有pretty的是，只有commit id 前7位，加pretty的是全部的id
+```
 
-8. reset 命令回滚选项
+### 8. reset 命令回滚选项
+移动HEAD的指向，将其指向上一个快照，将HEAD移动后指向的快照回滚到暂存区域
+```bash
+git reset --mixed HEAD~
+```
 
-   ```c
-   git reset --mixed HEAD~
-   //移动HEAD的指向，将其指向上一个快照
-   //将HEAD移动后指向的快照回滚到暂存区域
-   ```
+移动HEAD的指向，将其指向上一个快照，相当于撤销最近一次的commit提交
+```bash
+git reset --soft HEAD~
+```
+移动HEAD的指向，将其指向上一个快照，将HEAD移动后指向的快照回滚到暂存区域，将暂存区域的文件还原到工作目录
+```bash
+git reset --hard HEAD~
 
-   ```c
-   git reset --soft HEAD~
-   //移动HEAD的指向，将其指向上一个快照，相当于撤销最近一次的commit提交
-   ```
+git reset –hard commit_id
+```
 
-   ```c
-   git reset --hard HEAD~
-   //移动HEAD的指向，将其指向上一个快照
-   //将HEAD移动后指向的快照回滚到暂存区域
-   //将暂存区域的文件还原到工作目录
-   ```
-
-9. diff 比较命令
-
-   ```c
-   git diff
-   //比较工作目录和暂存区域的
-   ```
-
-   ``` c
+### 9. diff 比较命令
+```c
+git diff
+//比较工作目录和暂存区域的
+```
+```bash
    HP@QiuYeYiJian MINGW64 /f/GitPractice/myproject (master)
    $ git diff
    diff --git a/README.md b/README.md   //比较暂存区域的README和工作目录的README
@@ -93,102 +90,174 @@
    @@ -0,0 +1 @@
    +print（"hello,world");
    \ No newline at end of file
-   
-   ```
-
-10. 修改最后一次提交
-
-    ``` c
-    git commit --amend
-    ```
-
-11. 删除文件
-
-    ``` c
-    git rm <file name>
-    git reset --soft HEAD~                      //回退当前指针
-    git rm -f <file name>                       //暴力删除工作目录和暂存区的文件
-    git rm --cached <file name>                 //只删除暂存区域的文件
-    ```
-
-12. 重命名文件
-
-    ``` c
-    git mv <old file name> <new file name>
-    ```
-
-13. 分支
-
-    ``` c
-    git branch <name>                             //创建分支
-    git checkout <分支名>                          //切换分支
-    git checkout -b <分支名>                       //创建并切换分支
-    ```
-
-14. 合并分支
-
-    ``` 
-    //先提交A代码
-    git checkout A 
-    git commit
-    git push
-    //切换到B分支
-    git checkout B
-    //开始合并
-    git merge A 
-    //合并完成 有冲突解决冲突
-    git push
-    ```
-
-15. 删除分支
-
-    ```c
-    git branch -d <分支名>                      //删除本地分支
-    git push origin --delete [branchname]      //删除远程分支
-    ```
-
-16. 匿名分支
-
-    ``` 
-    git checkout HEAD~                          //使用checkout切换，但不加分支名，git会自动创建一个匿名分支                                                 //可以用来做实验，切换到主分支后，匿名分支不会保存。
-    ```
-
-17. 提交到远程仓库
-
-    ``` c
-    git push                                    
-    ```
-
-    或者提交到远程其他仓库
-
-    ``` c
-    git remote add origin git@github.com:qiuyeyijian/test.git  //换成你要提交的GitHub仓库SSH地址
-    git push -u origin master                                   //提交到其他仓库
-    ```
-
-
-18. 解决合并冲突
-
-    ``` 
-    git status         //查看状态
-    cat <file name>    //查看冲突文件
-    vi  <file name>    //修复冲突文件
-    git add <file>     //单独添加冲突文件
-    git commit -m "confict fixed"   //提价
-    git log --graph --pretty=oneline --abbrev-commit          //查看分支合并情况             
-    ```
-
-19. 生成ssh秘钥
-
 ```
+
+### 10. 修改最后一次提交
+
+```c
+git commit --amend
+```
+
+### 11. 删除文件
+
+```bash
+git rm <file name>
+git reset --soft HEAD~                      //回退当前指针
+git rm -f <file name>                       //暴力删除工作目录和暂存区的文件
+git rm --cached <file name>                 //只删除暂存区域的文件
+```
+
+### 12. 重命名文件
+
+```bash
+git mv <old file name> <new file name>
+```
+
+### 13. 分支
+
+```bash
+git branch <name>                             //创建分支
+git checkout <分支名>                          //切换分支
+git checkout -b <分支名>                       //创建并切换分支
+```
+
+### 14. 合并分支
+```bash
+//先提交A代码
+git checkout A 
+git commit
+git push
+//切换到B分支
+git checkout B
+//开始合并
+git merge A 
+//合并完成 有冲突解决冲突
+git push
+```
+
+### 15. 删除分支
+
+```bash
+git branch -d <分支名>                      //删除本地分支
+git push origin --delete [branchname]      //删除远程分支
+```
+
+### 16. 匿名分支
+使用checkout切换，但不加分支名，git会自动创建一个匿名分支。可以用来做实验，切换到主分支后，匿名分支不会保存。
+```bash
+git checkout HEAD~                          
+```
+
+### 17. 提交到远程仓库
+```bash
+git push                                    
+```
+
+或者提交到远程其他仓库
+```bash
+git remote add origin git@github.com:qiuyeyijian/test.git  //换成你要提交的GitHub仓库SSH地址
+git push -u origin master                                   //提交到其他仓库
+```
+
+
+### 18. 解决合并冲突
+```bash
+git status         //查看状态
+cat <file name>    //查看冲突文件
+vi  <file name>    //修复冲突文件
+git add <file>     //单独添加冲突文件
+git commit -m "confict fixed"   //提价
+git log --graph --pretty=oneline --abbrev-commit          //查看分支合并情况
+```
+### 19. 生成ssh秘钥
+```bash
 ssh-keygen -t rsa -C "shuishoujun@gmail.com"
 ```
-
-20. 关联远程仓库
-
-```
+### 20. 关联远程仓库
+```bash
 git remote add origin url
 ```
+
+### 21. 忽略某些文件
+首先在git仓库下新建一个`.gitignore`文件：
+```bash
+touch .gitignore
+```
+
+然后编辑`.gitignore`文件
+    
+```bash
+vi .gitignore
+```
+
+默认会生成一个模板，你可以添加想忽略的某些文件或文件夹，下面是一些常用的的
+```bash
+target
+.gitignore
+.idea/
+.classpath
+.project
+.settings
+ ##filter databfile、sln file##
+*.mdb
+*.ldb
+*.sln
+##class file##
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+# compression file
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.iml
+*.ipr
+*.iws
+```
+
+举个例子： 
+1. 如果只想忽略一个文件或者文件夹，可以直接手动解除跟踪，而不必编写`.gitignore`文件，例如删除 `.idea`	文件夹
+   
+```bash
+git rm -r --cached .idea/
+git commit -a -m"delete .idea/ dir"
+git push -u origin
+```
+
+2. 如果想一次性忽略多个文件或者文件夹，则需要别写编写`.gitignore`文件，编写之后，输入一下命令：
+```bash
+git rm -r --cached .				//注意后面的点
+git commit -a -m"删除文件“
+git push -u origin
+```
+
+### 22. git 版本回退
+
+查看日志
+
+```bash
+$ git log --pretty
+```
+
+本地回退
+
+```bash
+$ git reset --hard commit_id(commit字符)
+```
+
+将远程同步
+
+```bash
+$ git push origin HEAD --force
+```
+
+
 
 
 
