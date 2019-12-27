@@ -62,7 +62,7 @@ git reset --soft HEAD~
 ```bash
 git reset --hard HEAD~
 
-git reset –hard commit_id
+git reset --hard commit_id
 ```
 
 ### 9. diff 比较命令
@@ -176,6 +176,8 @@ ssh-keygen -t rsa -C "shuishoujun@gmail.com"
 ### 20. 关联远程仓库
 ```bash
 git remote add origin url
+
+git remote rm origin		//删除关联
 ```
 
 ### 21. 忽略某些文件
@@ -259,89 +261,74 @@ $ git push origin HEAD --force
 
 
 
-### 23. git
+### 23. 同步关联github 和 gitee两个远程仓库
 
-## 命令方式同步
+1. 首先在本地新建一个文件夹，使用`git init` 初始化
+2. 添加远程仓库
 
-先删除已关联的名为origin的远程库：
-
-
-
-```undefined
-git remote rm origin
+```bash
+git remote add github git@github.com:qiuyeyijian/test.git
 ```
 
-然后，先关联GitHub的远程库：
-
-
-
-```csharp
-git remote add github git@github.com:chloneda/demo.git
+```bash
+git remote add gitee git@gitee.com:qiuyeyijian/test.git
 ```
 
-接着，再关联码云的远程库：
+> 说明：
+>
+> `git remote add <远程仓库名> url`
+>
+> * **远程仓库名**可以随便起，容易记就行。
+> * url 可以是 https://形式的，如果你添加了ssh，就可以使用上面那种形式
 
+3. 使用`git remote -v`查看所有远程分支，配置成功会出现：
 
-
-```csharp
-git remote add gitee git@gitee.com:chloneda/demo.git
+```bash
+gitee   git@gitee.com:qiuyeyijian/test.git (fetch)
+gitee   git@gitee.com:qiuyeyijian/test.git (push)
+github  git@github.com:qiuyeyijian/test.git (fetch)
+github  git@github.com:qiuyeyijian/test.git (push)
 ```
 
-## 配置方式同步
+4. 分别拉取GitHub 和gitee上的远程分支
 
-修改.git文件夹内的config文件：
-
-
-
-```ruby
-[core]
-    repositoryformatversion = 0
-    filemode = true
-    bare = false
-    logallrefupdates = true
-[remote "origin"]
-    url = git@github.com:chloneda/demo.git
-    fetch = +refs/heads/*:refs/remotes/github/*
-[branch "master"]
-    remote = origin
-    merge = refs/heads/master
+```bash
+git pull github master
 ```
 
-将上述文件内容[remote "origin"]内容复制，修改origin名称，内容如下：
-
-
-
-```ruby
-[core]
-    repositoryformatversion = 0
-    filemode = true
-    bare = false
-    logallrefupdates = true
-[remote "github"]
-    url = git@github.com:chloneda/demo.git
-    fetch = +refs/heads/*:refs/remotes/github/*
-[remote "gitee"]
-    url = git@gitee.com:chloneda/demo.git
-    fetch = +refs/heads/*:refs/remotes/gitee/*
-[branch "master"]
-    remote = origin
-    merge = refs/heads/master
+```bash
+git pull gitee master --allowe-unrelated-histories
 ```
 
-# 查看远程库
+> 说明：
+>
+> * 首先拉取GitHub上的远程分支
+> * 接着拉取gitee上的远程分支，后面加的命令的意思是忽略版本不同，不然会报错`fatal: refusing to merge unrelated histories` 
+> * 如果有冲突的话就直接解决冲突，不在赘述
 
-通过以上两种方式的任一种方式配置完成后，我们用git remote -v查看远程库信息：
+5. 本地仓库关联远程仓库，这里我关联的是github远程仓库，gitee仓库保持同步就行了
 
-
-
-```dart
-gitee   git@gitee.com:chloneda/demo.git (fetch)
-gitee   git@gitee.com:chloneda/demo.git (push)
-github  git@github.com:chloneda/demo.git (fetch)
-github  git@github.com:chloneda/demo.git (push)
+```bash
+git branch --set-upstream-to=github/master master
 ```
 
-可以看到两个远程库，说明配置生效了。
+> 说明：
+>
+> `git branch --set-upstream-to=<remote>/<branch> master` 
+>
+> * remote 改成之前我们设置的远程仓库的名字，然后 branch 换成远程仓库的分支
+> * master 是本地的 master 分支
+
+6. 同步并拉取所有远程分支
+
+```bash
+git fetch --all				//同步所有分支
+git pull --all				//拉取所有远程分支
+```
+
+7. 以后提交代码时，可以使用`git push github master`向github 提交代码，也可以使用`git push gitee master` 向gitee提交
+
+
 
 
 
