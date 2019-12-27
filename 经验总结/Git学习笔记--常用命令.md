@@ -259,5 +259,89 @@ $ git push origin HEAD --force
 
 
 
+### 23. git
+
+## 命令方式同步
+
+先删除已关联的名为origin的远程库：
+
+
+
+```undefined
+git remote rm origin
+```
+
+然后，先关联GitHub的远程库：
+
+
+
+```csharp
+git remote add github git@github.com:chloneda/demo.git
+```
+
+接着，再关联码云的远程库：
+
+
+
+```csharp
+git remote add gitee git@gitee.com:chloneda/demo.git
+```
+
+## 配置方式同步
+
+修改.git文件夹内的config文件：
+
+
+
+```ruby
+[core]
+    repositoryformatversion = 0
+    filemode = true
+    bare = false
+    logallrefupdates = true
+[remote "origin"]
+    url = git@github.com:chloneda/demo.git
+    fetch = +refs/heads/*:refs/remotes/github/*
+[branch "master"]
+    remote = origin
+    merge = refs/heads/master
+```
+
+将上述文件内容[remote "origin"]内容复制，修改origin名称，内容如下：
+
+
+
+```ruby
+[core]
+    repositoryformatversion = 0
+    filemode = true
+    bare = false
+    logallrefupdates = true
+[remote "github"]
+    url = git@github.com:chloneda/demo.git
+    fetch = +refs/heads/*:refs/remotes/github/*
+[remote "gitee"]
+    url = git@gitee.com:chloneda/demo.git
+    fetch = +refs/heads/*:refs/remotes/gitee/*
+[branch "master"]
+    remote = origin
+    merge = refs/heads/master
+```
+
+# 查看远程库
+
+通过以上两种方式的任一种方式配置完成后，我们用git remote -v查看远程库信息：
+
+
+
+```dart
+gitee   git@gitee.com:chloneda/demo.git (fetch)
+gitee   git@gitee.com:chloneda/demo.git (push)
+github  git@github.com:chloneda/demo.git (fetch)
+github  git@github.com:chloneda/demo.git (push)
+```
+
+可以看到两个远程库，说明配置生效了。
+
 
 
