@@ -297,7 +297,7 @@ git pull github master
 ```
 
 ```bash
-git pull gitee master --allowe-unrelated-histories
+git pull gitee master --allow-unrelated-histories
 ```
 
 > 说明：

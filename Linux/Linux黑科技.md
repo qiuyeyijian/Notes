@@ -55,7 +55,9 @@ dpkg: dependency problems prevent configuration of google-chrome-stable:
 https://addons.mozilla.org/zh-CN/firefox/addon/chinese-simplified-zh-cn-la/
 ```
 
-### 3. kali 镜像源
+### 3. kali ，CentOS，Ubantu镜像源
+
+#### 3.1 Kali
 
 ``` 
  vim /etc/apt/sources.list 
@@ -102,7 +104,40 @@ deb-src http://mirrors.aliyun.com/kali-security/ kali-rolling main contrib non-f
 >
 > > reboot
 
-### Linux cp命令
+
+
+#### 3.2 CentOS
+
+1.备份
+
+```
+mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+```
+
+　　
+
+2.下载新的CentOS-Base.repo 到 /etc/yum.repos.d/ （我这里用的CentOS 7.0）
+
+```
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+或者
+curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+```
+
+
+
+3、之后先清除缓存再生成缓存
+
+```
+# 清除缓存
+yum clean ``all
+# 生存缓存
+yum makecache
+```
+
+
+
+### 4. Linux cp命令
 
 Linux cp命令主要用于复制文件或目录。
 
@@ -138,4 +173,114 @@ $ cp –r test/ newtest
 
 注意：用户使用该指令复制目录时，必须使用参数"-r"或者"-R"。
 
-### 
+### 5. SSH服务
+
+安装ssh
+
+```bash
+sudo apt-get install ssh
+```
+
+设置开机自启动
+
+```bash
+sudo systemctl enable ssh
+```
+
+### 6. CentOS查看系统版本
+
+1、查看版本文件名称
+
+```
+ll /etc/*centos*
+```
+
+2、显示系统版本号
+
+```
+cat /etc/centos-release
+```
+
+3. 完整信息
+
+```
+uname -a
+```
+
+
+
+### 7. Sed命令 - 修改文本内容
+
+```
+sed -i 's/root/world/g' yum.log
+或者 sed -i 's#hhh#HHHH#g' h.txt
+              s==search  查找并替换
+              g==global  全部替换
+              -i: implace
+              
+//如果要替换的字符串里有‘/'等可以用“\"转义
+sed -i 's/http:\/\/qiuyeyijian.com/https:\/\/qiuyeyijian.com/g' /root/a.txt
+```
+
+### 8. CentOS 防火墙
+
+1，	首先查看防火墙状态：
+
+```
+firewall-cmd --state
+```
+
+2，	开启防火墙，
+启动firewall：
+
+```
+systemctl start firewalld.service
+```
+
+设置开机自启：
+
+```
+systemctl enable firewalld.service
+```
+
+3，	重启防火墙：
+
+```
+systemctl restart firewalld.service
+```
+
+4，	检查防火墙状态是否打开：
+
+```
+firewall-cmd --state
+```
+
+5. 开启特定端口
+
+```
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+```
+
+重启防火墙
+
+```
+systemctl restart firewalld.service
+```
+
+```
+命令含义：
+ 
+--zone #作用域
+ 
+--add-port=80/tcp  #添加端口，格式为：端口/通讯协议
+ 
+--permanent   #永久生效，没有此参数重启后失效
+12345678910
+```
+
+6. 查看
+
+```
+firewall-cmd --list-ports
+```
+
