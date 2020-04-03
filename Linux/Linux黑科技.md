@@ -108,33 +108,6 @@ deb-src http://mirrors.aliyun.com/kali-security/ kali-rolling main contrib non-f
 
 #### 3.2 CentOS
 
-1.备份
-
-```
-mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-```
-
-　　
-
-2.下载新的CentOS-Base.repo 到 /etc/yum.repos.d/ （我这里用的CentOS 7.0）
-
-```
-wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-或者
-curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-```
-
-
-
-3、之后先清除缓存再生成缓存
-
-```
-# 清除缓存
-yum clean ``all
-# 生存缓存
-yum makecache
-```
-
 
 
 ### 4. Linux cp命令
@@ -222,7 +195,7 @@ sed -i 's/root/world/g' yum.log
 sed -i 's/http:\/\/qiuyeyijian.com/https:\/\/qiuyeyijian.com/g' /root/a.txt
 ```
 
-### 8. CentOS 防火墙
+### 8. CentOS 防火墙，开启指定端口
 
 1，	首先查看防火墙状态：
 
@@ -284,3 +257,197 @@ systemctl restart firewalld.service
 firewall-cmd --list-ports
 ```
 
+### 9. Ubuntu 开启指定端口
+
+一般情况下，ubuntu安装好的时候，iptables会被安装上，如果没有的话先安装
+
+```
+sudo apt-get install iptables
+```
+
+添加开放端口
+
+```
+sudo iptables -I INPUT -p tcp --dport [端口号] -j ACCEPT
+```
+
+```
+sudo iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+```
+
+临时保存配置，重启后失效
+
+```
+sudo iptables-save
+```
+
+
+
+安装 iptables-persistent工具，持久化开放端口配置
+
+```
+sudo apt-get install iptables-persistent
+
+sudo netfilter-persistent save
+
+sudo netfilter-persistent reload
+```
+
+### 10. cat 命令
+
+```bash
+cat > hello.txt				//新建文件
+cat hello.txt hi.txt > wei.txt		//文件合并
+cat hello.txt >> hi.txt				//将hello.txt的内容追加到hi.txt的末尾
+cat >1.txt 							//进入编辑状态，ctr + d 退出
+
+
+```
+
+### 11. 磁盘问题
+
+* 查看磁盘使用情况（已经挂载的磁盘）
+
+```
+df -h 
+```
+
+* 查看所有磁盘，包括 df -h 看不到的为挂载的磁盘 
+
+```
+fdisk -lu
+```
+
+* 使用 LVM 调整磁盘分区
+
+```bash
+# ext2/ext3/ext4文件系统的调整命令是resize2fs（增大和减小都支持）
+
+lvextend -L 120G /dev/mapper/ubuntu--vg-ubuntu--lv     //增大至120G
+lvextend -L +20G /dev/mapper/ubuntu--vg-ubuntu--lv     //增加20G
+lvreduce -L 50G /dev/mapper/ubuntu--vg-ubuntu--lv      //减小至50G
+lvreduce -L -8G /dev/mapper/ubuntu--vg-ubuntu--lv      //减小8G
+lvresize -L  30G /dev/mapper/ubuntu--vg-ubuntu--lv     //调整为30G
+```
+
+执行调整
+
+```
+resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv            //执行调整
+```
+
+
+
+
+
+### 12. Linux软链接(快捷方式)
+
+```
+ln -s 源文件路径 链接文件路径
+```
+
+
+
+实例 `ln -s /home/gamestat /gamestat`
+
+
+
+linux下的软链接类似于windows下的快捷方式
+
+`ln -s a b` 中的 a 就是源文件，b是链接文件名,其作用是当进入b目录，实际上是链接进入了a目录
+
+如上面的示例，当我们执行命令 cd /gamestat/的时候 实际上是进入了 /home/gamestat/
+
+值得注意的是执行命令的时候,应该是a目录已经建立，目录b没有建立。我最开始操作的是也把b目录给建立了，结果就不对了
+
+删除软链接：
+
+```
+rm -rf b				
+```
+
+### 13. 查看程序路径
+
+```
+which java			//查看java 程序执行路径
+```
+
+
+
+### 14. 返回上一次所在目录
+
+```bash
+cd -
+```
+
+
+
+### 15. chmod 命令
+
+
+
+#### 语法
+
+```
+chmod [-cfvR] [--help] [--version] mode file...
+```
+
+
+
+- u 表示该文件的拥有者，g 表示与该文件的拥有者属于同一个群体(group)者，o 表示其他以外的人，a 表示这三者皆是。
+- \+ 表示增加权限、- 表示取消权限、= 表示唯一设定权限。
+- r 表示可读取，w 表示可写入，x 表示可执行，X 表示只有当该文件是个子目录或者该文件已经被设定过为可执行。
+
+其他参数说明：
+
+- -c : 若该文件权限确实已经更改，才显示其更改动作
+- -f : 若该文件权限无法被更改也不要显示错误讯息
+- -v : 显示权限变更的详细资料
+- -R : 对目前目录下的所有文件与子目录进行相同的权限变更(即以递回的方式逐个变更)
+- --help : 显示辅助说明
+- --version : 显示版本
+
+
+
+用数字表示权限，语法为：
+
+```
+chmod abc file
+```
+
+其中a,b,c各为一个数字，分别表示User、Group、及Other的权限。
+
+#### r=4，w=2，x=1
+
+- 若要rwx属性则4+2+1=7；
+- 若要rw-属性则4+2=6；
+- 若要r-x属性则4+1=5。
+
+
+
+
+
+### 16. 查看和杀死进程
+
+#### 查看进程
+
+```bash
+ps -ef |grep redis
+```
+
+* ps:将某个进程显示出来
+  -A 　显示所有程序。 
+  -e 　此参数的效果和指定"A"参数相同。
+  -f 　显示[UID](https://www.baidu.com/s?wd=UID&tn=44039180_cpr&fenlei=mv6quAkxTZn0IZRqIHckPjm4nH00T1dBm1uBmvF9uADYuAfzPHTY0ZwV5Hcvrjm3rH6sPfKWUMw85HfYnjn4nH6sgvPsT6KdThsqpZwYTjCEQLGCpyw9Uz4Bmy-bIi4WUvYETgN-TLwGUv3EPW6sPjmLPWR1njDsrjRsn1Tz),PPIP,C与S[TIME](https://www.baidu.com/s?wd=TIME&tn=44039180_cpr&fenlei=mv6quAkxTZn0IZRqIHckPjm4nH00T1dBm1uBmvF9uADYuAfzPHTY0ZwV5Hcvrjm3rH6sPfKWUMw85HfYnjn4nH6sgvPsT6KdThsqpZwYTjCEQLGCpyw9Uz4Bmy-bIi4WUvYETgN-TLwGUv3EPW6sPjmLPWR1njDsrjRsn1Tz)栏位。 
+  grep命令是查找
+  中间的|是管道命令 是指ps命令与grep同时执行
+
+这条命令的意思是显示有关redis有关的进程
+
+* kill 参数 进程号
+
+```bash
+  kill -9 4394
+```
+
+kill就是给某个进程id发送了一个信号。默认发送的信号是SIGTERM，而kill -9发送的信号是SIGKILL，即exit。exit信号不会被系统阻塞，所以kill -9能顺利杀掉进程。当然你也可以使用kill发送其他信号给进程。

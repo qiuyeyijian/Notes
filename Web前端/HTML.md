@@ -128,3 +128,20 @@ select : 下拉列表
 ../../ : 
 ```
 
+
+
+### 6. < form> 表单的novalidate 属性
+
+ 定义和用法
+
+novalidate 属性是一个布尔属性。
+
+novalidate 属性规定当提交表单时不对表单数据（输入）进行验证。
+
+```html
+<form action="demo_form.html" novalidate>
+	E-mail: <input type="email" name="user_email" required>
+			<input type="submit">
+</form>
+```
+

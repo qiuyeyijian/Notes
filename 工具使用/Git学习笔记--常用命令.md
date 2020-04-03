@@ -330,5 +330,69 @@ git pull --all				//拉取所有远程分支
 
 
 
+### 24. git clone
+
+有时候`.git` 文件夹太大，我们可以只克隆最近一次提交
+
+```
+git clone git://xxoo --depth 1
+```
+
+
+
+### 25. git 瘦身
+
+随着项目的版本不断迭代，仓库可能会非常臃肿，可以简单给git瘦身
+
+#### A. 垃圾回收
+
+```bash
+git gc --prune=now
+```
+
+Git最初向磁盘中存储对象使用`松散`的格式，后续会将多个对象打包为一个二进制的`包文件`（`packfile`），以`节省磁盘空间`
+
+#### B. 核弹级选项--git filter命令
+
+1. 找出大文件前5个
+
+```
+   git verify-pack -v .git/objects/pack/pack-*.idx | sort -k 3 -g | tail -5
+```
+
+> $ git verify-pack -v .git/objects/pack/pack-*.idx | sort -k 3 -g | tail -5
+> 50e6afdb7f535113126354e848033e7b591ff615 blob   4423175 4247726 43601345
+> 154ee2def998228d1ec4b3c004d010bfa14573c0 blob   4428924 215946 17679055
+> f7a32286c90c07e2f2e3cc1f9b01e656c6e0316d blob   8402104 931892 18074255
+> 53184164d6c7096455e2d0f93a90ebbfd17f3539 blob   8561224 4190653 9083285
+> c09e19d8931e7c3602e61b0b51892da2455cf049 blob   10224350 10170488 29150326
+
+2. 找出大文件名, 以上面最后一个为例
+
+```
+git rev-list --objects --all | grep c09e19d8931e7c3602e61b0b51892da2455cf049 
+```
+
+> $ git rev-list --objects --all | grep c09e19d8931e7c3602e61b0b51892da2455cf049
+> c09e19d8931e7c3602e61b0b51892da2455cf049 MyWebSite.zip
+
+3. 使用 git filter，将`your file path>` 替换成你的**路径**， 例如上面的 `MyWebsite.zip`
+
+   * 强制 Git 处理但不检出每个分支和标记的完整历史记录
+
+   * 删除指定的文件，以及因此生成的任何空提交
+
+```
+$ git filter-branch --force --index-filter \
+  "git rm --cached --ignore-unmatch <your file path>" \
+  --prune-empty --tag-name-filter cat -- --all
+```
+
+```
+$ git for-each-ref --format="delete %(refname)" refs/original | git update-ref --stdin
+$ git reflog expire --expire=now --all
+$ git gc --prune=now
+```
+
 
 

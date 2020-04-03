@@ -59,7 +59,7 @@ http:/xxx/index.php?file=php://input
 
 ![image-20191109215758429](PHPfilter.assets/image-20191109215758429.png)
 
-   ### phar://
+### phar://
 
 利用条件
 
