@@ -1,11 +1,19 @@
 
 > 学习Git时记录的一些笔记
 
-### 1. Git全局配置
+### 1. Git全局配置&GitHub设置ssh
 ```bash
 git config --global user.name "用户名"
 git config --global user.email "邮箱"
 ```
+
+
+
+```
+ssh-keygen -t rsa -b 4096 -C "qiuyeyijians@gmail.com"
+```
+
+
 
 ### 2. Git初始化
 
@@ -166,7 +174,7 @@ git status         //查看状态
 cat <file name>    //查看冲突文件
 vi  <file name>    //修复冲突文件
 git add <file>     //单独添加冲突文件
-git commit -m "confict fixed"   //提价
+git commit -m "confict fixed"   //提交
 git log --graph --pretty=oneline --abbrev-commit          //查看分支合并情况
 ```
 ### 19. 生成ssh秘钥

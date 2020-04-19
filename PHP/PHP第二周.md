@@ -101,13 +101,3 @@ CREATE TABLE MyGuests (
 
 每个表都应该有一个主键(本列为 "id" 列)，主键必须包含唯一的值。
 
-### 4. PHPStrom 连接数据库错误
-
-``` sql
-Server returns invalid timezone. Go to 'Advanced' tab and set 'serverTimezone' property manually. 
-```
-
-> 有可能是数据库版本问题，换个数据库驱动文件试试
->
->  https://blog.csdn.net/liuqiker/article/details/102455077 
-

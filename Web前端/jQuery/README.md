@@ -130,6 +130,8 @@ jQuery 入口函数与 JavaScript 入口函数的区别：
 
 
 
+#### post
+
 ```js
 $.ajax({
      //请求类型，这里为POST
@@ -149,5 +151,40 @@ $.ajax({
         //函数参数 "data" 为请求成功服务端返回的数据
 },
 });
+```
+
+
+
+#### get
+
+```javascript
+$.ajax({
+  url: url,
+  data: data,
+  success: success,
+  dataType: dataType
+});
+```
+
+
+
+#### php https
+
+```php
+
+
+   //模拟get
+function curl_get_https($url)
+{
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_HEADER, 0);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);  // 跳过检查
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);  // 跳过检查
+    $tmpInfo = curl_exec($curl);
+    curl_close($curl);
+    return $tmpInfo;   //返回json对象
+}
 ```
 

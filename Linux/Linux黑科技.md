@@ -184,6 +184,12 @@ uname -a
 
 ### 7. Sed命令 - 修改文本内容
 
+```bash
+sed -i -e '/mirrors.cloud.aliyuncs.com/d' -e '/mirrors.aliyuncs.com/d' /etc/yum.repos.d/CentOS-Base.repo
+```
+
+
+
 ```
 sed -i 's/root/world/g' yum.log
 或者 sed -i 's#hhh#HHHH#g' h.txt
@@ -193,68 +199,6 @@ sed -i 's/root/world/g' yum.log
               
 //如果要替换的字符串里有‘/'等可以用“\"转义
 sed -i 's/http:\/\/qiuyeyijian.com/https:\/\/qiuyeyijian.com/g' /root/a.txt
-```
-
-### 8. CentOS 防火墙，开启指定端口
-
-1，	首先查看防火墙状态：
-
-```
-firewall-cmd --state
-```
-
-2，	开启防火墙，
-启动firewall：
-
-```
-systemctl start firewalld.service
-```
-
-设置开机自启：
-
-```
-systemctl enable firewalld.service
-```
-
-3，	重启防火墙：
-
-```
-systemctl restart firewalld.service
-```
-
-4，	检查防火墙状态是否打开：
-
-```
-firewall-cmd --state
-```
-
-5. 开启特定端口
-
-```
-firewall-cmd --zone=public --add-port=80/tcp --permanent
-```
-
-重启防火墙
-
-```
-systemctl restart firewalld.service
-```
-
-```
-命令含义：
- 
---zone #作用域
- 
---add-port=80/tcp  #添加端口，格式为：端口/通讯协议
- 
---permanent   #永久生效，没有此参数重启后失效
-12345678910
-```
-
-6. 查看
-
-```
-firewall-cmd --list-ports
 ```
 
 ### 9. Ubuntu 开启指定端口
@@ -451,3 +395,56 @@ ps -ef |grep redis
 ```
 
 kill就是给某个进程id发送了一个信号。默认发送的信号是SIGTERM，而kill -9发送的信号是SIGKILL，即exit。exit信号不会被系统阻塞，所以kill -9能顺利杀掉进程。当然你也可以使用kill发送其他信号给进程。
+
+
+
+### 17. Linux系统下永久修改自己喜欢的系统主机名
+
+
+
+```bash
+hostnamectl set-hostname 主机名
+```
+
+
+
+下面是修改终端显示的名字
+
+> 三行代码实现想要效果
+
+* 打开root目录下的隐藏文件` .bashrc` 
+
+``` 
+vi ~/.bashrc
+```
+
+- 添加如下代码
+
+```bash
+PS1="[\u@localhost \w]\$" #修改中间的localhost为自己想要修改的主机名
+```
+
+- 立即生效 
+
+```bash
+source ~/.bashrc
+```
+
+
+
+### 18. Linux命令中Ctrl+z、Ctrl+c和Ctrl+d
+
+Ctrl+c是强制中断程序的执行。
+
+Ctrl+z的是将任务中断,但是此任务并没有结束,他仍然在进程中他只是维持挂起的状态
+
+Ctrl+d 不是发送信号，而是表示一个特殊的二进制值，表示 EOF。
+
+
+
+### 19. 查看所有系统内核
+
+```
+sudo awk -F\' '$1=="menuentry " {print i++ " : " $2}' /etc/grub2.cfg
+```
+
