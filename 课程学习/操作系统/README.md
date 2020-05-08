@@ -642,6 +642,118 @@ SRTF
 
 
 
+### 管程
+
+
+
+![image-20200426162526145](README.assets/image-20200426162526145.png)
+
+
+
+![image-20200426163231931](README.assets/image-20200426163231931.png)
+
+
+
+
+
+![image-20200426163352905](README.assets/image-20200426163352905.png)
+
+
+
+![image-20200426163422833](README.assets/image-20200426163422833.png)
+
+
+
+
+
+### 死锁的概念
+
+
+
+![image-20200426163912267](README.assets/image-20200426163912267.png)
+
+
+
+![image-20200426164143475](README.assets/image-20200426164143475.png)
+
+
+
+![image-20200426164452565](README.assets/image-20200426164452565.png)
+
+
+
+![image-20200426164758220](README.assets/image-20200426164758220.png) 
+
+![image-20200426165047676](README.assets/image-20200426165047676.png)
+
+
+
+### 预防死锁
+
+
+
+![image-20200426165125089](README.assets/image-20200426165125089.png)
+
+
+
+![image-20200426165337429](README.assets/image-20200426165337429.png)
+
+
+
+![image-20200426165544293](README.assets/image-20200426165544293.png)
+
+
+
+![image-20200426180423357](README.assets/image-20200426180423357.png)
+
+![image-20200426180751892](README.assets/image-20200426180751892.png)
+
+![image-20200426180835539](README.assets/image-20200426180835539.png)
+
+
+
+### 避免死锁
+
+
+
+![image-20200426180925498](README.assets/image-20200426180925498.png)
+
+
+
+![image-20200426181432028](README.assets/image-20200426181432028.png)
+
+![image-20200426181851708](README.assets/image-20200426181851708.png)
+
+
+
+![image-20200426182112223](README.assets/image-20200426182112223.png)
+
+
+
+![image-20200426182306219](README.assets/image-20200426182306219.png)
+
+
+
+### 死锁的检测和解除
+
+
+
+![image-20200426182402925](README.assets/image-20200426182402925.png)
+
+![image-20200426182852445](README.assets/image-20200426182852445.png)
+
+![image-20200426183005989](README.assets/image-20200426183005989.png)
+
+![image-20200426183239159](README.assets/image-20200426183239159.png)
+
+![image-20200426183318696](README.assets/image-20200426183318696.png)
+
+
+
+
+
+
+
 ### 内存的基础知识
 
 
@@ -1557,3 +1669,8 @@ SRTF
 
 
 ![image-20200418200851534](README.assets/image-20200418200851534.png)
+
+
+
+
+

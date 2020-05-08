@@ -289,7 +289,8 @@ esac
 ## 迭代语句 - 循环
 
 可以通过循环执行同一个代码块很多次
-\1. `for`循环
+
+1. `for`循环
 
 ```bash
 for VARIABLE_NAME in ITEM_1 ITEM_N

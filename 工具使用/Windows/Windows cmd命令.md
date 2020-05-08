@@ -23,3 +23,12 @@ sc delete mysql
 
 
 
+### 定时关机
+
+```bash
+shutdown -s -t 3600
+
+shutdown -a				//取消定时任务
+```
+
+

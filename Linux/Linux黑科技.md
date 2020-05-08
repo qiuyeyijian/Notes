@@ -191,7 +191,7 @@ sed -i -e '/mirrors.cloud.aliyuncs.com/d' -e '/mirrors.aliyuncs.com/d' /etc/yum.
 
 
 ```
-sed -i 's/root/world/g' yum.log
+sed -i 's/要替换的字符串/替换后的字符串/g' yum.log
 或者 sed -i 's#hhh#HHHH#g' h.txt
               s==search  查找并替换
               g==global  全部替换
