@@ -22,3 +22,19 @@ function getAddressURLParam(paramName)
 
 
 
+### 2. 动态获取元素id 属性
+
+```html
+<a href="java:void(0)" onclick="GetID(this)" class="CSS" id="变量">文字</a> 
+```
+
+```js
+<script type="text/javascript">
+    function GetID(obj) {
+        var ID = obj.getAttribute("id");
+        alert(ID);
+    }
+</script> 
+
+```
+

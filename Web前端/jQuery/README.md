@@ -188,3 +188,33 @@ function curl_get_https($url)
 }
 ```
 
+
+
+### 解析Json 字符串
+
+
+
+```js
+let json = $.parseJSON(jsonString);
+console.log(json.key1);
+```
+
+
+
+### 设置和去除 readonly 和 disable属性
+
+**两种方法设置disabled属性**
+
+```js
+　　$('#areaSelect').attr("disabled",true);
+　　$('#areaSelect').attr("disabled","disabled");
+```
+
+　　**三种方法移除disabled属性**
+
+```js
+　　$('#areaSelect').attr("disabled",false);
+　　$('#areaSelect').removeAttr("disabled");
+　　$('#areaSelect').attr("disabled","");
+```
+
