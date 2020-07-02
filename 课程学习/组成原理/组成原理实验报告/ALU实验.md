@@ -64,7 +64,7 @@ ALU是具有基本算术逻辑运算能力的电路，可以实现基本的算�
 | -------- | ------------ | ------------------------------------------------------------ |
 | 输入     | i_data[31:0] | 输入数据                                                     |
 | 输入     | ldr          | 输入数据锁存信号。上升沿时刻，输入存入。                     |
-| 输入     | ctrl         | 输入控制，ctrl=0时，寄存器锁存的值输出；否则输出端为高阻态。 |
+| 输入     | ctrl         | 输出控制，ctrl=0时，寄存器锁存的值输出；否则输出端为高阻态。 |
 | 输出     | o_data[31:0] | 输出数据                                                     |
 
 本次实验的R0,R1,R2和R3采用此模块。
@@ -350,26 +350,78 @@ endmodule
 
 
 
-**buff.v**
+**rom.v**
 
 ```verilog
+module rom(
+    input clk,
+    input [6:0] addr,          //地址
+    input oe,                   //输出允许信号, output enable
+    output reg[31:0] o_data        //数据输出
+);
 
-//输入/输出缓冲器
-module buff(
-    input ctrl,                     //控制信号, ctrl=0时, 缓冲器打开, 否则输出为高阻态
-    input [31:0] i_data,            //输入数据
-    output reg[31:0] o_data         //输出数据, 三态
-    );
+    reg [31:0] rom[127:0];
 
-    always @(*) begin
-        if(~ctrl) begin
-            o_data <= i_data;
+    always @(posedge clk) begin
+        if (oe) begin
+            case(addr)
+                32'h00000000:o_data <= 32'he0;
+                32'h00000001:o_data <= 32'h51;
+                32'h00000002:o_data <= 32'hf2;
+                32'h00000003:o_data <= 32'ha3;
+                32'h00000004:o_data <= 32'hb4;
+                32'h00000005:o_data <= 32'hc0;
+                32'h00000006:o_data <= 32'hd1;
+                32'h00000007:o_data <= 32'he2;
+                32'h00000008:o_data <= 32'hf3;
+                32'h00000009:o_data <= 32'h64;
+                32'h0000000A:o_data <= 32'h8a;
+                32'h0000000B:o_data <= 32'h7b;
+                32'h0000000C:o_data <= 32'h59;
+                32'h0000000D:o_data <= 32'he3;
+                32'h0000000E:o_data <= 32'h94;
+                32'h0000000F:o_data <= 32'h34;
+                default:o_data <= 32'hffffffff;          
+            endcase
         end
         else begin
-            o_data <= 32'bzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz;
+            o_data <= 32'hzzzzzzzz;
+        end   
+    end
+endmodule
+```
+
+
+
+**ram.v**
+
+```verilog
+module ram(
+    input clk,
+    input we,                   //写控制
+    input cs,                   //片选信号
+    input [31:0] i_data,        //数据输入
+    input [6:0] addr,          //地址
+    output reg[31:0] o_data     //数据输出
+    );
+
+    reg [31:0] ram[255:128];
+    reg [24:0] tmp;
+    always @(posedge clk) begin
+        if(cs) begin        //片选信号有效时, 写信号有效就写入, 否则就读
+            tmp <= 25'b1;
+            if(we) begin
+                ram[{tmp,addr}] <= i_data;
+            end
+            else begin
+                o_data <= ram[{tmp,addr}];
+            end
+        end
+        else begin         //片选信号无效时就输出高阻态
+            o_data <= 32'hzzzzzzzz;
         end
     end
-
+    
 endmodule
 ```
 
@@ -387,90 +439,81 @@ endmodule
 
 根据电路的功能，设定输入信号状态，编写测试文件，根据电路功能要求，设计如下测试代码：
 
-**alu_32bits_top_sim.v**
+**memory_top_sim.v**
 
 ```verilog
+module memory_top_sim(
+    );
 
-module alu_dataPath_sim( );
-reg [7:0]in;
-reg [3:0]alusel;
-reg nsw_bus,nalu_bus,lddr1,lddr2,ldr0,ldr1,ldr2,ldr3,nr0_bus,nr1_bus,nr2_bus,nr3_bus;
-wire [7:0]DBUS;
-wire cy,zf,of,nf;
+    reg clk, we, ldar, rst_n;         //时钟控制、写允许、地址锁存信号、重置信号
+    reg ldr0, ldr1, ldr2, ldr3;       //输入数据锁存信号
+    reg nr0_bus, nr1_bus, nr2_bus, nr3_bus, nsw_bus;      //输出控制信号，低电平时，寄存器的值输出
+    reg [31:0] i_data;                //输入数据
+    wire [31:0] BUS;                 //总线
 
-alu_dataPath UU(in,alusel,nsw_bus,nalu_bus,
-    lddr1,lddr2,ldr0,ldr1,ldr2,ldr3,nr0_bus,nr1_bus,nr2_bus,nr3_bus,
-    DBUS,cy,zf,of,nf);
-    
-initial begin
-      alusel=1;
-      #80;alusel=2;
-      #80;alusel=5;
-end
+    memory_top memory_top(
+        .clk(clk), .we(we), .ldar(ldar), .rst_n(rst_n),
+        .ldr0(ldr0), .ldr1(ldr1), .ldr2(ldr2), .ldr3(3),
+        .nr0_bus(nr0_bus), .nr1_bus(nr1_bus), .nr2_bus(nr2_bus), .nr3_bus(nr3_bus), .nsw_bus(nsw_bus),
+        .i_data(i_data), .BUS(BUS)
+    );
 
-always begin
-    in=8'h50;
-    #20;in=8'h55;
-    #20;in=8'hAA;
-    #20;in=8'h55;
-    #20;in=8'hAA;
- end
- 
-initial begin
-    lddr1=0;
-    #45;lddr1=1;#5;lddr1=0;
-end
- 
- initial begin
-    nr0_bus=1;
-    #40;nr0_bus=0;
-    #20;nr0_bus=1;
- end
- 
- initial begin
-    lddr2=0;
-    #65;lddr2=1;#5;lddr2=0;
- end
- 
- initial begin
-    nr1_bus=1;
-    #60;nr1_bus=0;
-    #20;nr1_bus=1;
- end
- 
-  initial begin
-    nr2_bus=1;
- end
- 
- initial begin
-    nr3_bus=1;
- end
- 
- initial begin
-    ldr0=0;
-    #10;ldr0=1;#10;ldr0=0;
- end
- initial begin
-    ldr1=0;
-    #30;ldr1=1;#10;ldr1=0;
- end
- initial begin
-    ldr2=0;
- end
- initial begin
-    ldr3=0;
- end
- initial begin
-    nsw_bus=0;
-    #40;nsw_bus=1;
- end
- 
- initial begin
-    nalu_bus=1;
-    #50;nalu_bus=0;
-    #20;nalu_bus=0;
- end
- 
+    initial begin
+        clk <= 0;
+        rst_n <= 0;
+        // #1 rst_n <= 1;
+        // #1 rst_n <= 0;
+    end
+
+    always begin
+        #0  i_data <= 32'h00000004;
+        #20 i_data <= 32'h00000005;
+        #20 i_data <= 32'h00000006;
+        #40 i_data <= 32'h00000007;
+        #20;
+    end
+
+    //输入缓冲器 输出控制信号 nsw_bus 
+    initial begin
+        #0  nsw_bus <= 0;
+        #20 nsw_bus <= 1;
+        #30 nsw_bus <= 0;
+        #20 nsw_bus <= 1;
+    end
+
+    //地址寄存器 锁存控制信号ldar 
+    initial begin
+        #0  ldar <= 0;
+        #15 ldar <= 1;
+        #5  ldar <= 0;
+        #20 ldar <= 1;
+        #5 ldar <= 0;
+    end
+
+
+    initial begin
+        #0  we <= 0;
+        #50 we <= 1;
+        #30 we <= 0;
+    end
+
+    //通用寄存器锁存信号 ldr
+    initial begin
+        ldr0 <= 1;
+        ldr1 <= 1;
+        ldr2 <= 1;
+        ldr3 <= 1;
+    end
+
+    //通用寄存器输出控制信号 nr_bus
+    initial begin
+        nr0_bus <= 1;
+        nr1_bus <= 1;
+        nr2_bus <= 1;
+        nr3_bus <= 1;
+    end
+    always #10 clk <= ~clk;
+
 endmodule
 ```
 

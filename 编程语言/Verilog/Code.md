@@ -603,7 +603,6 @@ endmodule
 **alu_32bits_top_sim.v**
 
 ```verilog
-
 module alu_32bits_top_sim(
     );
 

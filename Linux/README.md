@@ -414,3 +414,44 @@ userdel 用户名
 -r 将用户主目录及该目录下的文件删除，也会将该用户在系统中的其他文件删除
 ```
 
+
+
+
+
+### 查看端口占用并删除
+
+```bash
+[root@onepiece ~]# lsof -i
+# 将会显示 命令 + 进程ID + 进程所属用户, 以及监听的协议、状态等信息
+COMMAND     PID USER   FD   TYPE  DEVICE SIZE/OFF NODE NAME
+dhclient    728 root    6u  IPv4   11262      0t0  UDP *:bootpc
+ntpd        839  ntp   16u  IPv4   13671      0t0  UDP *:ntp
+ntpd        839  ntp   18u  IPv4   13677      0t0  UDP localhost:ntp
+```
+
+使用`lsof`查看指定端口占用情况
+
+```bash
+lsof -i:8081
+```
+
+使用`netstat`查看指定端口占用情况
+
+```bash
+netstat -anp | grep 8081
+```
+
+杀死某个端口的占用进程
+
+```shell
+kill -s 9 9646(进程号)
+```
+
+
+
+### Springboot 部署项目
+
+```bash
+nohup java -jar test.jar >temp.txt &
+```
+

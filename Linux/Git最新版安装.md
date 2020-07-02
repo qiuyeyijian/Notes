@@ -1,7 +1,5 @@
 ##### 查看git版本，卸载旧版本（如果没有安装git请直接到下一步）
 
-
-
 ```csharp
 git --version
 yum remove git
@@ -31,8 +29,6 @@ make prefix=/usr/local/git install
 
 ##### 添加到环境变量
 
-
-
 ```bash
 echo "export PATH=$PATH:/usr/local/git/bin" >> ~/.bashrc
 source ~/.bashrc
@@ -42,8 +38,3 @@ git --version
 好了最新的git就装好了。
 
 
-
-作者：KEEPINUP
-链接：https://www.jianshu.com/p/450feb5e8f81
-来源：简书
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
