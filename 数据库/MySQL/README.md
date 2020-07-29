@@ -31,6 +31,18 @@ jdbc:mysql://localhost:3306?serverTimezone=GMT
 
 
 
+### Mysql 基本命令
+
+
+
+```mysql
+show databases;				//显示所有数据库
+show create database mysql;				//显示创建名字为"mysql"的数据库的语句
+
+```
+
+
+
 
 
 ### Mysql 数据库CURD
