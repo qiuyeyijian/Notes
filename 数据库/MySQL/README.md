@@ -194,7 +194,7 @@ select * from students where id<5 and age>20;	//查询id小于5且年龄大于20
 
 #### 6. 数据库和表
 
-重命名表
+**重命名表**
 
 ```mysql
 alter table 表名 rename 新表名;
@@ -206,14 +206,15 @@ alter table 表名 rename 新表名;
 alter table students rename workmates;		//重命名 students 表为 workmates: 
 ```
 
+**删除整张表**
 
+```mysql
+drop table 表名;
+```
 
-删除整张表
-基本形式: drop table 表名;
+**删除整个数据库**
 
-示例: 删除 workmates 表: drop table workmates;
+```mysql
+drop database 数据库名;
+```
 
-删除整个数据库
-基本形式: drop database 数据库名;
-
-示例: 删除 samp_db 数据库: drop database samp_db;

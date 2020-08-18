@@ -2,6 +2,7 @@
 > 学习Git时记录的一些笔记
 
 ### 1. Git全局配置&GitHub设置ssh
+
 ```bash
 git config --global user.name "用户名"
 git config --global user.email "邮箱"
@@ -404,3 +405,24 @@ $ git gc --prune=now
 
 
 
+### 重命名分支
+
+**一：本地分支重命名**
+
+```shell
+git branch -m old-name new-name
+```
+
+**二：远程分支重命名**
+
+> - 1、将远程分支删除掉
+> - 2、将本地分支重命名
+> - 3、将本地分支推到远程
+
+比如：将远程的dev重命名为develop
+
+```cpp
+git push --delete origin dev
+git branch -m dev develop
+git push origin develop
+```

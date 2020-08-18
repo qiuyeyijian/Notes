@@ -1,4 +1,8 @@
+# ES6
 
+
+
+![image-20200811105750149](assets/Learn/image-20200811105750149.png)
 
 ### 变量
 
@@ -307,3 +311,14 @@ let res1 = gen.next();		//{value: 12, done: false}
 let res2 = gen.next();		//{value: 55, done: true}
 ```
 
+
+
+
+
+### export 和 export default
+
+> export default 和 export 的主要区别 在于对应的import的区别：
+>
+> export 对应的 import 需要知道 export抛出的变量名或函数名 import{a,b}
+>
+> export default对应的 import 不需要知道 export抛出的变量名或函数名 import anyname
