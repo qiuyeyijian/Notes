@@ -409,3 +409,80 @@ css做一个渐变图片背景
 background-image: linear-gradient(to right bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)), url("");
 ```
 
+
+
+### :after/:before/::after/::before
+
+**相同点**
+
+- 都可以用来表示伪类对象，用来设置对象前的内容
+- :before和::before写法是等效的; :after和::after写法是等效的
+
+**不同点**
+
+- :before/:after是Css2的写法，::before/::after是Css3的写法
+- :before/:after 的兼容性要比::before/::after好 ，
+  不过在H5开发中建议使用::before/::after比较好
+
+**注意**
+
+- 这些伪元素 要配合content属性一起使用
+- 这些伪元素 不会出现在DOM中，所以不能通过js来操作，仅仅是在 CSS 渲染层加入
+- 这些伪元素 的特效通常要使用:hover伪类样式来激活
+
+eg:当鼠标移在span上时，span前插入”111111”
+
+```css
+<style>
+span{
+  background: yellow;
+}
+span:hover::before{
+  content:"111111";
+}
+</style>
+
+<span>222</span>
+```
+
+
+
+
+
+### @keyframes
+
+```css
+@keyframes animationname {keyframes-selector {css-styles;}}
+```
+
+| 值                   | 描述                                                         |
+| :------------------- | :----------------------------------------------------------- |
+| *animationname*      | 必需。定义动画的名称。                                       |
+| *keyframes-selector* | 必需。动画时长的百分比。合法的值：0-100%from（与 0% 相同）to（与 100% 相同） |
+| *css-styles*         | 必需。一个或多个合法的 CSS 样式属性。                        |
+
+```css
+@keyframes move {
+  from {
+    transform: translate(0px, 0)
+  }
+
+  to {
+    transform: translate(50px, 0);
+  }
+}
+
+@keyframes mymove {
+0%   {top:0px;}
+25%  {top:200px;}
+50%  {top:100px;}
+75%  {top:200px;}
+100% {top:0px;}
+}
+
+.main-articles-item:hover {
+  animation: move 1.8s;
+  animation-fill-mode: forwards;
+}
+```
+

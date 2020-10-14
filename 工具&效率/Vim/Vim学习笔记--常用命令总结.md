@@ -1,6 +1,8 @@
 > 学习Vim时，用到的一些命令
 
-### 0x01. 删除多行
+
+
+###  删除多行
 
 ```bash
 :set nu				//显示行号
@@ -8,13 +10,13 @@
 :set nonmber		//不显示行号
 ```
 
-#### 0x02. 撤销
+### 撤销
 
 ```
 u			//撤销上一步操作
 ```
 
-### 0x03. 复制粘贴
+###  复制粘贴
 
 1、复制
 
@@ -30,13 +32,13 @@ u			//撤销上一步操作
 在命令模式下，将光标移动到将要粘贴的行处，按“p”进行粘贴
 ```
 
-### 0x04. 将vim置于后台
+### 将vim置于后台
 
 `Ctrl + z` 可以将vim 置于后台
 
 `fg`命令可以调回
 
-### 0x05. 定位某行
+###  定位某行
 
 vim 下 输入`:/字符串`，接着按`n`查找下一个，跳转上一个匹配N
 
@@ -58,7 +60,7 @@ vim 下 输入`:/字符串`，接着按`n`查找下一个，跳转上一个匹�
 
 
 
-### 0x06. Vim 的3种工作模式
+### Vim 的3种工作模式
 
 一般模式（指令模式）
 
@@ -68,7 +70,7 @@ vim 下 输入`:/字符串`，接着按`n`查找下一个，跳转上一个匹�
 
 
 
-### 0x07. 一般模式
+### 一般模式
 
 | 一般模式下移动光标 |                        |
 | ------------------ | ---------------------- |
@@ -116,7 +118,7 @@ vim 下 输入`:/字符串`，接着按`n`查找下一个，跳转上一个匹�
 
 比较常用就是小`i`和小`o`
 
-### 0x08. 命令行模式
+### 命令行模式
 
 | 命令行模式           |                                                              |
 | -------------------- | ------------------------------------------------------------ |
@@ -132,4 +134,53 @@ vim 下 输入`:/字符串`，接着按`n`查找下一个，跳转上一个匹�
 | :set nonu            | 取消行号                                                     |
 | :n1, n2 w [filename] | 将n1 到 n2 行的内容另存为 filename 文件中                    |
 | :! command           | 暂时离开vim, 执行某个Linux命令，例如：`! ls /home`暂时列出/home下的文件，然后会提示按回车返回vim |
+
+
+
+### Linux 下Vim配置
+
+在根目录下新建`.vimrc`文件，此文件是Vim的配置文件。在里面输入下面内容：
+
+```bash
+set tabstop=4 
+set softtabstop=4 
+set shiftwidth=4 
+set noexpandtab 
+set nu  
+set autoindent 
+set cindent
+
+"自动补全
+:inoremap ( ()<ESC>i
+:inoremap ) <c-r>=ClosePair(')')<CR>
+:inoremap { {<CR>}<ESC>O
+:inoremap } <c-r>=ClosePair('}')<CR>
+:inoremap [ []<ESC>i
+:inoremap ] <c-r>=ClosePair(']')<CR>
+:inoremap " ""<ESC>i
+:inoremap ' ''<ESC>i
+function! ClosePair(char)
+    if getline('.')[col('.') - 1] == a:char
+        return "\<Right>"
+    else
+        return a:char
+    endif
+endfunction
+```
+
+> * Tabstop: 表示一个 tab 显示出来是多少个空格的长度默认 8。
+>
+> * Softtabstop: 表示在编辑模式的时候按退格键的时候退回缩进的长度当使用 expandtab 时特别有用。
+>
+> * Shiftwidth: 表示每一级缩进的长度一般设置成跟 softtabstop 一样。 当设置成 expandtab 时缩进用空格来表示，noexpandtab 则是用制表符表示一个缩进。
+>
+> - Nu: 表示显示行号。
+> - Autoindent: 表示自动缩进。
+> - Cindent: 是特别针对C语言自动缩进。
+
+编辑完成后，保存退出，输入下面命令使配置文件生效
+
+```bash
+source ~/.vimrc
+```
 

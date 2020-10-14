@@ -225,3 +225,16 @@ function curlOpen($url, $config = array())
 ### 1. php 请求https
 
 file_get_contens() 只能请求http
+
+
+
+
+
+### 格式化输出数组
+
+```php
+print("<pre>"); // 格式化输出数组
+print_r($temp);
+print("</pre>"); // 格式化输出数组
+```
+

@@ -11,7 +11,7 @@ $(document).ready(function(){
 或者
 $(function(){
     // 执行代码
-});
+});                                                                                   
 ```
 
 JavaScript 入口函数:

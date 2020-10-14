@@ -35,6 +35,13 @@ function getAddressURLParam(paramName)
         alert(ID);
     }
 </script> 
+```
 
+
+
+### 数组合并
+
+```js
+ // 数组合并可用arr1.concat(arr2);
 ```
 
