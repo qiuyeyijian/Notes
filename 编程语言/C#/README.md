@@ -479,3 +479,6 @@ static Func<int, bool> IsEven = num => num%2==0;
 ### Lambda表达式
 
 
+
+
+

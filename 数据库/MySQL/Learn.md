@@ -501,7 +501,7 @@ SELECT * FROM student LIMIT 6,3; -- 第3页			//第6，7, 8条记录
 2. 创建表完后，添加非空约束
 
    ```mysql
-     ALTER TABLE stu MODIFY NAME VARCHAR(20) NOT NULL;
+   ALTER TABLE stu MODIFY NAME VARCHAR(20) NOT NULL;
    ```
 
 3. 删除name的非空约束
@@ -756,6 +756,10 @@ CREATE TABLE tab_favorite (
 >     * 非主属性：除过码属性组的属性
 
 第三范式（3NF）：在2NF基础上，任何非主属性不依赖于其它非主属性（在2NF基础上消除传递依赖）
+
+
+
+
 
 ### 数据库的备份和还原
 
