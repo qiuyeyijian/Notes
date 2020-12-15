@@ -52,6 +52,40 @@ KL36有一个中断向量控制器，想要模拟串口就必须在中断控制�
 * 接收数据`suart_send()`，模拟串口接收数据。
 * 使能接收中断`suart_enable_receive_interupt()`，使能接收引脚的GPIO中断，下降沿触发。
 
+### **构件使用**
+
+首先在**main.c**中初始化并且开启串口接收中断
+
+```c
+// 初始化发送串口和接收串口
+suart_init(SUART_TX, SUART_SEND);
+suart_init(SUART_RX, SUART_RECEVIE);  
+// 使能串口接收中断
+suart_enable_receive_interupt(SUART_RX);
+```
+
+其次在 user.h 中包含`suart.h`头文件，然后声明中断服务函数
+
+```c
+#include "suart.h"
+#define SUART_PortA_Handler PORTA_IRQHandler    //用户串口中断函数
+#define SUART_PortC_PortD_Handler PORTC_PORTD_IRQHandler
+```
+
+最后在` isr.c` 文件中实现中断函数
+
+```c
+void SUART_PortC_PortD_Handler(void) {
+
+    uint32_t len = suart_receive(SUART_RX, gReceiveBuff);
+    printf("gLenth: %d\n", len);
+    suart_send(SUART_TX, gReceiveBuff, len);
+    
+}
+```
+
+
+
 
 
 ### Q&A

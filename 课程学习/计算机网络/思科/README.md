@@ -71,7 +71,11 @@ SWA(config)#int range f0/1 - 5	// 批量配置接口f0/1 到 fa0/5
 show vlan brief				// 查看vlan信息
 show ip interface brief		// 
 show interface fa0/1		// 查看接口
-show ip router		// 显示路由信息
+show ip route		// 显示路由信息
+show ip protocols	// 显示协议信息
+show ip ospf database	// 显示ospf状态数据库
+show ip nat translations  // 查看NAT转换记录
+show access-list 1			// 查看编号为1的ACL控制列表
 ```
 
 
@@ -206,7 +210,7 @@ QinQ（802.1Q in 802.1Q ）接口是使用 QinQ 协议的接口。 QinQ 接口�
 
 ```
 SWA(config)#vlan 2		// 创建vlan2
-SWA(config-vlan)#name aa		// 命名为aa
+SWA(config-vlan)#name aa		// 可以给vlan起个名字，命名为aa
 
 SWA(config)#int f0/5	// 进入接口f0/5
 SWA(config-if)#switchport mode access		// 修改模式为access模式
@@ -271,6 +275,8 @@ Router(config)#end
 
 ```
 Router(config)#router rip
+Router(config)#version 2
+Router(config)#no auto-summary
 Router(config‐router)#network 192.168.1.0
 Router(config‐router)#network 192.168.2.0
 Router(config‐router)#end
@@ -284,16 +290,78 @@ Router(config)#no router rip		// 删除RIP
 ### 5. 配置NAT
 
 ```
-// 制定内外网 
+// 配置标准访问列表，定义可被转换的私有地址
+Router(config)#access-list 1 permit 192.168.10.0 0.0.0.255
+
+// 定义公网地址池
+Router(config)#ip nat pool compool 98.5.5.100 98.5.5.200 netmask 255.255.255.0
+
+// 为服务器定义一个可静态转换的公网地址,就是边界路由器的外网地址
+Router(config)#ip nat inside source static 192.168.10.12 98.5.5.1
+
+// 将地址池与访问列表相关联
+Router(config)#ip nat inside source list 1 pool compool overload
+// 如果只有一个公网地址，可以不用设置地址池，将公网接口与访问控制列表相关联
+Router(config)#ip nat inside source list 1 int s1/0 overload
+
+// 定义内网接口
 Router(config)#int f0/0
 Router(config-if)#ip nat inside
-Router(config-if)#exit
-Router(config)#int f0/1
+
+// 定义外网接口
+Router(config)#int s1/0
 Router(config-if)#ip nat outside
 
-// 设置地址转换列表
-Router(config)#access-list 10 permit 192.168.1.0 0.0.0.255
-Router(config)#ip nat inside source list 10 interface fastethernet 0/1 overload
+```
+
+
+
+### 6. 配置OSPF
+
+OSPF和ACL要使用反掩码
+
+```
+Router(config)#router ospf 2		// router ospf 进程号
+Router(config)#network 192.168.1.0 0.0.0.255 area 1		// 发布子网要加区域号
+```
+
+
+
+### 7. 配置独臂路由
+
+配置交换机
+
+```
+SW(config-if)#int fa0/1
+SW(config-if)#switchport mode access
+SW(config-if)#switchport access vlan 10
+SW(config-if)#int fa0/2
+SW(config-if)#switchport mode access
+SW(config-if)#switchport access vlan 20
+SW(config-if)#int g0/1		//与路由器相连的接口
+SW(config-if)#switchport mode trunk
+SW(config-if)#switchport trunk allowed vlan all
+
+```
+
+
+
+配置路由器
+
+```
+Router(config)#int fa0/0.1		// 在fa0/0 中创建一个虚拟接口0.1
+Router(config)#encapsulation dot1Q 10			// 后面的10是连接的交换机划分的VLAN号
+Router(config)#ip addr 192.168.10.1 255.255.255.0
+Router(config)#no shut
+Router(config)#
+Router(config)#int fa0/0.2		// 在fa0/0 中创建一个虚拟接口0.2
+Router(config)#encapsulation dot1Q 20			// 后面的100是连接的交换机划分的VLAN号
+Router(config)#ip addr 192.168.20.1 255.255.255.0
+Router(config)#no shut
+Router(config)#
+Router(config)#int fa0/0	
+Router(config)#no shut
+Router(config)#
 ```
 
 
@@ -308,7 +376,19 @@ clock rate
 
 
 
-```
+### 7. 配置ACL
 
+ACL分为两种：标准访问控制列表，编号1-99,1300-1999。扩展访问控制列表，编号100-199,2000-2699。ACL使用的是反掩码
+
+配置ACL需要实施两个步骤
+
+* 创建ACL
+* 在接口上应用ACL
+
+```
+Router(config)#access-list 1 permit 172.16.1.0 0.0.0.255
+Router(config)#int f0/1
+Router(config)#ip access-group 1 out
+Router(config)#
 ```
 

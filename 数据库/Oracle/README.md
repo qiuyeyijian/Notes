@@ -105,7 +105,7 @@ create table db_1
 	id		number(11),
 	name	varchar(25),
 	sex		char(2),
-	salary	number(9, 2)
+	salary	number(9, 2)	--精度9位，小数点后占2位，小数点前占7位
 );
 
 desc	db_1;		--查看表的结构
@@ -113,7 +113,7 @@ desc	db_1;		--查看表的结构
 
 
 
-#### 创建带有主键约束的表
+#### 创建带有主键约束的表 PRIMARY KEY
 
 ```sql
 /* 举个例子 */
@@ -151,7 +151,7 @@ drop constraints pk_id;
 
 
 
-#### 创建带有外键约束的表
+#### 创建带有外键约束的表 FOREIGN KEY
 
 通过定义`froeign key`约束来创建外键，一个表可以有一个或者多个外键。外键对应的是参照完整性，一个表的外键可以是空值，若不为空值，则每一个外键值必须等于另一表中主键的某个值。
 
@@ -195,12 +195,123 @@ references 表名(字段名称)
 on  delete cascade;
 ```
 
-
-
 ```sql
 alter table tb_employee
 add constraints fk_dept foreign key(depId)
 references tb_dept(id)
 on  delete cascade;
 ```
+
+
+
+**移除外键约束**
+
+```sql
+alter table 数据表名称
+drop constraints 约束名称
+```
+
+```sql
+alter table tb_employee
+drop constraints fk_dept;
+```
+
+
+
+#### 创建带有非空约束的表 NOT NULL
+
+非空约束是指字段的值不能为空值，这个空值（或NULL）不同于零、空白、或长度为0的字符串（如""），NULL 的意思是没有输入。
+
+```sql
+字段名 数据类型 not null
+```
+
+```sql
+create table tb_6(
+	id NUMBER(11) primary key,
+	name varchar(22),
+	sex char(2) not null
+);
+```
+
+
+
+**修改表时添加非空约束**
+
+```sql
+alter table 数据表名称
+modify 字段名称 not null
+```
+
+```sql
+alter table tb_6
+modify name not null;
+```
+
+
+
+**移除非空约束**
+
+```sql
+alter table 数据表名称
+modify 字段名称 null
+```
+
+```sql
+alter table tb_6
+modify name null;
+```
+
+
+
+#### 创建带有唯一性约束的表 UNIQUE
+
+唯一性约束用于强制实施列表集中值的唯一性。根据约束条件，要求该列的值唯一，允许为空，但只能出现一个空值。另外、主键也强制实行唯一性，但主键不允许NULL作为唯一的空值。
+
+```sql
+字段名 数据类型 unique
+```
+
+```sql
+create table tb_8(
+	id number(10) primary key,
+	name varchar(10) unique,		-- 第一种
+	sex varchar(2) not null,
+	-- constraint uc_name unique(name)		--第二种
+);
+```
+
+
+
+**在修改表时添加唯一性约束**
+
+```sql
+alter table 数据表名称
+add constraint 约束名称 unique(字段名称)
+```
+
+```sql
+alter table tb_8
+add constraint uc_name unique(name);
+```
+
+
+
+**移除唯一性约束**
+
+```sql
+alter table 数据表名称
+drop constraints 约束名称
+```
+
+```sql
+alter table tb_8
+drop constraints uc_name;
+```
+
+
+
+
+
+
 
