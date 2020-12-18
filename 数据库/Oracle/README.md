@@ -1,86 +1,4 @@
-## Oracle
-
-
-
-### 安装教程
-
-https://blog.csdn.net/qiuyeyijian/article/details/110142470
-
-### 基本知识
-
-oracle不同于mysql，mysql有不同的数据库，每个数据库下有很多表，oracle中的库是用用户名区分的，用户名作用类似于mysql中的数据库名。
-
-打开cmd窗口，使用sqlplus命令登录oracle数据库
-
-```sql
-sqlplus 用户名/密码		// 例如 sqlplus qiuyeyijian/123456
-```
-
-如果使用 sys或者 system账号登录，后面要加 `as dba`
-
-```sql
-sqlplus sys/密码 as sysdba
-```
-
-
-
-### 管理命令
-
-登录之后，可以使用一些命令来管理。
-
-```sql
-show user;		// 显示当前用户
-alter user 用户名 account unlock;	//解锁用户
-alter user 用户名 account lock;	//锁定用户
-alter user 用户名 identified by 新密码;	// 修改密码
-
-create user 用户名 identified by 密码;		// 创建用户并指定密码
-grant dba to 用户名;		// 给用户添加DBA权限，也就是将用户变成数据库管理员
-
-```
-
-
-
-### 修改http端口
-
-Oracle Express Edition(XE)默认的http端口是8080，这跟JBoss/Tomcat的默认端口相同，导致Jboss启动冲突。
-
-以dba的身份登录XE，执行以下语句，注意最后的斜杠也要输入。
-
-```shell
-begin
-  dbms_xdb.sethttpport('7000');
-  dbms_xdb.setftpport('0');
-end;
-/
-```
-
-修改下面二个internet快捷方式(位于oraclexe安装目录的product\11.2.0\server下)
-
-> X:\oraclexe\app\oracle\product\11.2.0\server\Get_Started.url
->
-> X:\oraclexe\app\oracle\product\11.2.0\server\Database_homepage.url
-
-用记事本打开这二个文件，把8080换成7000
-
-以上处理对Oracle 11g /R2 同样有效
-
-
-
-### 卸载Oracle数据库
-
-1. 删除安装目录下所有软件，删除开始菜单里的快捷图标
-2. 删除注册表， 需要删除的有以下几个：
-
-> HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE
->
-> HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services节点下的所有Oracle选项
->
-> HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application下的所有Oracle选项
-
-3. 删除环境变量
-
-
+# Oracle
 
 ## 数据库和数据表的基本操作
 
@@ -142,10 +60,10 @@ drop constraints 约束名称;
 ```
 
 ```sql
-alter table db_1
+alter table tb_1
 add constraints pk_id primary key(id);
 
-alter table db_1
+alter table tb_1
 drop constraints pk_id;
 ```
 
@@ -239,27 +157,8 @@ create table tb_6(
 **修改表时添加非空约束**
 
 ```sql
-alter table 数据表名称
-modify 字段名称 not null
-```
-
-```sql
-alter table tb_6
-modify name not null;
-```
-
-
-
-**移除非空约束**
-
-```sql
-alter table 数据表名称
-modify 字段名称 null
-```
-
-```sql
-alter table tb_6
-modify name null;
+alter table 数据表名称 modify 字段名称 not null;	--添加非空约束
+alter table 数据表名称 modify 字段名称 null;		--移除非空约束
 ```
 
 
@@ -279,35 +178,370 @@ create table tb_8(
 	sex varchar(2) not null,
 	-- constraint uc_name unique(name)		--第二种
 );
+
+
+alter table 数据表名称 add constraint 约束名称 unique(字段名称);	--添加唯一性约束
+alter table 数据表名称 drop constraints 约束名称;	-- 移除唯一性约束
 ```
 
 
 
-**在修改表时添加唯一性约束**
+#### 创建带有检查约束的表 CHECK
+
+唯一性约束用于强制实施列表集中值的唯一性。根据约束条件，要求该列的值唯一，允许为空，但只能出现一个空值。另外、主键也强制实行唯一性，但主键不允许NULL作为唯一的空值。
 
 ```sql
-alter table 数据表名称
-add constraint 约束名称 unique(字段名称)
-```
-
-```sql
-alter table tb_8
-add constraint uc_name unique(name);
-```
-
-
-
-**移除唯一性约束**
-
-```sql
-alter table 数据表名称
-drop constraints 约束名称
+字段名 数据类型 unique
 ```
 
 ```sql
-alter table tb_8
-drop constraints uc_name;
+create table tb_8(
+	id number(10) primary key,
+	name varchar(10) unique,		
+	sex varchar(2) not null,
+    age gender varchar(2)
+	constraint chk_gender check(gender='男' or gender='女')		--第二种
+);
+
+
+alter table 数据表名称 add constraint 约束名称 unique(字段名称);	--添加唯一性约束
+alter table 数据表名称 drop constraints 约束名称;	-- 移除唯一性约束
 ```
+
+
+
+### 查看数据表的结构
+
+```sql
+describe 表名;		-- 也可以简写desc
+desc 表名
+```
+
+
+
+### 修改数据表
+
+```sql
+alter table 旧表名 rename to 新表名;					   -- 修改数据表名
+alter table 表名 rename column 旧字段名 to 新字段名;		-- 修改数据表字段名
+alter table 表名 add 新字段名 数据类型 not null;			-- 添加数据字段
+alter table 表名 modify 字段名 数据类型;					-- 修改字段类型
+```
+
+
+
+### 删除数据表与数据库
+
+```sql
+drop table 表名;		-- 删除没有被关联的表
+-- 有外键关联的表需要先删除关联的外键约束，再删除该表
+-- Oracle删除数据库删除账号就行
+```
+
+
+
+## 数据类型和运算符
+
+### Oracle 数据类型
+
+
+
+| 类型      | 描述                                                         |
+| --------- | ------------------------------------------------------------ |
+| DATE      | 日期（日-月-年），DD-MM-YY(HH-MI-SS)，用来存储日期和时间，取值范围是公元前4712年到公园9999年12月31 |
+| TIMESTAMP | 日期（日-月-年），DD-MM-YY(HH-MI-SS:FF3)，用来存储日期和时间，相比于date显示时间更精确，date精确到秒，timestamp精确到小数秒。timestamp存放日期和时间还能显示上午、下午和时区。 |
+
+
+
+```sql
+create table tb_emp4 (
+	id number(10),
+	birthday date
+)
+
+ select sysdate from dual;		-- 查看系统时间
+ 
+ insert into tb_emp4(birthday) values('16-12月-2020');		-- 插入时间
+ insert into tb_emp4 values(SYSDATE);		-- 插入系统时间
+ 
+ alter session set nls_date_format='yyyy-mm-dd';	-- 修改时间的默认格式
+ 
+ 
+```
+
+
+
+### 常见运算符
+
+
+
+
+
+
+
+## 查询数据表中的数据
+
+### 基本查询语句
+
+```sql
+在Oracle中查看所bai有的表: select * from tab/dba_tables/dba_objects/cat;
+看用户建立的表 : select table_name from user_tables; //
+当前用户的表 select table_name from all_tables; //
+所有用户的表 select table_name from dba_tables; //包括系统表
+可以查询出所有的用户表索引 select * from user_indexes //
+```
+
+
+
+
+
+### 单表查询
+
+
+
+### 使用聚合函数查询
+
+
+
+### 多表之间的连接查询
+
+
+
+### 带有附加条件的子查询
+
+
+
+### 带有正则表达式查询
+
+
+
+
+
+## 数据的基本操作
+
+### 插入数据
+
+
+
+### 更新数据
+
+
+
+### 删除数据
+
+
+
+## 视图的基本操作
+
+
+
+### 创建视图
+
+
+
+### 查看视图
+
+
+
+### 修改视图
+
+
+
+### 更新视图
+
+
+
+### 删除视图
+
+
+
+### 限制视图的数据操作
+
+
+
+## 游标的基本操作
+
+
+
+### 显示游标的使用和属性
+
+
+
+
+
+### 隐式游标的使用和属性
+
+
+
+
+
+## Oracle触发器的应用
+
+
+
+### 创建触发器
+
+
+
+### 查看触发器
+
+
+
+### 修改触发器
+
+
+
+### 删除触发器
+
+
+
+## Oracle函数的应用
+
+
+
+### 数学函数
+
+
+
+### 字符串函数
+
+
+
+### 日期和时间函数
+
+
+
+### 转换函数
+
+
+
+## Oracle的表空间管理
+
+
+
+### 了解表空间
+
+
+
+### 表空间的类型
+
+
+
+### 创建表空间
+
+
+
+### 查看表空间
+
+
+
+### 表空间的管理
+
+
+
+### 数据文件的管理
+
+
+
+## Oracle的事物与锁
+
+
+
+### 事务管理
+
+
+
+### 锁的应用
+
+
+
+### 死锁的发生过程
+
+
+
+
+
+## Oracle数据库安全管理
+
+
+
+### 用户账户管理
+
+
+
+### 用户权限管理
+
+
+
+### 数据库角色管理
+
+
+
+### 概要文件管理
+
+
+
+### 资源限制与口令管理
+
+
+
+### 锁定与解锁用户
+
+
+
+## Oracle控制文件与日志管理
+
+
+
+### 了解和管理控制文件
+
+
+
+### 了解和管理日志文件
+
+
+
+## Oracle的数据备份与还原
+
+
+
+### 数据的备份与还原
+
+
+
+### 数据表的导出与导入
+
+
+
+## Oracle数据库的性能优化
+
+
+
+### 性能优化原则
+
+
+
+### 优化Oracle内存
+
+
+
+### 优化查询操作
+
+
+
+### 优化数据库结构
+
+
+
+### 优化Oracle服务器
+
+
+
+
+
+
+
+
 
 
 
