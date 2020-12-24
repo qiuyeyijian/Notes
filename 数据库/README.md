@@ -280,6 +280,7 @@ select name as 姓名, math as 数学, english as 英语, math+ifnull(english, 0
 | `in(集合)`            | 集合表示多个值，用逗号分隔                                   |
 | `like"张%"`           | 模糊查询                                                     |
 | `is null`             | 查询某一列为null的值，不能写`=null`                          |
+| `is no null`          | 查询某一列不是null的值，不能写做`!=null`                     |
 
 ```mysql
 -- 查询math分数大于80分的学生
@@ -291,6 +292,8 @@ select * from student3 where age = 20;
 -- 查询age不等于20岁的学生，注：不等于有两种写法
 select * from student3 where age <> 20;
 select * from student3 where age != 20;
+-- 查询age为空的学生
+select * from student3 where age is null;
 ```
 
 **逻辑运算符**
@@ -324,6 +327,19 @@ select * from student3 where id in(1,3,5);
 -- 查询id不是1或3或5的学生
 select * from student3 where id not in(1,3,5);
 ```
+
+
+
+**Exists查询**
+
+> 1. 先执行外层SQL
+> 2. 将外层SQL的结果集循环传入内层
+> 3. 如果内层sql有返回结果，就将外层的当前结果加入查询结果集
+
+**exists与子查询区别？**
+
+1. 子查询先执行内层sql，结果传到外层
+2. exists先执行外层，结果传到内层
 
 
 
@@ -365,6 +381,10 @@ select * from student3 where name like '%德%';
 -- 查询姓马，且姓名有两个字的学生
 select * from student3 where name like '马_';
 ```
+
+
+
+
 
 
 
@@ -622,7 +642,9 @@ ALTER TABLE stu MODIFY id INT AUTO_INCREMENT;
 
 ## 视图
 
->视图是从一个或多个表（或视图）导出的表，它是一个虚拟表，不存储无理数据，即视图所对应的数据不进行实际存储。数据库中只存储视图的定义，在对视图的数据进行操作时，系统根据视图的定义去操作与视图相关联的基本表。
+>视图是从一个或多个表（或视图）导出的表，它是一个虚拟表。数据库中只存放视图的定义，而不存放视图对应数据，这些数据仍然存放在原来的基本表中。在对视图的数据进行操作时，系统根据视图的定义去操作与视图相关联的基本表。
+
+视图一旦一定义，就可以和基本表一样被查询、被删除。也可以在一个视图之上再定义新的视图，但对视图的更新（增、删、改）操作则有一定的限制。
 
 视图的作用：
 
@@ -631,6 +653,8 @@ ALTER TABLE stu MODIFY id INT AUTO_INCREMENT;
 **安全性：**用户只能查询和修改他们所能见到的数据
 
 **独立性：**视图可以帮助用户屏蔽真实表结构变化带来的影响
+
+视图能够简化用户的操作、使用户能以多种角度看待同一数据、对重构数据库提供了一定程度的逻辑独立性、能够对机密数据提供安全保护。
 
 
 
