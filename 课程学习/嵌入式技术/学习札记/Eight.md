@@ -1,4 +1,14 @@
+# 第八次学习札记
 
+使用PWM和无源蜂鸣器实现音乐播放功能
+
+## 音节和音调
+
+![QiuYeYiJian_2020-12-07_16-22-13](assets/README/QiuYeYiJian_2020-12-07_16-22-13.png)
+
+
+
+## 乐谱
 
 ![image-20201207170311791](assets/README/image-20201207170311791.png)
 

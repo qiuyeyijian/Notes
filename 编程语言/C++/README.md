@@ -414,3 +414,16 @@ int main() {
 } 
 ```
 
+
+
+### sscanf 和 sprintf
+
+```c
+int a, b;
+char buff[100];
+
+sprintf(buff, "%d", a);		// 将字符串buff转成int 
+sscanf(buff, "%d", b);		//  将int 转成字符串buff
+
+```
+
