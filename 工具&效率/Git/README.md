@@ -1,45 +1,174 @@
 
-> 学习Git时记录的一些笔记
+> 学习Git时记录的一些笔记。随着学习的不断深入，会不断对文章进行修改。
 
-### 1. Git全局配置&GitHub设置ssh
+## 基本操作
+
+### Git全局配置
 
 ```bash
 git config --global user.name "用户名"
 git config --global user.email "邮箱"
 ```
 
-
-
-```
+```shell
+# 生成SSH密钥
 ssh-keygen -t rsa -b 4096 -C "qiuyeyijians@gmail.com"
 ```
 
 
 
-### 2. Git初始化
+## 进阶操作
 
-```bash
+### 创建本地仓库
+
+在本地创建仓库一般有两种方法：
+
+* 手动从0到1创建，并关联远程仓库。此方法较为麻烦，但在一些场合十分有用。
+* 直接克隆已有的远程仓库到本地。此方法常用，简单易行。
+
+这两种方法都要求在Github提前创建远程仓库，为了演示方便，博主在Github上创建了一个测试仓库。
+
+测试仓库地址：`git@github.com:qiuyeyijian/test.git`
+
+#### 手动从0到1创建
+
+1. 新建一个文件夹，然后进入到此文件夹下并打开终端
+2. 初始化Git
+
+```shell
 git init
 ```
 
-### 3. 将需要进行版本管理的文件放入暂存区域
+3. 关联一个远程仓库，命名为`origin`，默认仓库以此命名。
 
-```bash
+```shell
+git remote add origin git@github.com:qiuyeyijian/test.git
+
+git remote -v		# 查看是否添加成功
+```
+
+4. 同步远程所有分支
+
+```shell
+git fetch --all				# 此时只是同步分支信息而已
+
+git pull origin master		# 拉取远程主分支，此时会拉取远程分支master中的所有文件
+```
+
+5. 将远程的主分支和我们本地的主分支关联起来
+
+```shell
+git branch --set-upstream-to=origin/master
+```
+
+> 说明：
+>
+> `git branch --set-upstream-to=<remote>/<branch> master` 
+>
+> * remote 改成之前我们设置的远程仓库的名字，然后 branch 换成远程仓库的分支
+> * master 是本地的 master 分支
+
+至此创建完成，接下来就可以在此文件夹下编写代码并提交Github，如何提交接下来也会说明。
+
+
+
+#### 直接克隆远程分支到本地
+
+```shell
+git clone git@github.com:qiuyeyijian/test.git
+```
+
+Git为了能进行版本控制，方便进行版本回退，会将用户所有修改记录保存到`.git`  文件夹下，时间久了就会导致记录文件很大。我们在克隆下载别人仓库的时候，可以只克隆最近一次提交记录即可，可以加快下载速度。只需要在后面加上`--depth 1`参数即可。
+
+```shell
+git clone git@github.com:qiuyeyijian/test.git --depth 1
+```
+
+
+
+### 提交远程仓库
+
+我们在本地仓库编辑好代码后，就可以提交到远程仓库了，具体流程如下：
+
+1. 添加所有修改到暂存区，注意add后面的点
+
+```shell
 git add .
 ```
 
-### 4. 必须为你的修改做一些说明
+2. 为你的修改做一些说明
 
-```bash
+```shell
 git commit -m "first commit"    //将first commit 替换成你的一些说明
 ```
 
-### 5. 将暂存区域中的文件提交到Git仓库
+3. 推送到远程仓库的`master`分支
+
+```shell
+git push origin master
+
+# 可以简写成，因为origin是默认远程仓库，master是默认主分支
+git push
+```
+
+
+
+### 同时关联Github和Gitee远程仓库
+
+利用`创建本地仓库`方法，我们的本地仓库已经关联了Github远程仓库，接下来将演示如何再添加一个Gitee远程仓库。博主已经提前在Gitee上创建好了测试仓库：`git@gitee.com:qiuyeyijian/test.git`
+
+1. 添加Gitee远程仓库
 
 ```bash
-git remote add origin git@github.com:qiuyeyijian/test.git  //换成你要提交的GitHub仓库SSH地址
-git push -u origin master
+git remote add gitee git@gitee.com:qiuyeyijian/test.git
 ```
+
+> 说明：
+>
+> `git remote add <远程仓库名> url`
+>
+> * **远程仓库名**可以随便起，容易记就行。
+> * url 可以是 https://形式的，如果你添加了ssh，就可以使用上面那种形式
+
+2. 使用`git remote -v`查看所有远程分支，配置成功会出现：
+
+```bash
+gitee   git@gitee.com:qiuyeyijian/test.git (fetch)
+gitee   git@gitee.com:qiuyeyijian/test.git (push)
+origin  git@github.com:qiuyeyijian/test.git (fetch)
+origin  git@github.com:qiuyeyijian/test.git (push)
+```
+
+3. 同步远程所有分支，即同步Gitee和Github所有分支
+
+```bash
+git fetch --all
+```
+
+```bash
+git pull gitee master --allow-unrelated-histories	# 拉取Gitee的master仓库分支内容
+```
+
+> 说明：
+>
+> * 拉取gitee上的远程分支，后面加的命令的意思是忽略版本不同，不然会报错`fatal: refusing to merge unrelated histories` 
+> * 如果有冲突的话就直接解决冲突，不在赘述
+
+4. 至此，Gitee远程仓库已经添加完毕。之后我们需要提交到远程仓库时：
+
+* 提交到Github
+
+```shell
+git push origin master		 #可以简写 git push
+```
+
+* 提交到Gitee
+
+```shell
+git push gitee master		# 可以简写 git push gitee
+```
+
+
 
 ### 6. 查看Git状态
 
@@ -116,11 +245,7 @@ git rm -f <file name>                       //暴力删除工作目录和暂存�
 git rm --cached <file name>                 //只删除暂存区域的文件
 ```
 
-### 12. 重命名文件
 
-```bash
-git mv <old file name> <new file name>
-```
 
 ### 13. 分支
 
@@ -177,10 +302,6 @@ vi  <file name>    //修复冲突文件
 git add <file>     //单独添加冲突文件
 git commit -m "confict fixed"   //提交
 git log --graph --pretty=oneline --abbrev-commit          //查看分支合并情况
-```
-### 19. 生成ssh秘钥
-```bash
-ssh-keygen -t rsa -C "shuishoujun@gmail.com"
 ```
 ### 20. 关联远程仓库
 ```bash
@@ -270,83 +391,6 @@ $ git push origin HEAD --force
 
 
 
-### 23. 同步关联github 和 gitee两个远程仓库
-
-1. 首先在本地新建一个文件夹，使用`git init` 初始化
-2. 添加远程仓库
-
-```bash
-git remote add github git@github.com:qiuyeyijian/test.git
-```
-
-```bash
-git remote add gitee git@gitee.com:qiuyeyijian/test.git
-```
-
-> 说明：
->
-> `git remote add <远程仓库名> url`
->
-> * **远程仓库名**可以随便起，容易记就行。
-> * url 可以是 https://形式的，如果你添加了ssh，就可以使用上面那种形式
-
-3. 使用`git remote -v`查看所有远程分支，配置成功会出现：
-
-```bash
-gitee   git@gitee.com:qiuyeyijian/test.git (fetch)
-gitee   git@gitee.com:qiuyeyijian/test.git (push)
-github  git@github.com:qiuyeyijian/test.git (fetch)
-github  git@github.com:qiuyeyijian/test.git (push)
-```
-
-4. 分别拉取GitHub 和gitee上的远程分支
-
-```bash
-git pull github master
-```
-
-```bash
-git pull gitee master --allow-unrelated-histories
-```
-
-> 说明：
->
-> * 首先拉取GitHub上的远程分支
-> * 接着拉取gitee上的远程分支，后面加的命令的意思是忽略版本不同，不然会报错`fatal: refusing to merge unrelated histories` 
-> * 如果有冲突的话就直接解决冲突，不在赘述
-
-5. 本地仓库关联远程仓库，这里我关联的是github远程仓库，gitee仓库保持同步就行了
-
-```bash
-git branch --set-upstream-to=github/master master
-```
-
-> 说明：
->
-> `git branch --set-upstream-to=<remote>/<branch> master` 
->
-> * remote 改成之前我们设置的远程仓库的名字，然后 branch 换成远程仓库的分支
-> * master 是本地的 master 分支
-
-6. 同步并拉取所有远程分支
-
-```bash
-git fetch --all				//同步所有分支
-git pull --all				//拉取所有远程分支
-```
-
-7. 以后提交代码时，可以使用`git push github master`向github 提交代码，也可以使用`git push gitee master` 向gitee提交
-
-
-
-### 24. git clone
-
-有时候`.git` 文件夹太大，我们可以只克隆最近一次提交
-
-```
-git clone git://xxoo --depth 1
-```
-
 
 
 ### 25. git 瘦身
@@ -405,7 +449,7 @@ $ git gc --prune=now
 
 
 
-### 重命名分支
+### 26. 重命名分支
 
 **一：本地分支重命名**
 
@@ -426,3 +470,37 @@ git push --delete origin dev
 git branch -m dev develop
 git push origin develop
 ```
+
+
+
+### 克隆X的项目，一段时间后再次同步X的提交信息
+
+1. 进入到自己项目，打开终端
+2. 添加原作者的远程仓库地址，远程仓库名习惯命名`upstream`，当然也可以自定义其他
+
+```shell
+# git remote add [远程仓库名] [远程仓库地址]
+git remote add upstream git@github.com:qiuyeyijian/Notes.git
+```
+
+3. 将原作者仓库的所有分支同步到本地
+
+```shell
+git fetch upstream
+```
+
+4. 将其中一个分支，比如`upstream/master`合并到自己本地的`master`分支
+
+```shell
+git checkout master
+git merge upstream/master
+```
+
+5. 提交到自己的Github远程托管分支
+
+```shell
+git push
+```
+
+
+
