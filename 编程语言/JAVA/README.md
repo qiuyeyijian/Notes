@@ -112,10 +112,16 @@ PrintWriter out = new PrintWriter(new BufferedOutputStream(
 
 
 
+## 继承
+
+![img](assets/README/java-extends-2020-12-08.png)
+
+Java中类不允许多继承，接口允许多继承。
+
 ## Reference
 
 > https://blog.csdn.net/lyhkmm/article/details/78260207
 >
 > https://blog.csdn.net/qq867263657/article/details/90051854
 >
-> https://www.runoob.com/java/java-files-io.html
+> https://www.runoob.com/java/java-tutorial.html
