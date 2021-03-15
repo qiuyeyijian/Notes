@@ -84,31 +84,44 @@ public class ServletDemo01 extends HttpServlet {
 
 ## Filter过滤器
 
+接下来实现一个过滤器，请求和响应的字符全部转为`UTF-8`编码
+
 ### 创建一个过滤器
 
 ```java
 @WebFilter("/*")
-public class FilterTest implements Filter {
+public class CharacterEncodingFilter extends HttpFilter {
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
+    public void init() throws ServletException {
+        System.out.println("过滤器初始化");
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println("Filter");
-        // 放行全部请求和响应
-        filterChain.doFilter(servletRequest, servletResponse);
+    protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
+        req.setCharacterEncoding("utf-8");
+        res.setCharacterEncoding("utf-8");
+        res.setContentType("text/html;charset=UTF-8");
+
+        System.out.println("过滤执行前");
+        // 过滤器操作完成，放行请求和响应
+        chain.doFilter(req, res);
+        System.out.println("过滤执行后");
+
     }
 
     @Override
     public void destroy() {
-
+        System.out.println("过滤器销毁");
     }
 }
+
 ```
 
 
+
+
+
+## Listener监听器
 
 
 
