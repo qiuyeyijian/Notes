@@ -166,6 +166,37 @@ sort(stu, stu + 100, cmp);
 
 
 
+
+
+## 查找
+
+```cpp
+// arr:  要查找的数组
+int binarySearch(int arr[], int left, int right, int data) {
+
+    while (left <= right) {
+        // 获取中间下标
+        // 这样做比 （left + right）/ 2 更安全，可以避免int溢出
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == data) {
+            // 查找成功，返回下标
+            return mid;
+        }
+        else if (arr[mid] > data) {
+            right = mid - 1;
+        }
+        else {
+            left = mid + 1;
+        }
+    }
+
+    // 查找失败
+    return -1;
+}
+```
+
+
+
 ## 素数（质数）判断
 
 素数又称质数，是指除了1和本身之外，不能被其他数整除的一类数，反之称为合数。1既不是素数，也不是合数。
@@ -337,6 +368,86 @@ int main() {
   printf("%d", ans);
 
   return 0;
+}
+```
+
+
+
+## two pointers （双指针）
+
+充分利用序列递增的性质，以很浅显的思想降低了复杂度。
+
+问题引入：
+
+给定一个递增的正整数序列和一个正整数M， 求序列中的两个不同位置的数a 和 b ，使得他们的和恰好为M，输出所有满足条件的方案。
+
+例如给定序列`{1, 2, 3, 4, 5, 6}` 和正整数 M=8 ，就存在`2+6=8`与`3+5=8`两种方案。
+
+暴力法，时间复杂度$O(n^2)$ 
+
+```cpp
+for(int i = 0; i < n; i++) {
+    for(int j = i + 1; j < n; j++) {
+        if(a[i] + a[j] == m) {
+            printf("%d %d\n", arr[i], arr[j]);
+        }
+    }
+}
+```
+
+双指针法，时间复杂度$O(n)$
+
+如果满足`a[i] + a[j] == M`，说明找到了其中的一组方案。由于序列递增，不等式a[i + 1] + a[j] > M 与 a[i] + a[j - 1] < M 均成立。但是a[i+1] + a[j-1]与M的大小未知，因此剩余的方案只可能在[i + 1, j-1]区间产生，于是令`i++, j--`（即令i向右移动，j向左移动）
+
+如果`a[i] + a[j] > M` 由于序列递增，不等式`a[i + 1] + a[j] > M`成立，但是`a[i] + a[j-1]` 与M的关系未知，因此剩余的方案只可能在区间`[i, j-1]`内产生，于是令`j--`
+
+如果`a[i] + a[j] < M` 由于序列递增，不等式`a[i] + a[j-1] < M`成立，但是`a[i+1] + a[j]` 与M的关系未知，因此剩余的方案只可能在区间`[i+1, j]`内产生，于是令`i++`
+
+反复执行上面三个判断，知道i >=j 成立
+
+```cpp
+// i: 数组第一个元素下标, 0
+// j: 数组最后一个元素下标，n-1
+// m: 给定的正整数
+void twoPointers(int arr[], int i, int j, int m) {
+  while (i < j) {
+    if (arr[i] + arr[j] == m) {
+      printf("%d %d\n", i, j);
+      i++;
+      j--;
+    } else if (arr[i] + arr[j] < m) {
+      i++;
+    } else {
+      j--;
+    }
+  }
+}
+```
+
+
+
+合并两个数组，也可以利用双指针法
+
+```cpp
+// a, b 均为从小到大已排好序的数组，c是接收合并结果的数组
+// n, m为a, b数组的长度
+int merge(int a[], int b[], int c[], int n, int m) {
+  int i = 0, j = 0, index = 0;
+
+  while (i < n && j < m) {
+    if (a[i] <= b[j]) {
+      c[index++] = a[i++];
+    } else {
+      c[index++] = b[j++];
+    }
+  }
+
+  // 如果a数组还有数据，将剩余元素加入c
+  while (i < n) c[index++] = a[i++];
+  // 如果b数组还有数据，将剩余元素加入c
+  while (j < m) c[index++] = b[j++];
+
+  return index;
 }
 ```
 
