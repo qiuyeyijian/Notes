@@ -379,3 +379,11 @@ git push origin develop
 
 
 
+### Tag标签
+
+```shell
+git tag					# 查看标记
+git tag <标记名称>		 # 标记名称
+git tag -d 标记名	 	  # 删除本地标记
+git push origin 标记名   # 推送远程标记
+```

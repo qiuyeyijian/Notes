@@ -18,12 +18,30 @@
 ## 汉字、字体与格式
 
 1. 汉字形式，符号：`\mbox{}`，如：$V_{\mbox{初始}}$
+
 2. 字体控制，符号：`\displaystyle`，如：$\displaystyle \frac{x+y}{y+z}$
+
 3. 下划线符号，符号：`\underline`，如：$\underline{x+y}$
+
 4. 标签，符号`\tag{数字}`，如：$\tag{11}$
+
 5. 上大括号，符号：`\overbrace{算式}`，如：$\overbrace{a+b+c+d}^{2.0}$
+
 6. 下大括号，符号：`\underbrace{算式}`，如：$a+\underbrace{b+c}_{1.0}+d$
+
 7. 上位符号，符号：`\stacrel{上位符号}{基位符号}`，如：$\vec{x}\stackrel{\mathrm{def}}{=}{x_1,\dots,x_n}$
+
+8. 花括号公式
+$$
+\left\{
+   \begin{aligned}
+   x&=1\\
+   y&=2+x
+   \end{aligned}
+   \right.
+$$
+
+9. 
 
 ## 占位符
 

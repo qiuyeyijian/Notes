@@ -259,5 +259,168 @@ jdk1.5开始支持注解，Spring2.5就支持注解了
 
 
 
+@Component 有几个衍生注解，我们在Web开发中，会按照MVC三层架构分层
+
+* dao: @Repository
+* service: @Service
+* controller: @Controller
+
+这四个注解功能都是一样的，都是代表将某个类注册到Spring中，装配Bean
+
+
+
+
+
+## 动态代理
+
+动态代理的好处
+
+* 可以使真实角色更加纯粹，不用去关注一些公共业务
+* 公共也就交给了代理角色，实现了业务分工
+* 公共业务发生扩展时，方便集中管理
+* 一个动态代理类代理的是一个接口，一般就是对应的一类业务
+* 一个动态代理类可以代理多个类，只要这些类实现了同一个接口
+
+
+
+### 案例
+
+![image-20210402231720890](assets/README/image-20210402231720890.png)
+
+**公共接口 People**
+
+```java
+public interface People {
+    public void learn();
+    public void play();
+}
+```
+
+**学生类 Student**
+
+```java
+public class Student implements People {
+
+    public void learn() {
+        System.out.println("学生在学习");
+    }
+
+    public void play() {
+        System.out.println("学生在玩!");
+    }
+}
+```
+
+
+
+**老师类 Teacher**
+
+```java
+public class Teacher implements People{
+    public void learn() {
+        System.out.println("老师在学习");
+    }
+
+    public void play() {
+        System.out.println("老师在玩！");
+    }
+}
+```
+
+
+
+**代理类 ProxyInvocationHandler**
+
+```java
+public class ProxyInvocationHandler implements InvocationHandler {
+
+    // 被代理的接口
+    private Object target;
+
+    public void setTarget(Object target) {
+        this.target = target;
+    }
+
+    // 通过反射生成代理类，代理目标对象的接口
+    public Object getProxy() {
+        return Proxy.newProxyInstance(this.getClass().getClassLoader(),
+                target.getClass().getInterfaces(), this);
+    }
+
+    // 处理代理实例，并返回结果
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        System.out.println("通过代理执行"+method.getName()+"的方法！");
+        return method.invoke(target, args);
+    }
+}
+```
+
+
+
+**测试类 Test**
+
+```java
+public class Test {
+    // 一个动态代理类代理的是一个接口
+    public static void main(String[] args) {
+        // 真实角色
+        Student student = new Student();
+        Teacher teacher = new Teacher();
+        // 创建代理代理角色
+        ProxyInvocationHandler pih = new ProxyInvocationHandler();
+        // 设置要代理的学生对象
+        pih.setTarget(student);
+        // 动态生成代理类，返回的是目标对象实现的接口类
+        People proxy = (People) pih.getProxy();
+        // 通过代理对象的接口执行方法
+        proxy.learn();
+
+        //代理老师对象
+        pih.setTarget(teacher);
+        proxy = (People) pih.getProxy();
+        proxy.play();
+
+    }
+}
+```
+
+
+
+## 声明式事务
+
+要么都成功，要么都失败！
+
+事务的ACID原则：
+
+* 原子性
+* 一致性
+* 隔离性
+  * 多个业务可能操作同一个资源，防止数据损坏
+* 持久性
+  * 事务一旦提交，无论系统发生什么问题，结果都不会再被影响，被持久化地写到存储器中
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
