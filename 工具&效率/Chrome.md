@@ -19,3 +19,5 @@ Ctrl + h
 4. 选择capture full size screenshot
 ```
 
+
+
