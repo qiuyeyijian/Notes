@@ -50,170 +50,6 @@ sscanf(ch, "%d", &n);
 
 
 
-## 几种常见的排序算法
-
-### 冒泡排序
-
-```cpp
-void bubbleSort(int* arr, int len) {
-    // 从后向前冒泡，从小到大排序
-    /*for (int i = 0; i < len; ++i) {
-        for (int j = len - 1; j > i; --j) {
-            if (arr[j - 1] > arr[j]) {
-                int temp = arr[j - 1];
-                arr[j - 1] = arr[j];
-                arr[j] = temp;
-            }
-        }
-    }*/
-
-    // 从前向后冒泡，从小到大排序
-    for (int i = len - 1; i > 0; --i) {
-        for (int j = 0; j < i; ++j) {
-            if (arr[j + 1] < arr[j]) {
-                int temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-}
-```
-
-
-
-### 选择排序
-
-时间复杂度：$O(n^2)$
-
-```cpp
-void selectSort(int arr[], int len) {
-    for (int i = 0; i < len - 1; ++i) {
-        for (int j = i + 1; j < len; ++j) {
-            if (arr[i] > arr[j]) {
-                int temp = arr[j];
-                arr[j] = arr[i];
-                arr[i] = temp;
-            }
-        }
-    }
-}
-```
-
-
-
-### 直接插入排序
-
-```cpp
-// 插入排序
-void insertSort(int arr[], int len) {
-  for (int i = 1; i < len; ++i) {
-    int temp = arr[i], j = i;
-
-    // 向后移动
-    while (j > 0 && arr[j - 1] > temp) {
-      arr[j] = arr[j - 1];
-      --j;
-    }
-    // 插入数据
-    arr[j] = temp;
-  }
-}
-
-```
-
-
-
-### 归并排序
-
-https://segmentfault.com/a/1190000021734148
-
-归并排序时间复杂度为$O(nlogn)$
-
-```cpp
-const int maxn = 100;
-
-// 将数组a的[l1, r1]与[l2, r2]区间合并为有序区间（此处l2, 即为 r1 + 1）
-// 利用双指针法将两个区间合并， 注意while的边界
-void merge(int arr[], int l1, int r1, int l2, int r2) {
-  int i = l1, j = l2;  // i 指向arr[l1], j指向a[l2]
-
-  int temp[maxn], index = 0;
-  while (i <= r1 && j <= r2) {
-    if (arr[i] <= arr[j]) {
-      temp[index++] = arr[i++];
-    } else {
-      temp[index++] = arr[j++];
-    }
-  }
-
-  while (i <= r1) temp[index++] = arr[i++];
-  while (j <= r2) temp[index++] = arr[j++];
-
-  // 将合并后的序列赋值回数组A
-  for (int i = 0; i < index; i++) {
-    arr[l1 + i] = temp[i];
-  }
-}
-
-// 将arr数组当前区间[left, right]进行归并排序
-void mergeSort(int arr[], int left, int right) {
-  if (left < right) {  // 只要left < right，说明还可以进行二分
-    int mid = (left + right) / 2;  // 取[left, right]的中点
-    mergeSort(arr, left, mid);  // 递归，将左区间[left, mid]归并排序
-    mergeSort(arr, mid + 1, right);  // 递归，将右区间[mid + 1, right]归并排序
-    merge(arr, left, mid, mid + 1, right);
-  }
-}
-```
-
-
-
-### 快速排序
-
-平均时间复杂度为$O(nlogn)$
-
-> 1. 调整序列中的元素，使当前序列最左端的元素在调整后满足左侧所有元素均不超过该元素、右侧元素均大于该元素。
-> 2. 对该元素的左侧和右侧分别进行递归进行第一步的调整，直到当前调整区间的长度不超过1。
-
-选择一个pivot中心轴，一般选择左边第一个数，交替移动left 和 right 指针，二者重合之后，将pivot放到相遇的下标位置。
-
-```cpp
-// 将[left, right]按照arr[left]分成两部分
-// 左边都比arr[left]小，右边都比arr[left]大
-// 返回中心下标
-int partition(int arr[], int left, int right) {
-  int pivot = arr[left];  // 将arr[left] 作为主元
-  while (left < right) {  // 只要left和right不相遇
-    // 反复左移right直到找到一个元素比pivot小
-    while (left < right && arr[right] > pivot) right--;
-    // 将找到的元素移到左边
-    arr[left] = arr[right];
-    // 再反复右移left直到找到一个元素比pivot大
-    while (left < right && arr[left] <= pivot) left++;
-    // 将该元素移动到右边
-    arr[right] = arr[left];
-  }
-
-  // left 和 right相遇，则将pivot元素放到该位置下，一轮快排结束
-  arr[left] = pivot;
-  return left;  // left和right相遇的地方就是中心下标
-}
-
-// 快读排序， left和right初始值为序列的首尾下标
-void quickSort(int arr[], int left, int right) {
-  // 当前区间长度超过1
-  if (left < right) {
-    // 将[left, right]按照arr[left]分成两部分
-    // 左边都比arr[left]小，右边都比arr[left]大
-    int pos = partition(arr, left, right);
-    // 对左边区间进行递归快速排序
-    quickSort(arr, left, pos - 1);
-    // 对右边区间进行递归快速排序
-    quickSort(arr, pos + 1, right);
-  }
-}
-```
 
 
 
@@ -224,8 +60,7 @@ void quickSort(int arr[], int left, int right) {
 
 
 
-
-## 排序
+## sort()函数
 
 C++ 中sort函数和C中的qsort函数是用于排序的函数，推荐使用sort函数，简单与效率并存。
 
@@ -264,37 +99,6 @@ sort(stu, stu + 100, cmp);
 ```
 
 
-
-
-
-## 查找
-
-### 二分查找
-
-```cpp
-// arr:  要查找的数组
-int binarySearch(int arr[], int left, int right, int data) {
-
-    while (left <= right) {
-        // 获取中间下标
-        // 这样做比 （left + right）/ 2 更安全，可以避免int溢出
-        int mid = left + (right - left) / 2;
-        if (arr[mid] == data) {
-            // 查找成功，返回下标
-            return mid;
-        }
-        else if (arr[mid] > data) {
-            right = mid - 1;
-        }
-        else {
-            left = mid + 1;
-        }
-    }
-
-    // 查找失败
-    return -1;
-}
-```
 
 
 
