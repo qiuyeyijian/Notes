@@ -328,7 +328,7 @@ git log --graph --pretty=oneline --abbrev-commit          //查看分支合并�
 首先在git仓库下新建一个`.gitignore`文件，然后在里面添加你想忽略的目录，一行代表一个规则。然后提交到远程仓库。
 
 ```bash
-git rm -r --cached .				//注意后面的点
+git rm -r --cached .				//注意后面的点，意思是删除全部缓存， 
 git commit -a -m "添加忽略文件“
 git push
 ```
