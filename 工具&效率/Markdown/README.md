@@ -1,4 +1,4 @@
-# Markdown 数学公式语法
+# Markdown 公式语法
 
 
 
