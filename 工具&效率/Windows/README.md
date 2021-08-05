@@ -7,6 +7,14 @@
 ```
 shutdown -s -t 3600		// 定时关机，单位秒
 shutdown -a				//取消定时任务
+
+win i		// 打开设置
+win +/-		// 放大镜
+ctrl shift n	// 创建新的文件夹
+ctrl win d		// 创建桌面
+ctrl win 左右方向键		// 切换桌面
+
+shift alt f		//VSCODE 代码格式化
 ```
 
 
@@ -16,6 +24,9 @@ shutdown -a				//取消定时任务
 ```
 services.msc		// 打开服务
 regedit				// 打开注册表
+
+psr				//打开步骤记录器
+osk				//虚拟键盘
 ```
 
 
@@ -51,6 +62,10 @@ netstat -aon|findstr "3306"		// 查看指定端口
 taskkill /f /t /im 程序名		// 停止占用端口程序
 
 ```
+
+
+
+
 
 
 
