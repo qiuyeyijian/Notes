@@ -94,7 +94,7 @@ On behalf of the "Talents" English Speech Contest committee. I'm writing to invi
 
 Once again, we sincerely hope you can be the judge for our competition . Please RSVP before this weekend. 
 
-<p style = 'text-align:right'>Yours sincerely, <br>Li Ming<br> Chairman of the "Talents" Speech Contest commitee</p><
+<p style = 'text-align:right'>Yours sincerely, <br>Li Ming<br> Chairman of the "Talents" Speech Contest committee</p><
 
 
 
