@@ -366,6 +366,18 @@ void function(int n) {
 
 
 
+### 第十三题
+
+```cpp
+int fact(int n) {
+    if(n <= 1) return 1;
+    return n * fact(n-1);
+}
+
+时间复杂度：$O(n)$
+
+
+
 
 
 
