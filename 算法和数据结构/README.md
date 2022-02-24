@@ -138,6 +138,29 @@ int strToInt(char s[], int len) {
 }
 ```
 
+```cpp
+template<class out_type,class in_value>
+out_type convert(const in_value & t)
+{
+    stringstream stream;
+    stream<<t;//向流中传值
+    out_type result;//这里存储转换结果
+    stream>>result;//向result中写入值
+    return result;
+}
+ 
+int main()
+{
+    double d;
+    string salary;
+    string s="12.56";
+    d=convert<double>(s);//d等于12.56
+    salary=convert<string>(9000.0);//salary等于”9000”    
+    
+    return 0;
+}
+```
+
 
 
 ## N皇后问题
@@ -192,71 +215,6 @@ void nQueen(int index) {
 int main() {
   n = 8;
   nQueen(1);
-
-  printf("%d", ans);
-
-  return 0;
-}
-```
-
-
-
-## 区间贪心
-
-题目是落谷的P1803：https://www.luogu.com.cn/problem/P1803
-
-解题思路：
-
-* 首先定义区间结构体，将所有输入的区间存放到数组`intervals[]`中。
-* 将数组中的区间**按照右端点从小到大排序**，如果右端点相等，则**按照左端点从大到小排序**。
-* 定义一个索引`index`用来存放上一个被选中的区间的右端点，遍历数组，如果该区间的左端点大于`index`，则`ans++` ，更新`index`的值为当前区间的右端点。
-* 打印答案`ans`
-
-![image-20210315230301473](assets/README/image-20210315230301473.png)
-
-```cpp
-#include <stdio.h>
-
-#include <algorithm>
-
-using namespace std;
-
-const int maxn = 100010;
-
-struct Interval {
-  int left;
-  int right;
-} intervals[maxn];
-
-// 先按照右端点从小到大排序
-// 如果右端点相等，按照左端点从大到小排序
-bool cmp(Interval a, Interval b) {
-  return (a.right != b.right) ? a.right < b.right : a.left > b.left;
-}
-
-int main() {
-  int n;        // 将要输入的区间个数
-  int ans = 1;  // 第0个区间肯定会被选择到
-  int index;    // 记录上一个被选择区间的右端点
-    
-  // 录入数据
-  scanf("%d", &n);
-  for (int i = 0; i < n; ++i) {
-    scanf("%d %d", &intervals[i].left, &intervals[i].right);
-  }
-    
-  // 排序
-  sort(intervals, intervals + n, cmp);
-    
-  // 寻找符合要求的区间
-  index = intervals[0].right;
-  for (int i = 1; i < n; ++i) {
-    // 如果该区间的左端点大于上一个选中的区间的右端点，则选中该区间，记录加1
-    if (intervals[i].left >= index) {
-      index = intervals[i].right;
-      ++ans;
-    }
-  }
 
   printf("%d", ans);
 
