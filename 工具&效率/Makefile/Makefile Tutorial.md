@@ -1,6 +1,6 @@
 # Makefile Tutorial
 
-
+需要创建一个名为`makefile`的文件
 
 ## 基础知识
 

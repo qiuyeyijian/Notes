@@ -1174,7 +1174,7 @@ int main() {
 }
 ```
 
-总结：主流的解决方式是第二种，将类模板成员函数写到一起，并将后缀名改为.hpp
+总结：主流的解决方式是第二种，将类模板成员函数写到一起，**并将后缀名改为.hpp**
 
 
 
@@ -1534,7 +1534,6 @@ int main() {
 
   
 
-
 ### 2.2 STL基本概念
 
 
@@ -1669,7 +1668,8 @@ int main(int argc, char const *argv[]) {
   for (vector<int>::iterator it = vect.begin(); it != vect.end(); it++) {
     printf(" %d", *it);
   }
-
+    
+  // lamda 表达式
   printf("\nFourth way\n");
   for_each(vect.begin(), vect.end(), [](int i) { printf(" %d", i); });
 
@@ -1677,6 +1677,12 @@ int main(int argc, char const *argv[]) {
   for (int i : vect) {
     printf(" %d", i);
   }
+    
+  // 反向迭代器
+  for (vector<int>::reverse_iterator rit = vect.rbegin(); rit != vect.rend(); rit++) {
+    printf("%d ", *rit);
+  }
+    
 
   return 0;
 }
@@ -1872,43 +1878,22 @@ string管理char*所分配的内存，不用担心复制越界和取值越界等
 * `string();`          				//创建一个空的字符串 例如: string str;
 	 `string(const char* s);`	        //使用字符串s初始化
 * `string(const string& str);`    //使用一个string对象初始化另一个string对象
-* `string(int n, char c);`           //使用n个字符c初始化 
+* `string(int n, char c);`           //使用n个字符c初始化，这种方式系统内部会创建临时对象，不太推荐
 
 
 
 **示例：**
 
 ```C++
-#include <string>
-//string构造
-void test01()
-{
-	string s1; //创建空字符串，调用无参构造函数
-	cout << "str1 = " << s1 << endl;
+string s1;  //创建空字符串，调用无参构造函数
 
-	const char* str = "hello world";
-	string s2(str); //把c_string转换成了string
+const char *str = "hello world";
+string s2(str);  //把c_string转换成了string
 
-	cout << "str2 = " << s2 << endl;
+string s3(s2);  //调用拷贝构造函数
 
-	string s3(s2); //调用拷贝构造函数
-	cout << "str3 = " << s3 << endl;
-
-	string s4(10, 'a');
-	cout << "str3 = " << s3 << endl;
-}
-
-int main() {
-
-	test01();
-
-	system("pause");
-
-	return 0;
-}
+string s4(10, 'a');
 ```
-
-总结：string的多种构造方式没有可比性，灵活使用即可
 
 
 
@@ -1988,12 +1973,6 @@ int main() {
 总结：
 
 ​	string的赋值方式很多，`operator=`  这种方式是比较实用的
-
-
-
-
-
-
 
 
 
@@ -2451,60 +2430,31 @@ int main() {
 **示例：**
 
 
-```C++
-#include <vector>
+```cpp
+vector<int> v1; //无参构造
 
-void printVector(vector<int>& v) {
+vector<int> v2(v1.begin(), v1.end());
 
-	for (vector<int>::iterator it = v.begin(); it != v.end(); it++) {
-		cout << *it << " ";
-	}
-	cout << endl;
-}
+vector<int> v3(10, 100);
 
-void test01()
-{
-	vector<int> v1; //无参构造
-	for (int i = 0; i < 10; i++)
-	{
-		v1.push_back(i);
-	}
-	printVector(v1);
+vector<int> v4(v3);
 
-	vector<int> v2(v1.begin(), v1.end());
-	printVector(v2);
-
-	vector<int> v3(10, 100);
-	printVector(v3);
-	
-	vector<int> v4(v3);
-	printVector(v4);
-}
-
-int main() {
-
-	test01();
-
-	system("pause");
-
-	return 0;
-}
+// C++11新标准，采用初始化列表方式给初值
+vector<int> v5 = {1, 2, 3};
 ```
 
-**总结：**vector的多种构造方式没有可比性，灵活使用即可
 
 
+| 初始化vector对象的方法  |                                                              |
+| ----------------------- | ------------------------------------------------------------ |
+| vector<T> v1            | v1是一个空vector，它潜在的元素是T类型，执行默认初始化        |
+| vector<T> v2(v1)        | v2中包含v1所有元素的副本                                     |
+| vector<T> v3(n,val)     | v3包含了n个重复的元素，每个元素的值都是val                   |
+| vector<T> v4(n)         | v4包含了n个重复地执行了值初始化的对象                        |
+| vector<T> v5={a,b,c...} | 等价于vector<T> v5{a,b,c...}                                 |
+| vector<T> v5{a,b,c...}  | v5包含了初始值个数的元素，每个元素被赋予相应的初始值。C++11新标准，省略等于号 |
 
-| 初始化vector对象的方法  |                                                       |
-| ----------------------- | ----------------------------------------------------- |
-| vector<T> v1            | v1是一个空vector，它潜在的元素是T类型，执行默认初始化 |
-| vector<T> v2(v1)        | v2中包含v1所有元素的副本                              |
-| vector<T> v3(n,val)     | v3包含了n个重复的元素，每个元素的值都是val            |
-| vector<T> v4(n)         | v4包含了n个重复地执行了值初始化的对象                 |
-| vector<T> v5{a,b,c...}  | v5包含了初始值个数的元素，每个元素被赋予相应的初始值  |
-| vector<T> v5={a,b,c...} | 等价于vector<T> v5{a,b,c...}                          |
-
-
+`()`一般表示元素数量这种概念，`{}`一般表示元素内容这种概念，但又不绝对。
 
 
 
@@ -2805,49 +2755,16 @@ int main() {
 **示例：**
 
 ```C++
-#include <vector>
+std::vector<int> v = {1, 2, 3, 4, 5};
+int a = v[0];
+int b = v.at(0);
+int c = v.front();
+int d = v.back();
 
-void test01()
-{
-	vector<int>v1;
-	for (int i = 0; i < 10; i++)
-	{
-		v1.push_back(i);
-	}
-
-	for (int i = 0; i < v1.size(); i++)
-	{
-		cout << v1[i] << " ";
-	}
-	cout << endl;
-
-	for (int i = 0; i < v1.size(); i++)
-	{
-		cout << v1.at(i) << " ";
-	}
-	cout << endl;
-
-	cout << "v1的第一个元素为： " << v1.front() << endl;
-	cout << "v1的最后一个元素为： " << v1.back() << endl;
-}
-
-int main() {
-
-	test01();
-
-	system("pause");
-
-	return 0;
+for(auto x : v) {
+    printf("%d ", x);
 }
 ```
-
-总结：
-
-* 除了用迭代器获取vector容器中元素，[ ]和at也可以
-* front返回容器第一个元素
-* back返回容器最后一个元素
-
-
 
 
 
