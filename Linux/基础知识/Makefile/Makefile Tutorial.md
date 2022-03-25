@@ -143,7 +143,5 @@ main: main.o
 
 ## Reference
 
-站在巨人的肩上我才能看的更远，本篇文档老实说算不上一篇系统的教程，只能算是我学习笔记而已。
-
-我在学习过程中，重点参考了陈皓大神的经典教程《跟我一起写Makefile》：https://github.com/seisman/how-to-write-makefile
+陈皓《跟我一起写Makefile》：https://github.com/seisman/how-to-write-makefile
 

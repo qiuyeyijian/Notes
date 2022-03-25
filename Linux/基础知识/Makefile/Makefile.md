@@ -20,8 +20,6 @@
 
 上个简图，其中cl表示visual studio的编译器，gcc表示linux下的编译器
 
-![img](assets/Makefile/f57298cefba18fca5f31b8762f01d933_hd.jpg)![img](assets/Makefile/f57298cefba18fca5f31b8762f01d933_r.jpg)
-
 
 
 ### Makefile 基本知识

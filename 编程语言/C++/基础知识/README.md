@@ -367,21 +367,21 @@ C++兼容C，并且强制类型转换分为4种：`static_cast`、`dynamic_cast`
 静态转换，编译时类型检查。可以理解成正常的类型转换。属于编译的时候就会进行的类型转换检查。不要想复杂了。与C语言中强制类型转换差不多，程序员需要保证安全性和正确性。一般的编译器能够执行的隐式类型转换也都可以用`static_cast`来显示完成。
 
 ```cpp
-  // 1. 整型和实型之间转换
-  double f = 100.34f;
-  int i = static_cast<int>(100.34f);
+// 1. 整型和实型之间转换
+double f = 100.34f;
+int i = static_cast<int>(100.34f);
 
-  // 2. 子类向父类转换
-  class Father {};
-  class Son : public Father {};
-  Son son;
-  Father father = static_cast<Father>(son);
+// 2. 子类向父类转换
+class Father {};
+class Son : public Father {};
+Son son;
+Father father = static_cast<Father>(son);
 
-  // 3. void* 与其他类型指针转换
-  void* p = &i;
-  int* q = static_cast<int*>(p);
+// 3. void* 与其他类型指针转换
+void* p = &i;
+int* q = static_cast<int*>(p);
 
-  // 4. 不能用于指针类型转换，如int* 转 double* 、float* 转 double*
+// 4. 不能用于指针类型转换，如int* 转 double* 、float* 转 double*
 ```
 
 

@@ -2441,6 +2441,8 @@ vector<int> v4(v3);
 
 // C++11新标准，采用初始化列表方式给初值
 vector<int> v5 = {1, 2, 3};
+// 二维数组初始化
+vector<vector<int>> vec(row, vector<int> (col,1));
 ```
 
 

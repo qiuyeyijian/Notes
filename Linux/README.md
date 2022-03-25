@@ -191,3 +191,8 @@ firewall-cmd --list-ports
 
 Operating Systems: Three Easy Pieces
 
+Linux高性能服务器编程
+
+Linux多线程服务端编程：使用muduo C++网络库
+
+Unix环境高级编程
