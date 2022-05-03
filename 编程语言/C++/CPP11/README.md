@@ -60,7 +60,7 @@ cout << "unsigned long long 最大值：" << ULLONG_MAX << endl;
 >
 > * 长度越大的整型等级越高，比如 long long int 的等级会高于 int。
 >
-> * 长度相同的情况下，标准整型的等级高于扩展类型，比如 long long int 和 int64 如果 都是 64 位长度，则 long long int 类型的等级更高。
+> * 长度相同的情况下，标准整型的等级高于扩展类型，比如 long long int 和 int64 如果都是 64 位长度，则 long long int 类型的等级更高。
 >
 > * 相同大小的有符号类型和无符号类型的等级相同，long long int 和 unsigned long long int的等级就相同。
 >
@@ -131,7 +131,7 @@ C++模板分为类模板和函数模板。
 
 ### 默认模板参数
 
-C++111添加了对函数模板默认参数的支持。也就是或类模板和函数模板都可以有默认模板参数。
+C++11添加了对函数模板默认参数的支持。也就是或类模板和函数模板都可以有默认模板参数。
 
 当所有模板参数都有默认参数时，**函数模板的调用如同一个普通函数**。**但对于类模板而言，哪怕所有参数都有默认参数，在使用时也必须在模板名后跟随 <> 来实例化。**
 
@@ -211,6 +211,8 @@ int main() {
 
 
 ## 数值和字符串转换
+
+### 数字转字符串
 
  使用 `to_string()` 方法可以非常方便地将各种数值类型转换为字符串类型。函数声明位于头文件`<string>`中。
 
@@ -2550,9 +2552,117 @@ Person类可以直接访问匿名非受限联合体内部的数据成员。
 
 
 
+## 随机数生成器 std::mt1937
+
+> A Mersenne Twister pseudo-random generator of 32-bit numbers with a state size of 19937 bits.
+
+`mt`是因为这个伪随机数产生器基于`Mersenne Twister`算法。 `19937`是因为产生随的机数的周期长，可达到`2^19937-1`
+
+`std::mt19937`是伪随机数产生器，用于产生高性能的随机数。 `C++11`引入。返回值为`unsigned int`。接收一个`unsigned int`数作为种子。所以可以如下定义：
+
+```cpp
+#include <random>
+
+std::mt19937 mt_rand(std::random_device{}());
+std::mt19937 mt_rand(time(0));	// time(0)：系统从1970年1月1日00:00:00到现在总共的秒数
+std::mt19937 mt_rand(std::chrono::system_clock::now().time_since_epoch().count());	// 单位微妙
+```
 
 
 
+```cpp
+#include <iostream>
+#include <random>
+
+using namespace std;
+
+int main() {
+  std::mt19937 rd(std::random_device{}());
+
+  for (int i = 0; i < 5; ++i) {
+    printf("%d ", rd());
+  }
+
+  return 0;
+}
+```
+
+
+
+### std::random_device
+
+`std::random_device`本身是均匀分布整数随机数生成器，通常仅用于播种
+
+```cpp
+std::random_device device;
+std::mt19937 rng(device());
+```
+
+通常一步写成`std::mt19937 rd(std::random_device{}());`
+
+### 特定分布的随机数
+
+https://zh.cppreference.com/w/cpp/numeric/random
+
+分布有很多种，如均匀分布、正态分布等。正态接收两个参数：均值和标准差，这里分别输入5,2. 一种可能结果如下：
+
+```cpp
+#include <iostream>
+#include <random>
+
+using namespace std;
+
+int main() {
+  std::mt19937 rd(std::random_device{}());
+  std::normal_distribution<double> distri(5, 2);
+
+  for (int i = 0; i < 10; i++) {
+    cout << distri(rd) << endl;
+  }
+
+  return 0;
+}
+```
+
+### 指定区间的均匀分布函数
+
+| [uniform_int_distribution](https://zh.cppreference.com/w/cpp/numeric/random/uniform_int_distribution) | 产生在一个范围上均匀分布的整数值 (类模板) |
+| ------------------------------------------------------------ | ----------------------------------------- |
+| [uniform_real_distribution](https://zh.cppreference.com/w/cpp/numeric/random/uniform_real_distribution) | 产生在一个范围上均匀分布的实数值          |
+
+```cpp
+#include <random>
+#include <iostream>
+ 
+int main()
+{
+    std::random_device rd;  // 将用于为随机数引擎获得种子
+    std::mt19937 gen(rd()); // 以播种标准 mersenne_twister_engine
+    std::uniform_int_distribution<> dis(1, 6);
+ 
+    for (int n=0; n<10; ++n)
+        // 用 dis 变换 gen 所生成的随机 unsigned int 到 [1, 6] 中的 int
+        std::cout << dis(gen) << ' ';
+    std::cout << '\n';
+}
+```
+
+```cpp
+#include <random>
+#include <iostream>
+ 
+int main()
+{
+    std::random_device rd;  // 将用于获得随机数引擎的种子
+    std::mt19937 gen(rd()); // 以 rd() 播种的标准 mersenne_twister_engine
+    std::uniform_real_distribution<> dis(1, 2);
+    for (int n = 0; n < 10; ++n) {
+        // 用 dis 变换 gen 生成的随机 unsigned int 为 [1, 2) 中的 double
+        std::cout << dis(gen) << ' '; // 每次调用 dis(gen) 都生成新的随机 double
+    }
+    std::cout << '\n';
+}
+```
 
 
 
@@ -2562,9 +2672,9 @@ Person类可以直接访问匿名非受限联合体内部的数据成员。
 
 ## Reference
 
-本文大部分摘自苏丙榅 https://subingwen.com/
+苏丙榅 https://subingwen.com/
 
-
+https://www.jianshu.com/p/6d9a7de995bb
 
 
 

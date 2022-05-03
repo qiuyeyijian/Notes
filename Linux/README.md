@@ -1,3 +1,5 @@
+
+
 # Linux
 
 ## 入门知识
@@ -180,6 +182,82 @@ firewall-cmd --list-ports
 --add-port=80/tcp  #添加端口，格式为：端口/通讯协议 
 --permanent   #永久生效，没有此参数重启后失效12345678910
 ```
+
+
+
+
+
+## GCC安装升级
+
+http://c.biancheng.net/view/7933.html
+
+### 通过yum安装默认版本
+
+```bash
+yum -y install gcc  
+yum -y install gcc-c++
+```
+
+```
+gcc -v		# 验证是否安装成功
+```
+
+
+
+### 升级GCC
+
+1、下载源码并解压
+
+```bash
+wget https://mirrors.tuna.tsinghua.edu.cn/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.gz
+
+tar -zxvf gcc-11.2.0.tar.gz
+```
+
+2、下载依赖及配置文件
+
+```bash
+yum -y install bzip2 #已安装可以跳过这一步
+
+cd gcc-11.2.0
+
+./contrib/download_prerequisites
+```
+
+3、配置
+
+```bash
+./configure -enable-checking=release -enable-languages=c,c++ -disable-multilib
+
+#–enable-languages表示你要让你的gcc支持那些语言，
+#–disable-multilib不生成编译为其他平台可执行代码的交叉编译器。
+#–disable-checking生成的编译器在编译过程中不做额外检查，
+#也可以使用*–enable-checking=xxx*来增加一些检查
+```
+
+4、编译安装
+
+```bash
+make && make install
+#这一步需要时间非常久 可以使用 make -j 4 让make最多运行四个编译命令同时运行，加快编译速度（建议不要超过CPU核心数量的2倍）
+```
+
+
+
+
+
+### 采坑
+
+不要忘记安装`gcc-c++`否则会报不支持c++11
+
+```bash
+# https://stackoverflow.com/questions/37806888/configure-error-a-compiler-with-support-for-c11-language-features-is-required
+yum install gcc-c++
+```
+
+
+
+
 
 
 

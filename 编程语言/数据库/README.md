@@ -4,6 +4,8 @@
 
 SQL是一门ANSI标准的计算机语言，虽然存在着不同版本的SQL语言，比如MySQL，Oracle，SQL Server等。但是，为了与ANSI标准兼容，他们必须以相似的方式共同来支持一些主要的命令，如SELECT、UPDATE、DELETE、INSERT、WHERE等。
 
+**SQL数据库的表的字段名不要和SQL内置关键字一样，比如`password`**
+
 
 
 ## 认识SQL
@@ -482,8 +484,6 @@ SELECT * FROM student LIMIT 6,3; -- 第3页			//第6，7, 8条记录
 
 
 ## 约束
-
-
 
 > 约束：对表中的数据进行限定，保证数据的正确性、有效性和完整性。	
 >

@@ -90,8 +90,23 @@ $$
 9. 积分运算，符号：`\int`，如：$\int^{\infty}_{0}{xdx}$
 10. 积分运算，符号：`\displaystyle \int`，如：$\displaystyle \int^{\infty}_{0}{xdx}$
 11. 微分运算，符号：`\partial`，如：$\frac{\partial x}{\partial y}$
-12. 矩阵表示，符号：`\begin{matrix} \end{matrix}`，如：$\left[ \begin{matrix} 1 &2 &\cdots &4\5 &6 &\cdots &8\\vdots &\vdots &\ddots &\vdots\13 &14 &\cdots &16\end{matrix} \right]$
+12. 矩阵表示，符号：`\begin{matrix} \end{matrix}`，如：
+
+$$
+W=\left[ 
+\begin{matrix} 
+w_{11} & w_{12} & \cdots & w_{1n} \\
+w_{21} & w_{22} & \cdots & w_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+w_{m1} & w_{m2} & \cdots & w_{mn} \\
+\end{matrix} 
+\right]
+$$
+
+
+
 13. 向下取整，符号：`$\lfloor x \rfloor$`，如：$\lfloor x \rfloor$
+
 14. 向上取整，符号：`$\lceil x \rceil$`，如：$\lceil x \rceil$
 
 

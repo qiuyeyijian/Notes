@@ -64,6 +64,18 @@ from…import *语句与import区别在于：
 >
 > **from…import \*** 导入模块，每次使用模块中的函数，直接使用函数就可以了；注因为已经知道该函数是那个模块中的了。
 
+
+
+
+
+## with的用法
+
+https://blog.csdn.net/ego_bai/article/details/80873242
+
+
+
+
+
 ## 编程实验
 
 **将两个列表合并成字典**
