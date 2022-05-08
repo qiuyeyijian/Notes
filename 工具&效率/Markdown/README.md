@@ -60,7 +60,11 @@ $$
 3. 大括号，符号：`\{ \}`，如：${x+y}$
 4. 自适应括号，符号：`\left \right`，如：$\left(x\right)$，$\left(x{yz}\right)$
 5. 组合公式，符号：`{上位公式 \choose 下位公式}`，如：${n+1 \choose k}={n \choose k}+{n \choose k-1}$
-6. 组合公式，符号：`{上位公式 \atop 下位公式}`，如：$\sum_{k_0,k_1,\ldots>0 \atop k_0+k_1+\cdots=n}A_{k_0}A_{k_1}\cdots$
+6. 组合公式，符号：`{上位公式 \atop 下位公式}`，如：$\sum{k_0,k_1,\ldots>0 \atop k_0+k_1+\cdots=n}A_{k_0}A_{k_1}\cdots$
+
+
+
+
 
 ## 四则运算
 

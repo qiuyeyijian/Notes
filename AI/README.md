@@ -123,6 +123,12 @@ conda uninstall cpuonly		# 注意查看有没有安装cpuonly
 
 
 
+## Keras
+
+```python
+pip install --upgrade keras==2.2.4
+```
+
 
 
 
