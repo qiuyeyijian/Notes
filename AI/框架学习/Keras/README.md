@@ -501,7 +501,9 @@ f=h5py.File("myh5py.hdf5","w")
 
 
 
+### Top
 
+所谓的Top-1 Accuracy是指排名第一的类别与实际结果相符的准确率，而Top-5 Accuracy是指排名前五的类别包含实际结果的准确率。
 
 
 
