@@ -676,8 +676,6 @@ int main(int argc, char const *argv[]) {
 
 https://blog.csdn.net/TABE_/article/details/122178559
 
-### 关于重载、重写、隐藏的区别
-
 ```cpp
 Overload(重载)：在C++程序中，可以将语义、功能相似的几个函数用同一个名字表示，但参数或返回值不同（包括类型、顺序不同），即函数重载。
 （1）相同的范围（在同一个类中）；
@@ -696,6 +694,156 @@ Override(覆盖或重写)：是指派生类函数覆盖基类函数，特征是�
 （1）如果派生类的函数与基类的函数同名，但是参数不同。此时，不论有无virtual关键字，基类的函数将被隐藏（注意别与重载混淆）。
 （2）如果派生类的函数与基类的函数同名，并且参数也相同，但是基类函数没有virtual关键字。此时，基类的函数被隐藏（注意别与覆盖混淆）。
 ```
+
+
+
+
+
+## for循环++i问题
+
+```cpp
+ for (int i = 0; i < 10; ++i) {
+    cout << i << " ";
+     // 即时执行了continue, 括号里面的++i仍然被执行
+    if (i % 2 == 0) continue;
+ }
+```
+
+
+
+
+
+
+
+
+
+
+
+## 自定义比较
+
+首先看`sort`函数的模板声明：
+
+```cpp
+// 可以看出，排序要求容器支持随机访问迭代器，类似于数组的那种下标偏移访问
+// 这里 _Compare 是类型， __comp 是实例，调用 sort 需要传入的就是 __comp 实例
+template <class _RandomAccessIter, class _Compare>
+inline void sort(_RandomAccessIter __first, _RandomAccessIter __last, _Compare __comp)
+```
+
+```cpp
+#include <algorithm>
+#include <functional>
+#include <iostream>
+#include <iterator>
+#include <string>
+#include <vector>
+using namespace std;
+
+vector<string> vec{"Hello", "World!", "Zhang San", "Li Si", "C++", "C"};
+```
+
+
+
+### sort默认的比较函数
+
+默认的内置比较函数，将按照对象内定义的<运算符由小到大排序
+
+```cpp
+int main() {
+  vector<string> vec{"Hello", "World!", "Zhang San", "Li Si", "C++", "C"};
+  std::sort(vec.begin(), vec.end());
+
+  for (const string& x : vec) {
+    cout << x << "\n";
+  }
+
+  // copy(vec.begin(), vec.end(), ostream_iterator<string>(cout, "\n"));
+  return 0;
+}
+```
+
+
+
+
+
+### 重载 `<` 运算符
+
+```cpp
+typedef struct Node {
+  int index;
+  int value;
+
+  bool operator<(const Node& a) const { return this->value < a.value; }
+} Node;
+
+int main() {
+  Node a[5] = {{1, 11}, {3, 33}, {2, 22}, {5, 55}, {4, 44}};
+  sort(a, a + 5);
+  for (const Node& x : a) {
+    cout << x.index << ": " << x.value << "\n";
+  }
+  return 0;
+}
+```
+
+
+
+
+
+### 使用仿函数或比较函数
+
+使用自定义的比较函数或者重载()运算符，即自定义一个Function object函数对象（仿函数）
+
+```cpp
+typedef struct tagNode {
+  int index;
+  int value;
+} Node;
+
+// 自定义比较函数
+bool cmp(const Node& a, const Node& b) { return a.value > b.value; }
+
+// 函数对象
+class Cmp {
+ public:
+  bool operator()(const Node& a, const Node& b) { return a.value > b.value; }
+};
+
+int main() {
+  Node a[5] = {{1, 11}, {3, 33}, {2, 22}, {5, 55}, {4, 44}};
+  // 编译器会进行类型推导做模板特化 <class _RandomAccessIter, class _Compare>
+  sort(a, a + 5, cmp);
+  sort(a, a + 5, Cmp());
+
+  return 0;
+}
+```
+
+
+
+
+
+### 使用内置的函数对象
+
+使用C++内置的Function object，需要包含头文件`#include<functional>` 
+
+```cpp
+std::sort(vec.begin(), vec.end(), greater<string>());
+```
+
+
+
+
+
+### 用于Lambda表达式
+
+使用C++11新支持的lambda表达式
+
+```cpp
+std::sort(vec.begin(), vec.end(), [](const string & a, const string & b) {return a > b;});
+```
+
+
 
 
 

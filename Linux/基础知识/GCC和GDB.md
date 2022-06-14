@@ -132,7 +132,6 @@ GDB 是一套字符界面的程序集，可以使用命令 gdb 加载要调试�
 > 假设有一个文件 `args.c`, 要对其进行gdb调试，编译的时候必须要添加参数 -g，**加入了源代码信息的可执行文件比不加之前要大一些。**
 
 ```bash
-#  
 gcc -g test.c -o test
 ```
 
@@ -492,49 +491,19 @@ next 命令和 step 命令功能是相似的，只是在使用 next 调试程序
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## 常用命令汇总
 
 ```bash
 gdb test  # 启动GDB
-(gdb) list 行号  # 列出源码，缩写：l
+(gdb) list 行号  # 列出源码，缩写是 l
 (gdb)       # 直接回车表示重复上一次命令
-(gdb) break 16  # 设置断点，在源程序第16行处
+(gdb) break 16  # 设置断点，在源程序第16行处, 缩写是 b
 (gdb) break func  # 设置断点，在函数func()入口处
-(gdb) info break    # 查看断点信息
-(gdb) run      # 运行程序
-(gdb) next    # 单条语句执行
-(gdb) n       # 单条语句执行，与next一样
-(gdb) continue    # 继续运行程序
-(gdb) print i    # 打印变量 i 的值
-(gdb) p sum    # 打印变量sum的值
+(gdb) info break    # 查看断点信息, 缩写是 i
+(gdb) run      # 运行程序， 缩写是 r
+(gdb) next    # 单条语句执行, 缩写是 n
+(gdb) continue    # 继续运行程序, 缩写是 c 
+(gdb) print i    # 打印变量 i 的值, 缩写是 p
 (gdb) bt    # 查看函数堆栈
 (gdb) finish  # 退出函数
 (gdb) quit    # 退出gdb

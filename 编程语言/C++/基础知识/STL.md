@@ -15,7 +15,7 @@
 * **容器**和**算法**之间通过**迭代器**进行无缝连接。
 * STL 几乎所有的代码都采用了模板类或者模板函数
 
-![image-20201003183919968](assets/README/image-20201003183919968.png)
+![image-20201003183919968](assets/STL/image-20201003183919968.png)
 
 STL大体分为六大组件，分别是:**容器、算法、迭代器、仿函数、适配器（配接器）、空间配置器**
 
@@ -38,8 +38,6 @@ STL大体分为六大组件，分别是:**容器、算法、迭代器、仿函�
 | bidirectional_iterator | 双向迭代器，同时提供读写功能，同forward迭代器，但可用来进行增加(++)或减少(--)操作。 |
 | random_iterator        | 随机迭代器，提供随机读写功能.是功能最强大的迭代器， 具有双向迭代器的全部功能，同时实现指针般的算术与比较运算。 |
 | reverse_iterator       | 如同随机迭代器或双向迭代器，但其移动是反向的。（Either a random iterator or a bidirectional iterator  that moves in reverse direction.）（我不太理解它的行为） |
-
-
 
 ```cpp
 #include<algorithm>
@@ -88,8 +86,6 @@ iter1 != iter2
 
 
 
-
-
 ### 迭代器运算
 
 只有空间连续，迭代器才能进行下面的跳跃运算，否则只能进行自增运算。
@@ -118,8 +114,6 @@ iter1 - iter2 	// 返回两个迭代器，之间的距离。返回的类型为di
 它是一个向量类模板，向量容器相当于数组，它存储具有相同数据类型的一组元素。可以从末尾快速地插入与删除元素，快速地随机访问元素，但是在序列中间插入与删除元素较慢，因为需要移动要插入或删除位置后面的所有元素。
 
 如果初始分配的空间不够，当超过空间大小时会重新分配更大的空间（通常按两倍大小扩展），此时需要重新进行大量元素的复制，从而增加了性能开销。
-
-`reserve(int len);`		容器预留len个元素长度，预留位置不初始化，元素不可访问。
 
 
 
@@ -174,7 +168,6 @@ int main(int argc, char const *argv[]) {
     printf("%d ", *rit);
   }
     
-
   return 0;
 }
 ```
@@ -215,11 +208,11 @@ int main(int argc, char const *argv[]) {
 * `pop_back();`                                                //删除最后一个元素
 * `insert(const_iterator pos, ele);`        //迭代器指向位置pos插入元素ele
 * `insert(const_iterator pos, int count,ele);`//迭代器指向位置pos插入count个元素ele
-* `erase(const_iterator pos);`                     //删除迭代器指向的元素
+* `erase(const_iterator pos);`                     //删除迭代器指向的元素，返回下一个元素的迭代器
 * `erase(const_iterator start, const_iterator end);`//删除迭代器从start到end之间的元素
 * `clear();`                                                        //删除容器中所有元素
 
-
+返回值，
 
 ```cpp
 vector<int> arr = {1, 2, 3, 4};
@@ -247,9 +240,9 @@ arr.erase(arr.begin() + 2);
 
 ### 预留空间
 
-* `reserve(int len);`//容器预留len个元素长度，预留位置不初始化，元素不可访问。
+* `reserve(int len);`		//容器预留len个元素长度，预留位置不初始化，元素不可访问。
 
-
+ 
 
 
 
@@ -348,8 +341,6 @@ int main(int argc, char const *argv[]) {
 * `string& replace(int pos, int n, const string& str); `       //替换从pos开始n个字符为字符串str
 * `string& replace(int pos, int n,const char* s); `                 //替换从pos开始的n个字符为字符串s
 
-
-
 * find查找是从左往后，rfind从右往左
 * find找到字符串后返回查找的第一个字符位置，找不到返回-1
 * replace在替换时，要指定从哪个位置起，多少个字符，替换成什么样的字符串
@@ -426,6 +417,8 @@ string s2 = str.substr(3, 3);  // 从下标3开始，截取长度为3的子串
 
 
 ## deque（双端队列容器）
+
+**list和vector结合体，基于原理推理。**
 
 它是一个双端队列模板。双端队列容器由若干个块构成，每个块中元素地址是连续的，块之间的地址是不连续的，系统有一个特定的机制将这些块构成一个整体。用户可以从前面或后面快速地掺入与删除元素，并可以快速地随机访问元素，但在中间位置插入和删除元素较慢。
 
@@ -672,12 +665,6 @@ int main(int argc, char const* argv[]) {
 }
 ```
 
-
-
-
-
-
-
 ### splice
 
 **list容器底层实现是一个带头结点的双向链表，**由于链表的每个节点是单独开辟的，所以链表在移动数据，或者两个链表之间移动数据的时候，直接把节点摘下来，接入到新的位置就可以了，效率比较高。
@@ -697,10 +684,6 @@ int main(int argc, char const* argv[]) {
 
 
 
-
-
-
-
 # 关联容器
 
 关联容器中的每个元素有一个key(关键字)，通过key来存储和读取元素，这些关键字可能与元素在容器的位置有关，所以关联容器不提供顺序容器中的 `front(), push_front(), back(), push_back(), pop_back()`操作。
@@ -717,7 +700,7 @@ C++ STL中标准关联容器set, multiset, map, multimap内部采用的就是一
 * set插入数据的同时会返回插入结果，表示插入是否成功
 * multiset不会检测数据，因此可以插入重复数据
 
-对于自定义数据结构，set必须指定排序规则，才可以插入数据。
+对于自定义数据结构，set必须指定排序规则，才可以插入数据。map 和 set 底层存储结构式都是红黑树
 
 ### 构造和赋值
 
@@ -738,22 +721,6 @@ vector<int> v={1,2,3,4,5};
 set<int> s(v.begin(),v.end());
 s.insert(v.begin(),v.end());  //如果是vector的话，第一个参数会是插入位置。
 ```
-
-- begin()     　　 ,返回一个迭代器，返回的值为set容器的第一个元素
-
-- end() 　　　　 ,返回一个迭代器，返回的值为set容器的最后一个元素
-
-- clear()   　　     ,删除set容器中的所有的元素
-
-- empty() 　　　,判断set容器是否为空
-
-- max_size() 　 ,返回set容器可能包含的元素最大个数
-
-- size() 　　　　 ,返回当前set容器中的元素个数
-
-- rbegin　　　　 ,返回一个逆迭代器，返回的值和end()相同
-
-- rend()　　　　 ,返回一个逆迭代器，它指向容器c的第一个元素前面的位置
 
 c++中set的用法；我觉得很详细了，改到窒息：https://blog.csdn.net/Strawberry_595/article/details/81188509
 
@@ -788,7 +755,7 @@ c++中set的用法；我觉得很详细了，改到窒息：https://blog.csdn.ne
 * pair中第一个元素为key（键值），起到索引作用，第二个元素为value（实值）
 * 所有元素都会根据元素的键值自动排序
 
-map 和 multimap 都是映射类模板。映射是实现关键字与值关系的存储结构，可以用一个关键字key来访问相应的数值value。
+map 和 multimap 都是映射类模板。映射是实现关键字与值关系的存储结构，可以用一个关键字key来访问相应的数值value。map 和 set 底层存储结构式都是红黑树。
 
 #### pair对组创建
 
@@ -869,14 +836,10 @@ map中不允许关键字重复出现，支持`[]`运算符。而multimap中允�
 
 
 
-
-
 ### 查找和统计
 
-- `find(key);`                  //查找key是否存在,若存在，返回该键的元素的迭代器；若不存在，返回set.end();
+- `find(key);`                  //查找key是否存在,若存在，返回该键的元素的迭代器；若不存在，返回map.end();
 - `count(key);`                //统计key的元素个数
-
-
 
 
 
@@ -968,7 +931,11 @@ priority_queue< int, vector<int>, greater<int> > pq;
 priority_queue<int> pq(arr.begin(),arr.end());
 ```
 
+priority_queue 有优先级，要求元素可比较。
 
+queue 和 priority_queue 默认的底层存储结构也不同。queue 默认用的是 deque 双端队列，priority_queue 用的是 vector。
+
+priority_queue 实现使用的默认比较是 operator< ,是最大堆数据结构，即队列头元素值最大
 
 
 
@@ -989,6 +956,50 @@ priority_queue<int> pq(arr.begin(),arr.end());
 * 函数对象在使用时，可以像普通函数那样调用, 可以有参数，可以有返回值
 * **函数对象超出普通函数的概念，函数对象可以有自己的状态**
 * 函数对象可以作为参数传递
+
+
+
+```cpp
+#include <stdio.h>
+
+#include <algorithm>
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Log {
+ public:
+  void operator()(std::string str) { cout << str << "\n"; }
+};
+
+class Cmp {
+ public:
+  int count = 0;
+
+ public:
+  bool operator()(int a, int b) {
+    cout << count++ << endl;
+    return a > b;
+  }
+};
+
+int main(int argc, char const *argv[]) {
+  // 新建一个对象，该对象的使用和一般函数一样
+  Log log;
+  log("Hello, word");
+
+  int arr[] = {3, 5, 2, 1, 4, 6, 7};
+  // Cmp() 是匿名的函数对象
+  sort(arr, arr + 7, Cmp());
+
+  // 显示创建函数对象，作为参数传递
+  Cmp cmp;
+  sort(arr, arr + 7, cmp);
+
+  return 0;
+}
+
+```
 
 
 
@@ -1040,7 +1051,7 @@ STL内建了一些函数对象，使用内建函数对象，需要引入头文�
 
 
 
-## 关系仿函数
+### 关系仿函数
 
 实现关系对比
 
@@ -1057,7 +1068,7 @@ STL内建了一些函数对象，使用内建函数对象，需要引入头文�
 
 
 
-## 逻辑仿函数
+### 逻辑仿函数
 
 实现逻辑运算
 
@@ -1066,8 +1077,6 @@ STL内建了一些函数对象，使用内建函数对象，需要引入头文�
 | `template<class T> bool logical_and<T>` | 逻辑与 |
 | `template<class T> bool logical_or<T>`  | 逻辑或 |
 | `template<class T> bool logical_not<T>` | 逻辑   |
-
-
 
 
 
@@ -1092,7 +1101,7 @@ STL内建了一些函数对象，使用内建函数对象，需要引入头文�
 
 ### for_each
 
-* 实现遍历容器
+实现遍历容器
 
 ```cpp
 // beg 开始迭代器，end 结束迭代器，_func 函数或者函数对象
@@ -1340,33 +1349,88 @@ int main(int argc, char const* argv[]) {
 
 
 
-
-
 ## 排序
 
 ### sort
+
+对容器内元素进行排序，按值查找元素，找到返回指定位置迭代器，找不到返回结束迭代器位置
+
+```cpp
+// beg 开始迭代器，end 结束迭代器，_Pred 函数或者谓词（返回bool类型的仿函数）
+sort(iterator beg, iterator end, _Pred);  
+```
+
+```cpp
+std::sort(v.begin(), v.end(), greater<int>());
+```
 
 
 
 ### random_shuffle
 
+洗牌，指定范围内的元素随机调整次序
+
+`random_shuffle(iterator beg, iterator end);  `
+
+`random_shuffle`在C ++ 14中已弃用，在C ++ 17中已完全删除。
+
+您需要使用`shuffle`，它将随机生成器作为参数。
+
+```cpp
+std::random_device rd;
+std::mt19937 g(rd());
+
+vector<int> v = {1, 2, 3, 4, 5};
+
+std::shuffle(v.begin(), v.end(), g);
+```
+
 
 
 ### merge
 
+两个容器元素合并，并存储到另一容器中。注意: 两个容器必须是**有序的**
 
+```cpp
+merge(iterator beg1, iterator end1, iterator beg2, iterator end2, iterator dest);  
+```
 
 ### reverse
 
+将容器内元素进行反转
 
+```cpp
+// beg 开始迭代器，end 结束迭代器
+reverse(iterator beg, iterator end);
+```
 
 ## 算术生成
 
 ### accumulate
 
+accumulate使用时头文件注意是 numeric，这个算法很实用
+
+算术生成算法属于小型算法，使用时包含的头文件为 `#include <numeric>`
+
+- `accumulate` 计算容器元素累计总和
+- `fill` 向容器中添加元素
+
+```cpp
+// 计算容器元素累计总和
+// beg 开始迭代器，end 结束迭代器，value 起始值
+accumulate(iterator beg, iterator end, value); 
+```
+
 
 
 ### fill
+
+向容器中填充指定的元素
+
+```cpp
+// beg 开始迭代器，end 结束迭代器，value 填充的值
+fill(iterator beg, iterator end, value);  
+```
 
 
 
@@ -1374,30 +1438,51 @@ int main(int argc, char const* argv[]) {
 
 ### set_intersection
 
+求两个容器的交集，两个集合必须是有序序列
 
+```cpp
+// beg1 容器1开始迭代器, end1 容器1结束迭代器, beg2 容器2开始迭代器. end2 容器2结束迭代器, dest 目标容器开始迭代器
+set_intersection(iterator beg1, iterator end1, iterator beg2, iterator end2, iterator dest);  
+```
+
+* 求交集的两个集合必须的有序序列
+* 目标容器开辟空间需要从**两个容器中取小值**
+* set_intersection返回值既是交集中最后一个元素的位置
 
 ### set_union
 
+求两个集合的并集，两个集合必须是有序序列
 
+```cpp
+// beg1 容器1开始迭代器, end1 容器1结束迭代器, beg2 容器2开始迭代器. end2 容器2结束迭代器, dest 目标容器开始迭代器
+set_union(iterator beg1, iterator end1, iterator beg2, iterator end2, iterator dest);  
+```
+
+- 求并集的两个集合必须的有序序列
+- 目标容器开辟空间需要**两个容器相加**
+- set_union返回值既是并集中最后一个元素的位置
 
 ### set_difference
 
+求两个集合的差集，两个集合必须是有序序列
 
+```cpp
+// beg1 容器1开始迭代器, end1 容器1结束迭代器, beg2 容器2开始迭代器. end2 容器2结束迭代器, dest 目标容器开始迭代器
+set_difference(iterator beg1, iterator end1, iterator beg2, iterator end2, iterator dest); 
+```
 
-
-
-
-
-
+- 求差集的两个集合必须的有序序列
+- 目标容器开辟空间需要从**两个容器取较大值**
+- set_difference返回值既是差集中最后一个元素的位置
 
 ## 拷贝和替换
 
-- `copy`                      // 容器内指定范围的元素拷贝到另一容器中
-- `replace`                // 将容器内指定范围的旧元素修改为新元素
-- `replace_if `          // 容器内指定范围满足条件的元素替换为新元素
-- `swap`                     // 互换两个容器的元素
-
-
+| 函数       | 功能                                     |
+| ---------- | ---------------------------------------- |
+| copy       | 容器内指定范围的元素拷贝到另一容器中     |
+| replace    | 将容器内指定范围的旧元素修改为新元素     |
+| replace_if | 容器内指定范围满足条件的元素替换为新元素 |
+| swap       | 互换两个容器的元素                       |
 
 ### copy
 
@@ -1405,9 +1490,7 @@ int main(int argc, char const* argv[]) {
 
 ```cpp
 // 按值查找元素，找到返回指定位置迭代器，找不到返回结束迭代器位置
-// beg  开始迭代器
-// end  结束迭代器
-// dest 目标起始迭代器
+// beg 开始迭代器，end 结束迭代器，dest 目标起始迭代器
 copy(iterator beg, iterator end, iterator dest); 
 ```
 
@@ -1421,224 +1504,36 @@ std::copy(v1.begin(), v1.end(), v2.begin());
 
 
 
-
-
 ### replace
 
-**功能描述：**
+将容器内指定范围的旧元素修改为新元素，replace会替换区间内满足条件的元素
 
-* 将容器内指定范围的旧元素修改为新元素
-
-
-
-**函数原型：**
-
-- `replace(iterator beg, iterator end, oldvalue, newvalue);  `
-
-  // 将区间内旧元素 替换成 新元素
-
-  // beg 开始迭代器
-
-  // end 结束迭代器
-
-  // oldvalue 旧元素
-
-  // newvalue 新元素
-
-
-
-**示例：**
-
-```c++
-#include <algorithm>
-#include <vector>
-
-class myPrint
-{
-public:
-	void operator()(int val)
-	{
-		cout << val << " ";
-	}
-};
-
-void test01()
-{
-	vector<int> v;
-	v.push_back(20);
-	v.push_back(30);
-	v.push_back(20);
-	v.push_back(40);
-	v.push_back(50);
-	v.push_back(10);
-	v.push_back(20);
-
-	cout << "替换前：" << endl;
-	for_each(v.begin(), v.end(), myPrint());
-	cout << endl;
-
-	//将容器中的20 替换成 2000
-	cout << "替换后：" << endl;
-	replace(v.begin(), v.end(), 20,2000);
-	for_each(v.begin(), v.end(), myPrint());
-	cout << endl;
-}
-
-int main() {
-
-	test01();
-
-	system("pause");
-
-	return 0;
-}
+```cpp
+// beg 开始迭代器，end 结束迭代器，oldvalue 旧元素，newvalue 新元素
+replace(iterator beg, iterator end, oldvalue, newvalue);  
 ```
-
-**总结：**replace会替换区间内满足条件的元素
 
 
 
 ### replace_if
 
-**功能描述:**  
+将区间内满足条件的元素，替换成指定元素，可以利用仿函数灵活筛选满足的条件
 
-* 将区间内满足条件的元素，替换成指定元素
-
-
-
-**函数原型：**
-
-- `replace_if(iterator beg, iterator end, _pred, newvalue);  `
-
-  // 按条件替换元素，满足条件的替换成指定元素
-
-  // beg 开始迭代器
-
-  // end 结束迭代器
-
-  // _pred 谓词
-
-  // newvalue 替换的新元素
-
-
-
-```c++
-#include <algorithm>
-#include <vector>
-
-class myPrint
-{
-public:
-	void operator()(int val)
-	{
-		cout << val << " ";
-	}
-};
-
-class ReplaceGreater30
-{
-public:
-	bool operator()(int val)
-	{
-		return val >= 30;
-	}
-
-};
-
-void test01()
-{
-	vector<int> v;
-	v.push_back(20);
-	v.push_back(30);
-	v.push_back(20);
-	v.push_back(40);
-	v.push_back(50);
-	v.push_back(10);
-	v.push_back(20);
-
-	cout << "替换前：" << endl;
-	for_each(v.begin(), v.end(), myPrint());
-	cout << endl;
-
-	//将容器中大于等于的30 替换成 3000
-	cout << "替换后：" << endl;
-	replace_if(v.begin(), v.end(), ReplaceGreater30(), 3000);
-	for_each(v.begin(), v.end(), myPrint());
-	cout << endl;
-}
-
-int main() {
-
-	test01();
-
-	system("pause");
-
-	return 0;
-}
+```cpp
+// beg 开始迭代器，end 结束迭代器，_pred 谓词，newvalue 替换的新元素
+replace_if(iterator beg, iterator end, _pred, newvalue);  
 ```
-
-**总结：**replace_if按条件查找，可以利用仿函数灵活筛选满足的条件
 
 
 
 ### swap
 
+swap交换容器时，注意交换的容器要同种类型
+
 ```cpp
 // 互换两个容器的元素
 swap(container c1, container c2); 
 ```
-
-```c++
-#include <algorithm>
-#include <vector>
-
-class myPrint
-{
-public:
-	void operator()(int val)
-	{
-		cout << val << " ";
-	}
-};
-
-void test01()
-{
-	vector<int> v1;
-	vector<int> v2;
-	for (int i = 0; i < 10; i++) {
-		v1.push_back(i);
-		v2.push_back(i+100);
-	}
-
-	cout << "交换前： " << endl;
-	for_each(v1.begin(), v1.end(), myPrint());
-	cout << endl;
-	for_each(v2.begin(), v2.end(), myPrint());
-	cout << endl;
-
-	cout << "交换后： " << endl;
-	swap(v1, v2);
-	for_each(v1.begin(), v1.end(), myPrint());
-	cout << endl;
-	for_each(v2.begin(), v2.end(), myPrint());
-	cout << endl;
-}
-
-int main() {
-
-	test01();
-
-	system("pause");
-
-	return 0;
-}
-```
-
-**总结：**swap交换容器时，注意交换的容器要同种类型
-
-
-
-
 
 
 
