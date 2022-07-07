@@ -1,7 +1,41 @@
+# Git
+
 
 > 学习Git时记录的一些笔记。随着学习的不断深入，会不断对文章进行修改。文章内对其他文
 
-## 基本操作
+
+
+## 基本概念
+
+### 本地仓库
+
+工作区：工作区就是我们能看到的目录，它持有实际文件。
+
+版本库：工作区有一个隐藏目录.git，这个不是工作区，是Git的版本库。版本库里会有暂存区，以及Git自动创建的第一个分支master，以及指向master的一个指针叫HEAD。
+
+暂存区，stage（或者叫index），存放在 ".git目录下" 下的index文件（.git/index）中。它像个缓存区域，临时保存你的改动；
+
+HEAD，它指向你最后一次提交的结果。
+
+![image-20220629113114459](assets/README/image-20220629113114459.png)
+
+可以说，版本控制的本质就是对文件版本的控制。对文件进行各种操作的前提是，明确文件所在的状态。在git中通过`git status`指令来查看当前所有文件的状态。若你的版本库与工作区的文件快照完全相同，即所有文件均处于`Unmodify`状态，则执行`git status`会提示：`working tree clean`。
+
+### 文件状态
+
+**Untracked：**未跟踪：此文件存在于项目文件夹中，但并未添加到版本库，所以不会参与版本控制，使用`git add filename`指令来将文件状态转换为Staged。
+
+**Unmodify：**文件已入版本库，未修改，也就是说该文件与版本库中文件快照完全一致。这种状态下的文件有两种去处：使用`git rm filename`指令来将文件移出版本库，状态变为Untracked；或者修改该文件，状态变为Modified。
+
+**Modified：**文件已经被修改（仅是修改，并无其它操作），意味着该文件与版本库的文件快照不相同，这种状态下的文件也有两种去处：使用指令`git add filename` 将该文件存入暂存区，状态变为Staged；或者使用指令`git checkout`丢弃修改，状态变为Unmodify。
+
+**Staged：**暂存状态，文件被储存在暂存区。使用指令`git commit`将文件提交到版本库，状态变为Unmodify；或者使用指令`git reset HEAD filename`来取消暂存状态，状态变为Modified。
+
+
+
+
+
+## 基本命令
 
 ### 全局配置
 
@@ -14,6 +48,8 @@ git config --global user.email "邮箱"
 # 生成SSH密钥
 ssh-keygen -t rsa -b 4096 -C "xxx@gmail.com"
 ```
+
+
 
 ### 检查仓库状态 Git status
 
@@ -34,11 +70,46 @@ git log --oneline		# 将每个提交压缩到一行。当你需要查看项目�
 
 ```
 
+用git log可以查看提交历史。如果觉得太繁琐，可以用git log --pretty=oneline，只显示版本号和提交的备注信息。
+
+用git reflog可以查看所有分支的所有操作记录（包括已经被删除的 commit 记录和 reset 的操作）。
 
 
-## 进阶操作
 
-### 创建本地仓库
+### diff 比较命令
+
+```c
+git diff
+//比较工作目录和暂存区域的
+```
+
+```bash
+   HP@QiuYeYiJian MINGW64 /f/GitPractice/myproject (master)
+   $ git diff
+   diff --git a/README.md b/README.md   //比较暂存区域的README和工作目录的README
+   index 0cb0ebd..1be4651 100644        //文件id 权限
+   --- a/README.md                      //旧文件，存放在暂存区域的文件
+   +++ b/README.md                      //新文件，存放在工作目录的文件
+   @@ -1 +1,2 @@                        //-1：旧文件开始的行数，+1：新文件开始的行数，2：连续的行号
+   -this is a big project                
+   \ No newline at end of file          //文件不是以换行符结束   
+   +this is a big project
+   +qiuyeyijian
+   \ No newline at end of file
+   diff --git a/game.py b/game.py
+   index e69de29..8671739 100644
+   --- a/game.py
+   +++ b/game.py
+   @@ -0,0 +1 @@
+   +print（"hello,world");
+   \ No newline at end of file
+```
+
+
+
+## 基本操作
+
+### 创建代码仓库的两种方法
 
 在本地创建仓库一般有两种方法：
 
@@ -49,7 +120,7 @@ git log --oneline		# 将每个提交压缩到一行。当你需要查看项目�
 
 测试仓库地址：`git@github.com:qiuyeyijian/test.git`
 
-#### 手动从0到1创建
+#### 手动创建
 
 1. 新建一个文件夹，然后进入到此文件夹下并打开终端
 2. 初始化Git
@@ -101,10 +172,8 @@ git clone git@github.com:qiuyeyijian/test.git
 Git为了能进行版本控制，方便进行版本回退，会将用户所有修改记录保存到`.git`  文件夹下，时间久了就会导致记录文件很大。我们在克隆下载别人仓库的时候，可以只克隆最近一次提交记录即可，可以加快下载速度。只需要在后面加上`--depth 1`参数即可。
 
 ```shell
-git clone git@github.com:qiuyeyijian/test.git --depth 1
+git clone git@github.com:qiuyeyijian/test.git --depth=1
 ```
-
-
 
 ### 提交远程仓库
 
@@ -190,36 +259,6 @@ git push gitee master		# 可以简写 git push gitee
 
 
 
-### 创建&合并&删除分支
-
-```shell
-git branch <分支名>                             # 创建分支
-git checkout <分支名>                          # 切换分支
-git checkout -b <分支名>                       # 创建并切换分支
-```
-
-场景：假如我们在本地仓库创建一个`dev`分支，并在此分支下开发软件，完成后提交的远程仓库。现在我们希望将`dev`分支合并到哦`master`主分支。
-
-```shell
-git checkout -b dev			# 创建dev分支，在此分支下开发程序
-
-git add . 					# 将程序提交到暂存区
-git commit -m "dev"			# 编写提交信息
-git push		            # 推送到远程仓库的dev分支
-
-git checkout master			# 切换到主分支
-git merge dev				# 将dev合并到主分支，如果遇到冲突就解决
-git push					# 合并完成推送到远程仓库
-```
-
-另外可以使用下面命令创建一个匿名分支。可以用来做实验，切换到主分支后，匿名分支不会保存。
-
-```shell
-git checkout HEAD~
-```
-
-
-
 ### 克隆X的项目，一段时间后再次同步X的提交信息
 
 1. 进入到自己项目，打开终端
@@ -251,49 +290,105 @@ git push
 
 
 
-### reset 命令回滚选项
-移动HEAD的指向，将其指向上一个快照，将HEAD移动后指向的快照回滚到暂存区域
-```bash
-git reset --mixed HEAD~
+
+
+
+
+
+
+## 分支管理
+
+### 创建分支
+
+```shell
+git branch <分支名>                            # 创建分支
+git checkout <分支名>                          # 切换分支
+git checkout -b <分支名>                       # 创建并切换分支
+git branch -a								  # 查看所有分支
 ```
 
-移动HEAD的指向，将其指向上一个快照，相当于撤销最近一次的commit提交
-```bash
-git reset --soft HEAD~
-```
-移动HEAD的指向，将其指向上一个快照，将HEAD移动后指向的快照回滚到暂存区域，将暂存区域的文件还原到工作目录
-```bash
-git reset --hard HEAD~
 
-git reset --hard commit_id
+
+### 合并分支
+
+master指针指向版本，HEAD指向master，每次提交master都会向前移一步，而HEAD跟随master移动。现在创建一个新的分支dev，Git就会新建一个指针dev，并指向master指向的内容，并且把HEAD指向dev，表示dev是当前使用的分支。那么此时，我们在工作区的修改和提交就会在dev分支上进行，每一次提交，dev分支就会向前移动一步，而master分支不变。如果dev分支上的内容开发完毕，就需要合并两个分支，最简单的方法就是直接将master的指针指向dev分支指向的内容。 master指针指向版本，HEAD指向master，每次提交master都会向前移一步，而HEAD跟随master移动。现在创建一个新的分支dev，Git就会新建一个指针dev，并指向master指向的内容，并且把HEAD指向dev，表示dev是当前使用的分支。那么此时，我们在工作区的修改和提交就会在dev分支上进行，每一次提交，dev分支就会向前移动一步，而master分支不变。如果dev分支上的内容开发完毕，就需要合并两个分支，最简单的方法就是直接将master的指针指向dev分支指向的内容。
+
+
+
+场景：假如我们在本地仓库创建一个`dev`分支，并在此分支下开发软件，完成后提交的远程仓库。现在我们希望将`dev`分支合并到`master`主分支。
+
+```shell
+git checkout -b dev			# 创建dev分支，在此分支下开发程序
+
+git add . 					# 将程序提交到暂存区
+git commit -m "dev"			# 编写提交信息
+git push		            # 推送到远程仓库的dev分支
+
+git checkout master			# 切换到主分支
+git merge dev				# 将dev合并到主分支，如果遇到冲突就解决
+git push					# 合并完成推送到远程仓库
 ```
 
-### diff 比较命令
-```c
-git diff
-//比较工作目录和暂存区域的
+另外可以使用下面命令创建一个匿名分支。可以用来做实验，切换到主分支后，匿名分支不会保存。
+
+```shell
+git checkout HEAD~
 ```
+
+
+
+### 删除分支
+
 ```bash
-   HP@QiuYeYiJian MINGW64 /f/GitPractice/myproject (master)
-   $ git diff
-   diff --git a/README.md b/README.md   //比较暂存区域的README和工作目录的README
-   index 0cb0ebd..1be4651 100644        //文件id 权限
-   --- a/README.md                      //旧文件，存放在暂存区域的文件
-   +++ b/README.md                      //新文件，存放在工作目录的文件
-   @@ -1 +1,2 @@                        //-1：旧文件开始的行数，+1：新文件开始的行数，2：连续的行号
-   -this is a big project                
-   \ No newline at end of file          //文件不是以换行符结束   
-   +this is a big project
-   +qiuyeyijian
-   \ No newline at end of file
-   diff --git a/game.py b/game.py
-   index e69de29..8671739 100644
-   --- a/game.py
-   +++ b/game.py
-   @@ -0,0 +1 @@
-   +print（"hello,world");
-   \ No newline at end of file
+git branch -a				# 查看所有分支
+git checkout master			# 切换到主分支
+git branch -d dev			# 删除本地分支
+git push origin --delete dev	# 删除远程分支
+git branch -a				# 查看所有分支
 ```
+
+如果报错：
+
+```bash
+error: unable to delete 'dev': remote ref does not exist
+```
+
+说明remote端已经删掉（比如在合并master时删除了），为什么用git branch -av还是能看到呢？ 其实我们看到的，只是前面用git fetch 保存到本地的缓存信息而已。可以执行命令：
+
+```bash
+git fetch --prune origin
+# 或者 git fetch --p origin
+```
+
+这时候，再执行git branch -a ，已经看不到remote的dev这个分支了
+
+### 重命名分支
+
+**本地分支重命名**
+
+```shell
+git branch -m old-name new-name
+```
+
+**远程分支重命名**
+
+> - 1、将远程分支删除掉
+> - 2、将本地分支重命名
+> - 3、将本地分支推到远程
+
+比如：将远程的dev重命名为develop
+
+```cpp
+git push --delete origin dev
+git branch -m dev develop
+git push origin develop
+```
+
+
+
+## 进阶操作
+
+
 
 ### 修改最后一次提交
 
@@ -333,6 +428,91 @@ git commit -a -m "添加忽略文件“
 git push
 ```
 
+
+
+
+
+## Tag标签
+
+```shell
+git tag					# 查看标签
+git tag <标签名称>		 # 创建一个标签
+git tag -a <标签名称>	 # 创建一个带注解的标签，会打开编辑器输入
+git tag -a <标签名称> -m "注解信息"	# 创建一个带注解的标签，直接指定注解信息
+git tag -d 标签名	 	  # 删除本地标签
+git push origin 标签名   # 推送远程标签
+```
+
+
+
+
+
+
+## 其他
+
+### bug分支
+
+修复bug时，我们会通过创建新的bug分支进行修复，然后合并，最后删除。当手头工作没有完成时，先用git stash储藏现在的工作，然后去修复bug，修复后，再使用git stash pop，回到工作现场。
+
+在master分支上修复的bug，想要合并到当前dev分支，可以用git cherry-pick <commitid>命令，把bug提交的修改“复制”到当前分支，避免重复劳动。
+
+
+
+### 多人协作
+
+查看远程库信息，使用git remote -v命令，本地新建的分支如果不推送到远程，对其他人就是不可见的。
+
+从本地推送分支，使用git push origin (branchname)命令，如果推送失败，先用git pull命令抓取远程的新提交。
+
+在本地创建和远程分支对应的分支，使用git checkout -b (branchname) origin/(branchname)，本地和远程分支的名称最好一致。
+
+建立本地分支和远程分支的关联，使用git branch --set-upstream (branchname) origin/(branchname)。
+
+从远程抓取分支，使用git pull，如果有冲突，要先处理冲突。
+
+
+
+
+
+
+### 版本回退
+
+用git checkout -- file命令可以撤销文件在工作区的修改，撤到最近一次commit 或add时的状态。
+
+用git reset --hard HEAD^ 可以退到上一个版本，
+
+用git reset --hard (commitid) 可以恢复到相应的版本。
+
+git revert命令用来撤销某次操作，此次操作之前和之后的commit和history都会保留，并且把这次撤销作为一次最新的提交。
+
+
+
+
+
+### reset 命令回滚选项
+
+移动HEAD的指向，将其指向上一个快照，将HEAD移动后指向的快照回滚到暂存区域
+
+```bash
+git reset --mixed HEAD~
+```
+
+移动HEAD的指向，将其指向上一个快照，相当于撤销最近一次的commit提交
+
+```bash
+git reset --soft HEAD~
+```
+
+移动HEAD的指向，将其指向上一个快照，将HEAD移动后指向的快照回滚到暂存区域，将暂存区域的文件还原到工作目录
+
+```bash
+git reset --hard HEAD~
+
+git reset --hard commit_id
+```
+
+
+
 ### git 版本回退
 
 查看日志
@@ -355,35 +535,15 @@ $ git push origin HEAD --force
 
 
 
-### 重命名分支
-
-**一：本地分支重命名**
-
-```shell
-git branch -m old-name new-name
-```
-
-**二：远程分支重命名**
-
-> - 1、将远程分支删除掉
-> - 2、将本地分支重命名
-> - 3、将本地分支推到远程
-
-比如：将远程的dev重命名为develop
-
-```cpp
-git push --delete origin dev
-git branch -m dev develop
-git push origin develop
-```
 
 
 
-### Tag标签
 
-```shell
-git tag					# 查看标记
-git tag <标记名称>		 # 标记名称
-git tag -d 标记名	 	  # 删除本地标记
-git push origin 标记名   # 推送远程标记
-```
+
+
+
+
+
+
+
+
