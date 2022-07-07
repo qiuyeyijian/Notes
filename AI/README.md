@@ -10,7 +10,7 @@
 
 ## 安装Anaconda或者Miniconda
 
-下载Mniconda3，使用默认选项，不需要将Mniconda3加入环境变量，安装完成后打开Anaconda Prompt。
+下载Mniconda3，使用默认选项，安装完成后打开Anaconda Prompt。
 
 ## 更换镜像源
 
@@ -33,24 +33,22 @@ pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
 
 
-
-
 ## 常用命令
 
 ```bash
 conda env list		# 列出环境
 conda active xxx		# 使用xxx环境
-conda install nump		# 安装软件
-conda update numpy
-conda remove numpy
+conda install xxx		# 安装软件
+conda update xxx		# 更新软件
+conda remove xxx		# 删除软件
 conda clean --all		# 清除不完整安装缓存
 ```
 
 ```bash
-# 指定python版本为2.7，注意至少需要指定python版本或者要安装的包
-# 后一种情况下，自动安装最新python版本
+# 指定python版本为2.7，注意至少需要指定python版本或者要安装的包，否则自动安装最新python版本
 conda create -n env_name python=2.7
-conda remove -n env_name --all				# 移除环境
+# 移除环境，删除该环境安装的所有软件
+conda remove -n env_name --all				
 ```
 
 ```bash
@@ -58,10 +56,8 @@ conda list			# 查看环境内可用软件包的指令
 pip list			# 查看已下载的软件包
 ```
 
-
-
-```basb
-conda install --offline ./cudnn-7.tar.bz2
+```bash
+conda install --offline ./cudnn-7.tar.bz2			# 离线安装
 ```
 
 

@@ -686,3 +686,10 @@ tar -xzvf filename.tar.gz -C /usr/temp/				//解压缩到指定目录下
 
 
 
+
+
+# 文本处理命令
+
+## 一些linux命令积累——字符串处理相关
+
+https://blog.csdn.net/LoseInVain/article/details/120272575
