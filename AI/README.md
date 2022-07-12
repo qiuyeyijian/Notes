@@ -12,9 +12,33 @@
 
 下载Mniconda3，使用默认选项，安装完成后打开Anaconda Prompt。
 
-## 更换镜像源
+Conda是一种通用包管理系统，旨在构建和管理任何语言和任何类型的软件。包管理与pip的使用类似，环境管理则允许用户方便地安装不同版本的python并可以快速切换。此外，基于虚拟环境安装的软件对于物理机没有入侵性。只要删除虚拟环境，则该环境下的所有软件都会被删除，不会有垃圾文件产生。
 
-```cpp
+而Miniconda是一款小巧的python环境管理工具，其安装程序中包含conda软件包管理器和Python，以及相关的必须依赖项，对于空间要求严格的用户，Miniconda是一种选择。就只包含最基本的东西，其他的库得自己装。
+
+#### 安装
+
+> 下载链接：https://docs.conda.io/en/latest/miniconda.html
+
+对于Miniconda的安装也是使用默认选项即可，安装完成后需要将以下三个目录加入到系统环境变量中，其中`D:\Software\Miniconda3`是Miniconda的安装目录。
+
+![image-20220705110517286](assets/README/image-20220705110517286.png)
+
+打开CMD终端，输入`conda -V`查看效果
+
+![image-20220705110956626](assets/README/image-20220705110956626.png)
+
+
+
+#### 更换镜像源
+
+可以使用国内的软件镜像源，这样可以加快安装速度。打开CMD终端，输入`conda activate root` 激活root虚拟环境，这个root也是最基本的虚拟环境，不可以删除。激活后，前面会有`(base)`标志。
+
+![image-20220705111618435](assets/README/image-20220705111618435.png)
+
+然后输入如下命令，回车即可。
+
+```bash
 conda config --add channels https://mirrors.bfsu.edu.cn/anaconda/pkgs/free/
 conda config --add channels https://mirrors.bfsu.edu.cn/anaconda/pkgs/main/
 conda config --add channels https://mirrors.bfsu.edu.cn/anaconda/cloud/conda-forge/
@@ -59,10 +83,6 @@ pip list			# 查看已下载的软件包
 ```bash
 conda install --offline ./cudnn-7.tar.bz2			# 离线安装
 ```
-
-
-
-
 
 
 
