@@ -33,8 +33,6 @@ HEAD，它指向你最后一次提交的结果。
 
 
 
-
-
 ## 基本命令
 
 ### 全局配置
@@ -67,7 +65,6 @@ git status		# 列出已缓存、未缓存、未追踪的文件
 git log					# 查看日志信息
 git log --decorate --oneline --graph --all   # 以图形的形式显示分支信息
 git log --oneline		# 将每个提交压缩到一行。当你需要查看项目历史的上层情况时这会很有用。
-
 ```
 
 用git log可以查看提交历史。如果觉得太繁琐，可以用git log --pretty=oneline，只显示版本号和提交的备注信息。
@@ -287,10 +284,6 @@ git merge upstream/master
 ```shell
 git push
 ```
-
-
-
-
 
 
 

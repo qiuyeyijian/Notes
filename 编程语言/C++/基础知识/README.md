@@ -847,6 +847,28 @@ std::sort(vec.begin(), vec.end(), [](const string & a, const string & b) {return
 
 
 
+## C/C++ 宏定义中#、##和#@
+
+\#表示：对应变量字符串化  
+
+\##表示：把宏参数名与宏定义代码序列中的标识符连接在一起，形成一个新的标识符
+
+连接符#@：它将单字符标记符变换为单字符，即加单引号。例如：
+
+\#define B(x) #@x
+
+ 则B(a)即'a'，B(1)即'1'，但B(abc)却不甚有效。
+
+
+
+## 位域
+
+https://blog.csdn.net/zhengnianli/article/details/87386078
+
+
+
+
+
 
 
 
