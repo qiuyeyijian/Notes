@@ -126,6 +126,7 @@ vector<int> v1;		//定义元素为int的向量v1
 vector<int> v2(10);		//定义v2, 初始大小为1
 vector<double> v3(10, 1.23);	//指定v3的10个初始元素的初值为1.23
 vector<int> v4(a, a+5);		//用数组a[0..4] 共5个元素初始化v4
+vector<vector<vector<int>>> vec(n1, vector<vector<int>>(n2, vector<int>(n3, 0)));
 vector<vector<int>> vec(row, vector<int> (col,1));
 ```
 
