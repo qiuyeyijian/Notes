@@ -845,6 +845,27 @@ map中不允许关键字重复出现，支持`[]`运算符。而multimap中允�
 
 
 
+判断map容器内是否有某个元素，不能使用`mp[key]`来判断，因为这会插入mp本来不存在的元素。
+
+```cpp
+std::unordered_map<int, int> mp;
+cout << mp.size() << endl;
+if (mp[8] != 0){}
+cout << mp.size() << endl;
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## map和unordered_map
 
 C++中map和unordered_map提供的是一种键值对容器，在实际开发中会经常用到，它跟Python的字典很类似，所有的数据都是成对出现的,每一对中的第一个值称之为关键字(key)，每个关键字只能在map中出现一次；第二个称之为该关键字的对应值(value)。

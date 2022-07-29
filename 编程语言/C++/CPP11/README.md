@@ -2556,7 +2556,7 @@ Person类可以直接访问匿名非受限联合体内部的数据成员。
 
 > A Mersenne Twister pseudo-random generator of 32-bit numbers with a state size of 19937 bits.
 
-`mt`是因为这个伪随机数产生器基于`Mersenne Twister`算法。 `19937`是因为产生随的机数的周期长，可达到`2^19937-1`
+`mt`是因为这个伪随机数产生器基于`Mersenne Twister`算法。 `19937`是因为产生随机数的周期长，可达到`2^19937-1`
 
 `std::mt19937`是伪随机数产生器，用于产生高性能的随机数。 `C++11`引入。返回值为`unsigned int`。接收一个`unsigned int`数作为种子。所以可以如下定义：
 

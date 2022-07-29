@@ -762,3 +762,5 @@ TEST_F(DISABLED_BarTest, DoesXyz) {...}
 * [GTest使用教程](https://www.cnblogs.com/jycboy/p/gtest_AdvancedGuide.html)
 
 * [玩转Google开源C++单元测试框架Google Test系列(gtest)](https://www.cnblogs.com/coderzh/archive/2009/04/06/1430364.html)
+
+* [技术: Gtest测试框架](https://wizardmerlin.github.io/posts/140bfd50/#%E5%BC%95%E5%AD%90)

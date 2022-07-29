@@ -379,6 +379,23 @@ git push origin develop
 
 
 
+### 拉取指定分支
+
+```bash
+git fetch origin dev
+git pull --all
+```
+
+
+
+
+
+
+
+
+
+
+
 ## 进阶操作
 
 
@@ -440,6 +457,66 @@ git push origin 标签名   # 推送远程标签
 
 
 
+## 版本回退与撤销
+
+### reset 命令回滚选项
+
+移动HEAD的指向，将其指向上一个快照，将HEAD移动后指向的快照回滚到暂存区域
+
+```bash
+git reset --mixed HEAD~
+```
+
+移动HEAD的指向，将其指向上一个快照，相当于撤销最近一次的commit提交
+
+```bash
+git reset --soft HEAD~
+```
+
+移动HEAD的指向，将其指向上一个快照，将HEAD移动后指向的快照回滚到暂存区域，将暂存区域的文件还原到工作目录
+
+```bash
+git reset --hard HEAD~
+
+git reset --hard commit_id
+```
+
+
+
+
+
+### git 版本回退与撤销
+
+查看日志
+
+```bash
+$ git log --pretty
+```
+
+本地回退
+
+```bash
+$ git reset --hard commit_id(commit字符)
+```
+
+将远程同步
+
+```bash
+$ git push origin HEAD --force
+```
+
+
+
+### revert
+
+git revert命令用来撤销某次操作，此次操作之前和之后的commit和history都会保留，并且把这次撤销作为一次最新的提交。
+
+
+
+
+
+
+
 
 ## 其他
 
@@ -476,55 +553,7 @@ git push origin 标签名   # 推送远程标签
 
 用git reset --hard (commitid) 可以恢复到相应的版本。
 
-git revert命令用来撤销某次操作，此次操作之前和之后的commit和history都会保留，并且把这次撤销作为一次最新的提交。
 
-
-
-
-
-### reset 命令回滚选项
-
-移动HEAD的指向，将其指向上一个快照，将HEAD移动后指向的快照回滚到暂存区域
-
-```bash
-git reset --mixed HEAD~
-```
-
-移动HEAD的指向，将其指向上一个快照，相当于撤销最近一次的commit提交
-
-```bash
-git reset --soft HEAD~
-```
-
-移动HEAD的指向，将其指向上一个快照，将HEAD移动后指向的快照回滚到暂存区域，将暂存区域的文件还原到工作目录
-
-```bash
-git reset --hard HEAD~
-
-git reset --hard commit_id
-```
-
-
-
-### git 版本回退
-
-查看日志
-
-```bash
-$ git log --pretty
-```
-
-本地回退
-
-```bash
-$ git reset --hard commit_id(commit字符)
-```
-
-将远程同步
-
-```bash
-$ git push origin HEAD --force
-```
 
 
 
