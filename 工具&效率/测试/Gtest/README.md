@@ -513,25 +513,25 @@ class TestFixtures : public ::testing::Test {
 public:
     TestFixtures() {
         printf("\n==========TestFixtures construct==========\n");
-    };
+    }
     ~TestFixtures() {
         printf("\n========TestFixtures distroyed=============\n");
     }
 protected:
     void SetUp() {
         printf("\n=========测试特例处理开始==========\n");
-    };
+    }
     void TearDown() {
         printf("\n=========测试特例处理结束==========\n");
-    };
+    }
 
     static void SetUpTestCase() {
         printf("\n==============测试用例处理开始=================\n");
-    };
+    }
 
     static void TearDownTestCase() {
         printf("\n===============测试用例处理结束=================\n");
-    };
+    }
 };
 
 TEST_F(TestFixtures, success) {

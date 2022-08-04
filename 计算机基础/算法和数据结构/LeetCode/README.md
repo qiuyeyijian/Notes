@@ -203,6 +203,33 @@ public:
 
 
 
+### [8. 字符串转换整数 (atoi)](https://leetcode.cn/problems/string-to-integer-atoi/)
+
+```cpp
+class Solution {
+public:
+    int myAtoi(string s) {
+	int i = 0;
+
+	while (s[i] == ' ') i++;
+    string str = s.substr(i);
+
+    try
+	{
+		return std::stoi(str);
+	}
+	catch (const std::invalid_argument&)
+	{
+		return 0;
+	}
+    catch (const std::out_of_range&) {
+        return str[0] == '-' ? -2147483648 : 2147483647;
+    }
+
+    }
+};
+```
+
 
 
 
