@@ -1400,12 +1400,11 @@ std::sort(v.begin(), v.end(), greater<int>());
 您需要使用`shuffle`，它将随机生成器作为参数。
 
 ```cpp
-std::random_device rd;
-std::mt19937 g(rd());
+std::mt19937 rd(std::random_device{}());
 
 vector<int> v = {1, 2, 3, 4, 5};
 
-std::shuffle(v.begin(), v.end(), g);
+std::shuffle(v.begin(), v.end(), rd);
 ```
 
 

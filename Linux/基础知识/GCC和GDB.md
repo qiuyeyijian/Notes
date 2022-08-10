@@ -4,6 +4,8 @@ GCC 是 Linux 下的编译工具集，是 GNU Compiler Collection 的缩写，�
 
 GCC 工具集不仅能编译 C/C++ 语言，其他例如 Objective-C、Pascal、Fortran、Java、Ada 等语言均能进行编译。GCC 在可以根据不同的硬件平台进行编译，即能进行交叉编译，在 A 平台上编译 B 平台的程序，支持常见的 X86、ARM、PowerPC、mips 等，以及 Linux、Windows 等软件平台。
 
+https://www.cnblogs.com/welhzh/p/6730839.html
+
 ## GCC工作流程
 
 预处理：在这个阶段主要做了三件事: **展开头文件 、宏替换 、去掉注释行**。这个阶段需要 GCC 调用预处理器来完成，最终得到的还是源文件，文本格式

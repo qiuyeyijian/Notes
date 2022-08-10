@@ -1,6 +1,8 @@
 # CMake
 
-CMakeLists.txt 的语法比较简单，由命令、注释和空格组成，其中命令是不区分大小写的。符号 # 后面的内容被认为是注释。命令由命令名称、小括号和参数组成，参数之间使用空格进行间隔。
+CMakeLists.txt 的语法比较简单，由命令、注释和空格组成，其中命令是不区分大小写的。符号 `#` 后面的内容被认为是注释。命令由命令名称、小括号和参数组成，参数之间使用空格进行间隔。
+
+
 
 ##  CMake命令行说明
 
@@ -32,13 +34,66 @@ cmake -E environment
 
 ## 常用命令
 
-**cmake_minimum_required(VERSION 3.4.1)**
+### cmake_minimum_required
 
-指定需要的最小的cmake版本
+ 设置项目要求的CMake最低版本号，如果当前版本的CMake低于所需的值，它将停止处理项目并报告错误。注意在`project`之前调用该命令，一般在CMakeLists.txt文件开头调用。命令格式为：
+
+```cmake
+cmake_minimum_required(VERSION major.minor[.patch[.tweak]]
+                       [FATAL_ERROR])
+```
+
+```cmake
+cmake_minimum_required(VERSION 3.0)
+```
+
+
+
+### project
+
+ 为整个工程设置一个工程名。命令格式为：
+
+```xml
+project(<PROJECT-NAME>
+        [VERSION <major>[.<minor>[.<patch>[.<tweak>]]]]
+        [LANGUAGES <language-name>...])
+```
+
+```undefined
+project (HelloCMake)
+```
+
+### add_executable
+
+ 使用指定的源文件给项目添加一个可执行文件。命令格式为：
+
+```css
+add_executable(<name> [WIN32] [MACOSX_BUNDLE]
+               [EXCLUDE_FROM_ALL]
+               source1 [source2 ...])
+```
+
+ name：该命令调用列出的源文件来构建的可执行目标<name>。 <name>对应于逻辑目标名称，在项目中必须是全局唯一的。构建的可执行文件的实际文件名是基于本机平台的约定。
+
+WIN32：如果给出WIN32，则在创建的目标上设置属性WIN32_EXECUTABLE。
+
+MACOSX_BUNDLE：如果给定MACOSX_BUNDLE，将在创建的目标上设置相应的属性。
+
+EXCLUDE_FROM_ALL：如果给定EXCLUDE_FROM_ALL，将在创建的目标上设置相应的属性。
+
+source：源码列表。
+
+```css
+add_executable(HelloCMake hello_cmake.c)
+```
+
+
 
 ### aux_source_directory
 
-查找源文件并保存到相应的变量中:
+```cmake
+aux_source_directory(<dir> <variable>)
+```
 
 ```bash
 #查找当前目录下所有源文件并保存至SRC_LIST变量中
@@ -54,9 +109,11 @@ add_library(<name> [STATIC | SHARED | MODULE] [EXCLUDE_FROM_ALL] source1 source2
 ```
 
 - 添加一个名为`<name>`的库文件
-- 指定`STATIC, SHARED, MODULE`参数来指定要创建的库的类型, `STATIC`对应的静态库(.a)，`SHARED`对应共享动态库(.so)
+- 指定`STATIC, SHARED, MODULE`参数来指定要创建的库的类型, `STATIC`对应的静态库(.a)，`SHARED`对应共享动态库(.so)，`MODULE`不会被链接到其它目标中，但是可能会在运行时使用dlopen-系列的函数动态链接。如果不显示指定类型，默认是静态链接库。
 - `[EXCLUDE_FROM_ALL]`, 如果指定了这一属性，对应的一些属性会在目标被创建时被设置(**指明此目录和子目录中所有的目标，是否应当从默认构建中排除, 子目录的IDE工程文件/Makefile将从顶级IDE工程文件/Makefile中排除**)
 - `source1 source2 ... sourceN`用来指定源文件
+
+
 
 #### 导入已有的库
 
@@ -73,7 +130,35 @@ set_target_properties(  test #指定目标库名称
                         libs/src/${ANDROID_ABI}/libtest.so #设定导入库的路径)
 ```
 
-## 4. set
+### set_target_properties
+
+设置目标的一些属性来改变它们构建的方式。命令格式为：
+
+```undefined
+set_target_properties(target1 target2 ...
+                      PROPERTIES prop1 value1
+                      prop2 value2 ...)
+```
+
+使用示例为：
+
+```bash
+set_target_properties(cocos2d
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    VERSION "${COCOS2D_X_VERSION}"
+)
+```
+
+**string**：
+ 字符串相关操作。命令格式为：
+
+
+
+
+
+### set
 
 设置CMake变量
 
@@ -97,16 +182,16 @@ set(CMAKE_CXX_FLAGS "-Wall std=c++11")
 set(SOURCE_FILES main.cpp test.cpp ...)
 ```
 
-## 5. include_directories
+### include_directories
 
 设置头文件位置
 
 ```ruby
-# 可以用相对货绝对路径，也可以用自定义的变量值
+# 可以用相对或绝对路径，也可以用自定义的变量值
 include_directories(./include ${MY_INCLUDE})
 ```
 
-## 6. add_executable
+### add_executable
 
 添加可执行文件
 
@@ -114,7 +199,7 @@ include_directories(./include ${MY_INCLUDE})
 add_executable(<name> ${SRC_LIST})
 ```
 
-## 7. target_link_libraries
+### target_link_libraries
 
 将若干库链接到目标库文件
 
@@ -127,19 +212,37 @@ target_link_libraries(<name> lib1 lib2 lib3)
 > NOTE: 链接的顺序应当符合gcc链接顺序规则，被链接的库放在依赖它的库的后面，即如果上面的命令中，lib1依赖于lib2, lib2又依赖于lib3，则在上面命令中必须严格按照`lib1 lib2 lib3`的顺序排列，否则会报错
 >  也可以自定义链接选项, 比如针对lib1使用`-WL`选项,`target_link_libraries(<name> lib1 -WL, lib2 lib3)`
 
-## 8. add_definitions
+### add_definitions
 
-为当前路径以及子目录的源文件加入由`-D`引入得`define flag`
+为当前路径以及子目录的源文件加入由`-D`引入的宏定义
 
-```undefined
-add_definitions(-DFOO -DDEBUG ...)
+```CMAKE
+add_definitions(-DFOO -DBAR ...)
 ```
 
-## 9. add_subdirectory
+```cmake
+// 例如，添加宏定义WIN32
+add_definitions(-DWIN32)
+```
+
+
+
+### add_dependencies
+
+ 使顶级目标依赖于其他顶级目标，以确保它们在该目标之前构建。这里的顶级目标是由`add_executable`，`add_library`或`add_custom_target`命令之一创建的目标。
+ 使用示例：
+
+```bash
+add_custom_target(mylib DEPENDS ${MYLIB})
+add_executable(${APP_NAME} ${SRC_LIST})
+add_dependencies(${APP_NAME} mylib)
+```
+
+
+
+### add_subdirectory
 
 如果当前目录下还有子目录时可以使用`add_subdirectory`，子目录中也需要包含有`CMakeLists.txt`
-
-
 
 ```bash
 # sub_dir指定包含CMakeLists.txt和源码文件的子目录位置
@@ -147,25 +250,19 @@ add_definitions(-DFOO -DDEBUG ...)
 add_subdirecroty(sub_dir [binary_dir])
 ```
 
-## 10. file
+### file
 
 文件操作命令
-
-
 
 ```bash
 # 将message写入filename文件中,会覆盖文件原有内容
 file(WRITE filename "message")
 ```
 
-
-
 ```bash
 # 将message写入filename文件中，会追加在文件末尾
 file(APPEND filename "message")
 ```
-
-
 
 ```csharp
 # 从filename文件中读取内容并存储到var变量中，如果指定了numBytes和offset，
@@ -173,28 +270,20 @@ file(APPEND filename "message")
 file(READ filename var [LIMIT numBytes] [OFFSET offset] [HEX])
 ```
 
-
-
 ```xml
 # 重命名文件
 file(RENAME <oldname> <newname>)
 ```
-
-
 
 ```bash
 # 删除文件， 等于rm命令
 file(REMOVE [file1 ...])
 ```
 
-
-
 ```bash
 # 递归的执行删除文件命令, 等于rm -r
 file(REMOVE_RECURSE [file1 ...])
 ```
-
-
 
 ```css
 # 根据指定的url下载文件
@@ -202,28 +291,20 @@ file(REMOVE_RECURSE [file1 ...])
 file(DOWNLOAD url file [TIMEOUT timeout] [STATUS status] [LOG log] [EXPECTED_MD5 sum] [SHOW_PROGRESS])
 ```
 
-
-
 ```bash
 # 创建目录
 file(MAKE_DIRECTORY [dir1 dir2 ...])
 ```
-
-
 
 ```bash
 # 会把path转换为以unix的/开头的cmake风格路径,保存在result中
 file(TO_CMAKE_PATH path result)
 ```
 
-
-
 ```objectivec
 # 它会把cmake风格的路径转换为本地路径风格：windows下用"\"，而unix下用"/"
 file(TO_NATIVE_PATH path result)
 ```
-
-
 
 ```css
 # 将会为所有匹配查询表达式的文件生成一个文件list，并将该list存储进变量variable里, 如果一个表达式指定了RELATIVE, 返回的结果将会是相对于给定路径的相对路径, 查询表达式例子: *.cxx, *.vt?
@@ -231,11 +312,9 @@ NOTE: 按照官方文档的说法，不建议使用file的GLOB指令来收集工
 file(GLOB variable [RELATIVE path] [globbing expressions]...)
 ```
 
-## 11. set_directory_properties
+### set_directory_properties
 
 设置某个路径的一种属性
-
-
 
 ```undefined
 set_directory_properties(PROPERTIES prop1 value1 prop2 value2)
@@ -248,11 +327,9 @@ set_directory_properties(PROPERTIES prop1 value1 prop2 value2)
 - INCLUDE_REGULAR_EXPRESSION
 - ADDITIONAL_MAKE_CLEAN_FILES
 
-## 12. set_property
+### set_property
 
 在给定的作用域内设置一个命名的属性
-
-
 
 ```csharp
 set_property(<GLOBAL | 
@@ -278,307 +355,8 @@ set_property(<GLOBAL |
 
 
 
-
-
-
-
-
-
-## CMake语法及CMakeLists.txt编写
-
-用CMake构建一个项目工程，是通过一个或多个CMakeLists.txt文件来控制的。CMakeLists.txt中包含一系列命令来描述需要执行的构建。在CMakeLists.txt中的命令的语法，都是形如下面这种格式：
-
-```bash
-# command：是命令的名字。args：是参数的列表，多个参数使用空格隔开。
-command(args...)
-```
-
-
-
-### 常用的命令
-
-**cmake_minimum_required**：
- 设置项目要求的CMake最低版本号，如果当前版本的CMake低于所需的值，它将停止处理项目并报告错误。注意在`project`之前调用该命令，一般在CMakeLists.txt文件开头调用。命令格式为：
-
-```css
-cmake_minimum_required(VERSION major.minor[.patch[.tweak]]
-                       [FATAL_ERROR])
-```
-
-```css
-cmake_minimum_required(VERSION 3.0)
-```
-
-**add_custom_command**：
- 该命令可以为生成的构建系统添加一条自定义的构建规则。这里又包含两种使用方式，一种是通过自定义命令在构建中生成输出文件，另外一种是向构建目标添加自定义命令。命令格式分别为：
- (1)生成文件
-
-```csharp
-add_custom_command(OUTPUT output1 [output2 ...]
-                   COMMAND command1 [ARGS] [args1...]
-                   [COMMAND command2 [ARGS] [args2...] ...]
-                   [MAIN_DEPENDENCY depend]
-                   [DEPENDS [depends...]]
-                   [BYPRODUCTS [files...]]
-                   [IMPLICIT_DEPENDS <lang1> depend1
-                                    [<lang2> depend2] ...]
-                   [WORKING_DIRECTORY dir]
-                   [COMMENT comment]
-                   [DEPFILE depfile]
-                   [VERBATIM] [APPEND] [USES_TERMINAL])
-```
-
-参数介绍：
- OUTPUT：
- 指定命令预期产生的输出文件。如果输出文件的名称是相对路径，即相对于当前的构建的源目录路径。输出文件可以指定多个output1,output2(可选)等。
-
-COMMAND：
- 指定要在构建时执行的命令行。如果指定多个COMMAND，它们讲按顺心执行。`ARGS`参数是为了向后兼容，为可选参数。args1和args2为参数，多个参数用空格隔开。
-
-MAIN_DEPENDENCY：
- 可选命令，指定命令的主要输入源文件。
-
-DEPENDS：
- 指定命令所依赖的文件。
-
-BYPRODUCTS：
- 可选命令，指定命令预期产生的文件，但其修改时间可能会比依赖性更新，也可能不会更新。
-
-IMPLICIT_DEPENDS：
- 可选命令，请求扫描输入文件的隐式依赖关系。给定的语言指定应使用相应的依赖性扫描器的编程语言。目前只支持C和CXX语言扫描器。必须为IMPLICIT_DEPENDS列表中的每个文件指定语言。从扫描中发现的依赖关系在构建时添加到自定义命令的依赖关系。请注意，IMPLICIT_DEPENDS选项目前仅支持Makefile生成器，并且将被其他生成器忽略。
-
-WORKING_DIRECTORY：
- 可选命令，使用给定的当前工作目录执行命令。如果它是相对路径，它将相对于对应于当前源目录的构建树目录。
-
-COMMENT：
- 可选命令，在构建时执行命令之前显示给定消息。
-
-DEPFILE：
- 可选命令，为Ninja生成器指定一个`.d` depfile。 `.d`文件保存通常由自定义命令本身发出的依赖关系。对其他生成器使用DEPFILE是一个错误。
-
-使用实例：
-
-
-
-```bash
-add_executable(MakeTable MakeTable.cxx) 
-add_custom_command (
-  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Table.h
-  COMMAND MakeTable ${CMAKE_CURRENT_BINARY_DIR}/Table.h
-  DEPENDS MakeTable
-  COMMENT "This is a test"
-  )
-```
-
-(2)自定义构建事件
-
-```csharp
-add_custom_command(TARGET <target>
-                   PRE_BUILD | PRE_LINK | POST_BUILD
-                   COMMAND command1 [ARGS] [args1...]
-                   [COMMAND command2 [ARGS] [args2...] ...]
-                   [BYPRODUCTS [files...]]
-                   [WORKING_DIRECTORY dir]
-                   [COMMENT comment]
-                   [VERBATIM] [USES_TERMINAL])
-```
-
-参数介绍：
- TARGET：
- 定义了与构建指定<target>相关联的新命令。当<target>已经存在是，相应的command将不再执行。
-
-PRE_BUILD：
- 在目标中执行任何其他规则之前运行。这仅在Visual Studio 7或更高版本上受支持。对于所有其他生成器PRE_BUILD将被视为PRE_LINK。
-
-PRE_LINK：
- 在编译源之后运行，但在链接二进制文件或运行静态库的库管理器或存档器工具之前运行。
-
-POST_BUILD：
- 在目标中的所有其他规则都已执行后运行。
-
-使用实例：
-
-```bash
-  add_custom_command(TARGET ${APP_NAME} 
-             PRE_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Resources ${CMAKE_CURRENT_BINARY_DIR})
-```
-
-**add_custom_target**：
- 该命令可以给指定名称的目标执行指定的命令，该目标没有输出文件，并始终被构建。命令的格式为：
-
-
-
-```css
-add_custom_target(Name [ALL] [command1 [args1...]]
-                  [COMMAND command2 [args2...] ...]
-                  [DEPENDS depend depend depend ... ]
-                  [BYPRODUCTS [files...]]
-                  [WORKING_DIRECTORY dir]
-                  [COMMENT comment]
-                  [VERBATIM] [USES_TERMINAL]
-                  [SOURCES src1 [src2...]])
-```
-
-参数介绍(上面介绍过含义相同的参数，这里就不再赘述了)：
- Name：
- 指定目标的名称。
-
-ALL：
- 表明此目标应添加到默认构建目标，以便每次都将运行（该命令名称不能为ALL）
-
-SOURCES：
- 指定要包括在自定义目标中的其他源文件。指定的源文件将被添加到IDE项目文件中，以方便编辑，即使它们没有构建规则。
-
-使用示例：
-
-
-
-```bash
-add_custom_target(APP ALL
-      DEPENDS ${APP_NAME} # 依赖add_custom_command输出的jar包
-      COMMENT "building cassdk_jni.jar"
-    )
-```
-
-**add_definitions**：
- 为源文件的编译添加由-D引入的宏定义。命令格式为：
-
-
-
-```undefined
-add_definitions(-DFOO -DBAR ...)
-```
-
-使用示例：
-
-
-
-```undefined
-add_definitions(-DWIN32)
-```
-
-**add_dependencies**：
- 使顶级目标依赖于其他顶级目标，以确保它们在该目标之前构建。这里的顶级目标是由`add_executable`，`add_library`或`add_custom_target`命令之一创建的目标。
- 使用示例：
-
-
-
-```bash
-add_custom_target(mylib DEPENDS ${MYLIB})
-add_executable(${APP_NAME} ${SRC_LIST})
-add_dependencies(${APP_NAME} mylib)
-```
-
-**add_executable**：
- 使用指定的源文件给项目添加一个可执行文件。命令格式为：
-
-
-
-```css
-add_executable(<name> [WIN32] [MACOSX_BUNDLE]
-               [EXCLUDE_FROM_ALL]
-               source1 [source2 ...])
-```
-
-参数介绍：
- name：
- 该命令调用列出的源文件来构建的可执行目标<name>。 <name>对应于逻辑目标名称，在项目中必须是全局唯一的。构建的可执行文件的实际文件名是基于本机平台的约定。
-
-WIN32：
- 如果给出WIN32，则在创建的目标上设置属性WIN32_EXECUTABLE。
-
-MACOSX_BUNDLE:
- 如果给定MACOSX_BUNDLE，将在创建的目标上设置相应的属性。
-
-EXCLUDE_FROM_ALL：
- 如果给定EXCLUDE_FROM_ALL，将在创建的目标上设置相应的属性。
-
-source：
- 源码列表。
-
-使用示例：
-
-
-
-```css
-add_executable(HelloCMake hello_cmake.c)
-```
-
-**add_library**：
- 使用指定的源文件给项目添加一个库。命令格式为：
-
-
-
-```css
-add_library(<name> [STATIC | SHARED | MODULE]
-            [EXCLUDE_FROM_ALL]
-            source1 [source2 ...])
-```
-
-参数介绍：
- name：
- 该命令调用列出的源文件来构建的库目标<name>。<name>对应于逻辑目标名称，在项目中必须是全局唯一的。
-
-STATIC：
- 静态库，在链接其他目标时使用。
-
-SHARED：
- 动态链接库，运行时加载。
-
-MODULE：
- 不会被链接到其它目标中，但是可能会在运行时使用dlopen-系列的函数动态链接。
-
-使用示例：
-
-
-
-```css
-add_library(HelloCMake hello_cmake.c)
-```
-
-**add_subdirectory**:
- 向构建中添加子目录。命令格式为：
-
-
-
-```css
-add_subdirectory(source_dir [binary_dir]
-                 [EXCLUDE_FROM_ALL])
-```
-
-使用示例：
-
-
-
-```bash
-add_subdirectory(${SRC_ROOT})
-```
-
-**aux_source_directory**：
- 查找目录中的所有源文件。命令格式为：
-
-
-
-```xml
-aux_source_directory(<dir> <variable>)
-```
-
-查找指定目录dir中所有源文件的名称，并将列表存储在提供的variable中。
-
-使用示例：
-
-
-
-```bash
-aux_source_directory(. DIR_SRCS)
-add_executable(${APP_NAME} ${DIR_SRCS})
-```
-
-**configure_file**：
+### configure_file
  将文件复制到其他位置并修改其内容。命令格式为：
-
-
 
 ```css
 configure_file(<input> <output>
@@ -586,94 +364,23 @@ configure_file(<input> <output>
                [NEWLINE_STYLE [UNIX|DOS|WIN32|LF|CRLF] ])
 ```
 
-使用示例：
-
-
-
 ```bash
-configure_file (
-  "${PROJECT_SOURCE_DIR}/Config.h.in"
-  "${PROJECT_BINARY_DIR}/Config.h"
-  )
+configure_file("${PROJECT_SOURCE_DIR}/TutorialConfig.in" "${PROJECT_SOURCE_DIR}/TutorialConfig.h")
 ```
 
-**file**：
- 文件操作相关的命令。命令格式为：
-
-
-
-```xml
-file(WRITE <filename> <content>...)
-file(APPEND <filename> <content>...)
-file(READ <filename> <variable>
-     [OFFSET <offset>] [LIMIT <max-in>] [HEX])
-file(STRINGS <filename> <variable> [<options>...])
-file(<MD5|SHA1|SHA224|SHA256|SHA384|SHA512> <filename> <variable>)
-file(GLOB <variable>
-     [LIST_DIRECTORIES true|false] [RELATIVE <path>]
-     [<globbing-expressions>...])
-file(GLOB_RECURSE <variable> [FOLLOW_SYMLINKS]
-     [LIST_DIRECTORIES true|false] [RELATIVE <path>]
-     [<globbing-expressions>...])
-file(RENAME <oldname> <newname>)
-file(REMOVE [<files>...])
-file(REMOVE_RECURSE [<files>...])
-file(MAKE_DIRECTORY [<directories>...])
-file(RELATIVE_PATH <variable> <directory> <file>)
-file(TO_CMAKE_PATH "<path>" <variable>)
-file(TO_NATIVE_PATH "<path>" <variable>)
-file(DOWNLOAD <url> <file> [<options>...])
-file(UPLOAD   <file> <url> [<options>...])
-file(TIMESTAMP <filename> <variable> [<format>] [UTC])
-file(GENERATE OUTPUT output-file
-     <INPUT input-file|CONTENT content>
-     [CONDITION expression])
-file(<COPY|INSTALL> <files>... DESTINATION <dir>
-     [FILE_PERMISSIONS <permissions>...]
-     [DIRECTORY_PERMISSIONS <permissions>...]
-     [NO_SOURCE_PERMISSIONS] [USE_SOURCE_PERMISSIONS]
-     [FILES_MATCHING]
-     [[PATTERN <pattern> | REGEX <regex>]
-      [EXCLUDE] [PERMISSIONS <permissions>...]] [...])
-file(LOCK <path> [DIRECTORY] [RELEASE]
-     [GUARD <FUNCTION|FILE|PROCESS>]
-     [RESULT_VARIABLE <variable>]
-     [TIMEOUT <seconds>])
-```
-
-以上都是文件相关的操作，这里就不详细解释。
- 使用示例为：
-
-
-
-```bash
-# 查找src目录下所有以hello开头的文件并保存到SRC_FILES变量里
-file(GLOB SRC_FILES "src/hello*")
-# 递归查找
-file(GLOB_RECURSE SRC_FILES "src/hello*")
-```
-
-**find_file**：
+### find_file
  查找一个文件的完整路径。命令格式为：
-
-
 
 ```css
 find_file (<VAR> name1 [path1 path2 ...])
 ```
 
-使用示例：
-
-
-
 ```css
 find_file(HELLO_H hello.h)
 ```
 
-**find_library**：
+### find_library
  查找一个库文件。命令格式为：
-
-
 
 ```css
 find_library (<VAR> name1 [path1 path2 ...])
@@ -681,16 +388,12 @@ find_library (<VAR> name1 [path1 path2 ...])
 
 使用示例：
 
-
-
 ```undefined
 find_library(LUA lua5.1 /usr/lib /lib)
 ```
 
-**find_package**：
+### find_package
  查找并加载外部项目的设置。命令格式为：
-
-
 
 ```css
 find_package(<package> [version] [EXACT] [QUIET] [MODULE]
@@ -701,16 +404,12 @@ find_package(<package> [version] [EXACT] [QUIET] [MODULE]
 
 使用示例为：
 
-
-
 ```undefined
 find_package(Protobuf)
 ```
 
-**find_path**：
+### find_path
  查找包含某个文件的路径。命令格式为：
-
-
 
 ```css
 find_path (<VAR> name1 [path1 path2 ...])
@@ -718,24 +417,18 @@ find_path (<VAR> name1 [path1 path2 ...])
 
 使用示例：
 
-
-
 ```css
 find_path(DIR_SRCS hello.h .)
 ```
 
-**include_directories**：
+### include_directories
  将给定的目录添加到编译器用于搜索包含文件的目录。相对路径则相对于当前源目录。命令格式为：
-
-
 
 ```css
 include_directories([AFTER|BEFORE] [SYSTEM] dir1 [dir2 ...])
 ```
 
 使用示例：
-
-
 
 ```bash
 include_directories(
@@ -747,10 +440,8 @@ include_directories(
 )
 ```
 
-**include**：
+### include
  包含其他目录的CMakeLists.txt文件。命令格式为：
-
-
 
 ```php
 include(<file|module> [OPTIONAL] [RESULT_VARIABLE <VAR>]
@@ -759,16 +450,12 @@ include(<file|module> [OPTIONAL] [RESULT_VARIABLE <VAR>]
 
 使用示例：
 
-
-
 ```objectivec
 include(platform/CMakeLists.txt)
 ```
 
-**link_directories**：
+### link_directories
  指定链接器查找库的路径。命令格式为：
-
-
 
 ```undefined
 link_directories(directory1 directory2 ...)
@@ -776,46 +463,30 @@ link_directories(directory1 directory2 ...)
 
 使用示例：
 
-
-
 ```bash
 link_directories(${PROJECT_SOURCE_DIR}/lib)
 ```
 
-**list**：
- 列表相关的操作。命令格式为：
 
 
+### option
+ 提供用户可以选择的选项。命令格式为：
 
-```xml
-list(LENGTH <list> <output variable>)
-list(GET <list> <element index> [<element index> ...]
-     <output variable>)
-list(APPEND <list> [<element> ...])
-list(FILTER <list> <INCLUDE|EXCLUDE> REGEX <regular_expression>)
-list(FIND <list> <value> <output variable>)
-list(INSERT <list> <element_index> <element> [<element> ...])
-list(REMOVE_ITEM <list> <value> [<value> ...])
-list(REMOVE_AT <list> <index> [<index> ...])
-list(REMOVE_DUPLICATES <list>)
-list(REVERSE <list>)
-list(SORT <list>)
+```csharp
+option(<option_variable> "help string describing option"
+       [initial value])
 ```
 
 使用示例：
 
-
-
 ```bash
-list(APPEND SRC_LIST
-    ${PROTO_SRC}
-)
+option (USE_MYMATH "Use tutorial provided math implementation" ON) 
 ```
 
-**message**：
+
+
+### message
  向用户显示消息。命令格式为：
-
-
 
 ```bash
 message([<mode>] "message to display" ...)
@@ -826,8 +497,6 @@ message([<mode>] "message to display" ...)
  可选的值为none，STATUS，WARNING，AUTHOR_WARNING，SEND_ERROR，FATAL_ERROR，DEPRECATION。
  使用示例：
 
-
-
 ```bash
 message(STATUS "This is BINARY dir " ${HELLO_BINARY_DIR})
 ```
@@ -835,473 +504,355 @@ message(STATUS "This is BINARY dir " ${HELLO_BINARY_DIR})
 **option**：
  提供用户可以选择的选项。命令格式为：
 
+## 常用变量
+
+使用`${}`进行变量的引用。例如：`message(${Hello_VERSION})`，Hello为工程名。CMake提供了很多有用的变量。以下仅列举常用的变量：
+
+**`CMAKE_BINARY_DIR`**：构建树的顶层路径
+
+**`CMAKE_COMMAND`**：指向CMake可执行文件的完整路径
+
+**`CMAKE_CURRENT_BINARY_DIR`**：当前正在被处理的二进制目录的路径。
+
+**`CMAKE_CURRENT_SOURCE_DIR`**：指向正在被处理的源码目录的路径。
+
+**`CMAKE_HOME_DIRECTORY`**：指向源码树顶层的路径。
+
+**`CMAKE_PROJECT_NAME`**：当前工程的工程名。
+
+**`CMAKE_ROOT`**：CMake的安装路径。
+
+**`CMAKE_SOURCE_DIR`**：源码树的顶层路径。
+
+**`CMAKE_VERSION`**：cmake的完整版本号。
+
+**`PROJECT_BINARY_DIR`**：指向当前编译工程构建的全路径。
+
+**`<PROJECT-NAME>_BINARY_DIR`**：指向当前编译工程构建的全路径。
+
+**`<PROJECT-NAME>_SOURCE_DIR`**：指向构建工程的全路径。
+
+**`PROJECT_SOURCE_DIR`**：指向构建工程的全路径。
+
+**`PROJECT_NAME`**：project命令传递的工程名参数。
+
+**`<PROJECT-NAME>_VERSION`**：项目的完整版本号。
 
 
-```csharp
-option(<option_variable> "help string describing option"
-       [initial value])
+
+
+
+## 项目实战
+
+### 单个源文件
+
+> 通过命令行传入两个数字，第一个作为基数，第二个作为指数，计算这两个数的幂。项目地址：[Demo01](https://github.com/qiuyeyijian/cmake-demo/tree/main/Demo01)
+
+最基本的项目是从源代码文件构建的可执行文件。对于简单的项目，只需要一个三行`CMakeLists.txt`文件。
+
+```cmake
+# cmake的最低版本号要求
+cmake_minimum_required(VERSION 3.10)
+
+# 设置项目名称
+project(Demo01)
+
+# 将名为main.cpp的源文件编译成一个名为Demo01的可执行文件
+add_executable(Demo01 main.cpp)
 ```
 
-使用示例：
+* 将`CMakeLists.txt`文件与`main.cpp`文件放在同一目录下，并创建`build`目录。
 
+* 进入到`build`目录，执行`cmake ..`。意思是根据上一级目录的`CMakeLists.txt`文件，在当前目录生成当前平台的工程文件。也可以通过`-G`参数执行平台。
 
+* 执行`cmake --build .`构建当前工程（Linux下直接执行`make`就行）
+
+* 在Windows平台下，会生成`Debug`文件夹，通过命令行执行里面的可执行文件
 
 ```bash
-option (USE_MYMATH "Use tutorial provided math implementation" ON) 
+./Debug/Demo01.exe 2 2
+# The program path is: D:\Workspace\Temp\cmake-demo\Demo01\build\Debug\Demo01.exe
+# 2.000000 ^ 2.000000 is: 4.000
 ```
 
-**project**：
- 为整个工程设置一个工程名。命令格式为：
 
 
+### 同一目录，多个源文件
 
-```xml
-project(<PROJECT-NAME> [LANGUAGES] [<language-name>...])
-project(<PROJECT-NAME>
-        [VERSION <major>[.<minor>[.<patch>[.<tweak>]]]]
-        [LANGUAGES <language-name>...])
+> 在同一目录下实现了一个日志打印功能，对于两个文件`log.h`和`log.cpp`，最后在`main.cpp`中调用。项目地址：[Demo02](https://github.com/qiuyeyijian/cmake-demo/tree/main/Demo02)
+
+```
+- build
+- main.cpp
+- log.h
+- log.cpp
+- CMakeLists.txt
 ```
 
-使用示例：
+我们可以将当前目录下的所有源文件保存在一个变量中，这样我们就不用在`add_executable`中逐个添加源文件
 
+```cmake
+# cmake的最低版本号要求
+cmake_minimum_required(VERSION 3.10)
 
+# 设置项目名称
+project(Demo02)
 
-```undefined
-project (HelloCMake)
+# 查找当前目录下的所有源文件，并将名称保存到 DIR_SRCS 变量中
+aux_source_directory(. DIR_SRCS)
+
+# 将名为main.cpp的源文件编译成一个名为Demo01的可执行文件
+add_executable(Demo02 ${DIR_SRCS})
 ```
 
-**set**：
- 将一个CMAKE变量设置为给定值。命令格式为：
 
 
+### 不同目录，多个源文件
 
-```csharp
-set(<variable> <value>... [PARENT_SCOPE])
+> 将日志功能文件移动到log目录下，作为一个静态链接库提供给`main.cpp`调用。项目地址：[Demo03](https://github.com/qiuyeyijian/cmake-demo/tree/main/Demo03)
+
+```
+- build
+- log
+	- log.h
+	- log.cpp
+	- CMakeLists.txt
+- main.cpp
+- CMakeLists.txt
 ```
 
-使用示例：
+```cmake
+# 根目录下的CMakeLists.txt
 
+# cmake的最低版本号要求
+cmake_minimum_required(VERSION 3.10)
 
+# 设置项目名称
+project(Demo03)
 
-```bash
-set(COCOS2D_ROOT ${CMAKE_SOURCE_DIR}/cocos2d)
+# 查找当前目录下的所有源文件，并将名称保存到 DIR_SRCS 变量中
+aux_source_directory(. DIR_SRCS)
+
+# 将名为main.cpp的源文件编译成一个名为Demo03的可执行文件
+add_executable(Demo03 ${DIR_SRCS})
+target_link_libraries(Demo03 log)
+
+# 添加log子目录
+add_subdirectory(log)
 ```
 
-**set_target_properties**：
- 设置目标的一些属性来改变它们构建的方式。命令格式为：
+```cmake
+# log 目录下的CMakeLists.txt
+# 查找当前目录下的所有源文件，并将名称保存到 DIR_LIB_SRCS 变量中
+aux_source_directory(. DIR_LIB_SRCS)
 
-
-
-```undefined
-set_target_properties(target1 target2 ...
-                      PROPERTIES prop1 value1
-                      prop2 value2 ...)
+#生成链接库
+add_library(log STATIC ${DIR_LIB_SRCS})
 ```
 
-使用示例为：
 
 
+### 自定义编译选项
 
-```bash
-set_target_properties(cocos2d
-    PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-    VERSION "${COCOS2D_X_VERSION}"
+> 使用一个变量`LINUX_OS`来控制是否使用自己的log库。设计这个Demo的灵感来源是在Linux和Windows平台上改变终端字体颜色需要采取不同的措施。项目地址：[Demo04](https://github.com/qiuyeyijian/cmake-demo/tree/main/Demo04)
+
+```
+- build
+- log
+	- log.h
+	- log.cpp
+	- CMakeLists.txt
+- config.h.in
+- main.cpp
+- CMakeLists.txt
+```
+
+```cmake
+# 根目录下的CMakeLists.txt
+
+# cmake的最低版本号要求
+cmake_minimum_required(VERSION 3.10)
+
+# 设置项目名称
+project(Demo04)
+
+# 加入一个配置头文件，用于处理CMake对源码的设置
+configure_file(
+    "${PROJECT_SOURCE_DIR}/config.h.in" "${PROJECT_SOURCE_DIR}/config.h"
 )
+
+# 是否使用自己的log库
+option(LINUX_OS "Use log if the platform is Linux" OFF)
+
+# 查找当前目录下的所有源文件，并将名称保存到 DIR_SRCS 变量中
+aux_source_directory(. DIR_SRCS)
+
+# 将名为main.cpp的源文件编译成一个名为Demo03的可执行文件
+add_executable(Demo04 ${DIR_SRCS})
+
+# 是否加入log库
+if(LINUX_OS)
+    include_directories("${PROJECT_SOURCE_DIR}/log")
+    add_subdirectory(log)
+    target_link_libraries(Demo04 log)
+endif(LINUX_OS)
 ```
 
-**string**：
- 字符串相关操作。命令格式为：
+```cmake
+# log 目录下的CMakeLists.txt
+# 查找当前目录下的所有源文件，并将名称保存到 DIR_LIB_SRCS 变量中
+aux_source_directory(. DIR_LIB_SRCS)
 
-
-
-```xml
-string(FIND <string> <substring> <output variable> [REVERSE])
-string(REPLACE <match_string>
-       <replace_string> <output variable>
-       <input> [<input>...])
-string(REGEX MATCH <regular_expression>
-       <output variable> <input> [<input>...])
-string(REGEX MATCHALL <regular_expression>
-       <output variable> <input> [<input>...])
-string(REGEX REPLACE <regular_expression>
-       <replace_expression> <output variable>
-       <input> [<input>...])
-string(APPEND <string variable> [<input>...])
-string(CONCAT <output variable> [<input>...])
-string(TOLOWER <string1> <output variable>) 
-string(TOUPPER <string1> <output variable>)
-string(LENGTH <string> <output variable>)
-string(SUBSTRING <string> <begin> <length> <output variable>)
-string(STRIP <string> <output variable>)
-string(GENEX_STRIP <input string> <output variable>)  
-string(COMPARE LESS <string1> <string2> <output variable>)
-string(COMPARE GREATER <string1> <string2> <output variable>)
-string(COMPARE EQUAL <string1> <string2> <output variable>)
-string(COMPARE NOTEQUAL <string1> <string2> <output variable>)
-string(COMPARE LESS_EQUAL <string1> <string2> <output variable>)
-string(COMPARE GREATER_EQUAL <string1> <string2> <output variable>)
-string(<MD5|SHA1|SHA224|SHA256|SHA384|SHA512>
-       <output variable> <input>)
-string(ASCII <number> [<number> ...] <output variable>)
-string(CONFIGURE <string1> <output variable>
-       [@ONLY] [ESCAPE_QUOTES])
-string(RANDOM [LENGTH <length>] [ALPHABET <alphabet>]
-       [RANDOM_SEED <seed>] <output variable>)
-string(TIMESTAMP <output variable> [<format string>] [UTC])
-string(MAKE_C_IDENTIFIER <input string> <output variable>)
-string(UUID <output variable> NAMESPACE <namespace> NAME <name>
-       TYPE <MD5|SHA1> [UPPER])
+#生成链接库
+add_library(log STATIC ${DIR_LIB_SRCS})
 ```
 
-使用示例：
 
 
+
+
+### 安装和测试
+
+CMake 也可以指定安装规则，以及添加测试。这两个功能分别可以通过在产生 Makefile 后使用 `make install` 和 `make test` 来执行。这里只对安装做简单介绍。
+
+> 项目的功能和Demo04相同，这里演示可以将生成的库和可执行文件安装到指定目录内。项目地址：[Demo5](https://github.com/qiuyeyijian/cmake-demo/tree/main/Demo05)。
+
+```
+- build
+- log
+	- log.h
+	- log.cpp
+	- CMakeLists.txt
+- config.h.in
+- main.cpp
+- CMakeLists.txt
+```
+
+首先在`log/CMakeLists.txt`文件内，添加下面命令
+
+```cmake
+# 指定 log 库的安装路径
+install(TARGETS log DESTINATION ${PROJECT_SOURCE_DIR}/bin)
+install(FILES log.h DESTINATION ${PROJECT_SOURCE_DIR}/include)
+```
+
+然后在根目录的`CMakeLists.txt`文件内，添加下面命令
+
+```cmake
+# 指定安装路径
+install(TARGETS Demo05 DESTINATION ${PROJECT_SOURCE_DIR}/bin)
+install(FILES "${PROJECT_SOURCE_DIR}/config.h" DESTINATION ${PROJECT_SOURCE_DIR}/bin)
+```
+
+最后执行cmake命令，指定项目工程为`MinGW Makefiles`
 
 ```bash
-string(REPLACE "${PROJECT_SOURCE_DIR}/hello.c" "" DIR_SRCS "${DIR_ROOT}")
+cmake .. -G "MinGW Makefiles"
+make install
 ```
 
-**target_link_libraries**：
- 将给定的库链接到一个目标上。命令格式为：
 
 
+### 支持GDB
 
-```xml
-target_link_libraries(<target> ... <item>... ...)
+让 CMake 支持 gdb 的设置也很容易，只需要指定 `Debug` 模式下开启 `-g` 选项。之后可以直接对生成的程序使用 gdb 来调试。
+
+```cmake
+set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
+set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 ```
 
-使用示例：
 
 
+### 添加环境检查
 
-```undefined
-target_link_libraries(luacocos2d cocos2d)
+> 可以参考下面的过程，就不写Demo了
+
+有时候可能要对系统环境做点检查，例如要使用一个平台相关的特性的时候。在这个例子中，我们检查系统是否自带 pow 函数。如果带有 pow 函数，就使用它；否则使用我们定义的 power 函数。
+
+#### 添加 CheckFunctionExists 宏
+
+首先在顶层 CMakeLists 文件中添加 CheckFunctionExists.cmake 宏，并调用 `check_function_exists` 命令测试链接器是否能够在链接阶段找到 `pow` 函数。
+
+```cmake
+# 检查系统是否支持 pow 函数
+include (${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
+check_function_exists (pow HAVE_POW)
 ```
 
-##### 3.1.2 常用的变量
+将上面这段代码放在 `configure_file` 命令前。
 
-使用${}进行变量的引用。例如：message(${Hello_VERSION})，Hello为工程名。CMake提供了很多有用的变量。以下仅列举常用的变量：
+#### 预定义相关宏变量
 
-**`CMAKE_BINARY_DIR`**：
- 构建树的顶层路径
+接下来修改` config.h.in`文件，预定义相关的宏变量。
 
-**`CMAKE_COMMAND`**：
- 指向CMake可执行文件的完整路径
-
-**`CMAKE_CURRENT_BINARY_DIR`**：
- 当前正在被处理的二进制目录的路径。
-
-**`CMAKE_CURRENT_SOURCE_DIR`**：
- 指向正在被处理的源码目录的路径。
-
-**`CMAKE_HOME_DIRECTORY`**：
- 指向源码树顶层的路径。
-
-**`CMAKE_PROJECT_NAME`**：
- 当前工程的工程名。
-
-**`CMAKE_ROOT`**：
- CMake的安装路径。
-
-**`CMAKE_SOURCE_DIR`**：
- 源码树的顶层路径。
-
-**`CMAKE_VERSION`**：
- cmake的完整版本号。
-
-**`PROJECT_BINARY_DIR`**：
- 指向当前编译工程构建的全路径。
-
-**`<PROJECT-NAME>_BINARY_DIR`**：
- 指向当前编译工程构建的全路径。
-
-**`<PROJECT-NAME>_SOURCE_DIR`**：
- 指向构建工程的全路径。
-
-**`PROJECT_SOURCE_DIR`**：
- 指向构建工程的全路径。
-
-**`PROJECT_NAME`**：
- project命令传递的工程名参数。
-
-**`<PROJECT-NAME>_VERSION`**：
- 项目的完整版本号。
-
-##### 3.2 CMakeLists.txt编写
-
-有了上面的基础，再编写CMakeLists.txt自然会事半功倍。下面，以几个小实例来说下通过CMakeLists.txt的来构建项目。
-
-这里cJSON库为例来说明下CMakeLists.txt的写法。当然，这里的代码并严谨，仅用来演示CMakeList的用法。
-
-##### 3.2.1 将cJSON构建为静态库
-
-(1)在本地建立cJSONdemo1的目录工程，并将cJSON库源代码拷贝到目录中，并在该目录新建`CMakeLists.txt`文件。目录结构如下：
-
-
-
-```css
-cJSONdemo1  
-├── cJSON_Utils.h  
-├── cJSON_Utils.c  
-├── cJSON.h
-├── cJSON.c
-└── CMakeLists.txt 
+```cmake
+// does the platform provide pow function?
+#cmakedefine HAVE_POW
 ```
 
-CMakeLists.txt文件内容如下：
+#### 在代码中使用宏和函数
 
-
-
-```swift
-cmake_minimum_required(VERSION 2.8.5)
-project(cJSON-lib)
-set(CJSON_SRC cJSON.c cJSON_Utils.c)
-add_library(cjson STATIC ${CJSON_SRC})
-```
-
-在终端下执行如下操作：
-
-![img](https:////upload-images.jianshu.io/upload_images/3084440-63b70456aa84a48e.png?imageMogr2/auto-orient/strip|imageView2/2/w/722/format/webp)
-
-
-
-(2)自动搜索目录源码
- 在上面cJSONdemo1的基础上做一些改进。前面提过`set(<variable> <value>...)`，可以预见在cJSON库源码越来越多的情况下，会变成这样：
-
-
-
-```swift
-set(CJSON_SRC cJSON.c cJSON1.c cJSON2.c cJSON3.c cJSON4.c cJSON5.c)
-```
-
-这样，源文件越多，需要添加次数就越多。而且，每增加一个源文件就需要修改`CMakeLists.txt`文件，“耦合性”太大。这里，可以使用`aux_source_directory`来自动查找源文件。`CMakeLists.txt`文件最终如下：
-
-
-
-```bash
-cmake_minimum_required(VERSION 2.8.5)
-project(cJSON-lib)
-aux_source_directory(. CJSON_SRC)
-add_library(cjson STATIC ${CJSON_SRC})
-```
-
-(3)递归搜索目录源码
- 若将cJSONdemo改成包含子目录，子目录中又包含源码的形式，有多级目录。如下
-
-
-
-```css
-cJSONdemo1  
-  │── cJSON_Utils.h  
-  │── cJSON_Utils.c  
-  │── cJSON.h
-  │── cJSON.c
-  │── CMakeLists.txt 
-  └── foo 
-      ├── cJSON1.h
-      ├── cJSON1.c
-      ├── cJSON2.h
-      ├── cJSON2.c
-      └── goo 
-          ├── cJSON3.h
-          ├── cJSON3.c
-          ├── cJSON4.h
-          └── cJSON4.c
-```
-
-可以使用`file`命令，来自动递归查找相应的源文件。`CMakeLists.txt`文件最终如下：
-
-
-
-```bash
-cmake_minimum_required(VERSION 2.8.5)
-project(cJSON-lib)
-file(GLOB_RECURSE CJSON_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
-add_library(cjson STATIC ${CJSON_SRC})
-```
-
-(4)指定构建库的名字，路径和前缀。`CMakeLists.txt`文件最终如下：
-
-
-
-```bash
-cmake_minimum_required(VERSION 2.8.5)
-project(cJSON-lib)
-file(GLOB_RECURSE CJSON_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
-add_library(cjson STATIC ${CJSON_SRC})
-set_target_properties(cjson PROPERTIES OUTPUT_NAME "json")
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/static)
-set(CMAKE_STATIC_LIBRARY_PREFIX "")
-```
-
-最终效果如图：
-
-![img](https:////upload-images.jianshu.io/upload_images/3084440-6030ea3c6b551053.png?imageMogr2/auto-orient/strip|imageView2/2/w/872/format/webp)
-
-
- 会生成`cJSONdemo1/static/json.a`。
-
-
-
-##### 3.2.1 将cJSON外部依赖库链接进可执行文件中
-
-通过上面过程了解了将cJSON库构建文件静态库的过程。下面，再添加测试代码来调用cJSON库，并最终构建为可执行文件。目录如下：
-
-
-
-```css
-cJSONdemo2  
-  │── test.c
-  │── CMakeLists.txt 
-  └── lib 
-      ├── cJScJSON_UtilsON1.h
-      ├── cJSON_Utils.c
-      ├── cJSON.h
-      ├── cJSON.c
-      └── CMakeLists.txt 
-```
-
-**test.c**：
-
-
+最后一步是修改 `main.cc` ，在代码中使用宏和函数：
 
 ```cpp
-#include <stdio.h>
-#include <stdlib.h>
-#include "lib/cJSON.h"
-
-void parser(char* text) {
-    char *out;
-    cJSON *json;
-
-    json = cJSON_Parse(text);
-    if (!json) {
-        printf("Error before: [%s]\n", cJSON_GetErrorPtr());
-    }else {
-        out = cJSON_Print(json);
-        cJSON_Delete(json);
-        printf("%s\n", out);
-        free(out);
-    }
-}
-
-int main(int argc, char * argv[]) {
-    char text[]="[\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"]";
-    parser(text);
-
-    return 0;
-}
-```
-
-**cJSONdemo2/CMakeLists.txt**：
-
-
-
-```bash
-cmake_minimum_required(VERSION 2.8.5)
-
-project(cjson-example)
-
-aux_source_directory(. CJSON_EXAMPLE_SRC)
-
-add_subdirectory(./lib)
-
-add_executable(cjson-example ${CJSON_EXAMPLE_SRC})
-
-target_link_libraries(cjson-example cjson)
-```
-
-**cJSONdemo2/lib/CMakeLists.txt**：
-
-
-
-```bash
-cmake_minimum_required(VERSION 2.8.5)
-
-aux_source_directory(. CJSON_SRC)
-
-add_library(cjson STATIC ${CJSON_SRC})
-```
-
-在终端下执行如下操作：
-
-
-
-![img](https:////upload-images.jianshu.io/upload_images/3084440-4324801881b7072b.png?imageMogr2/auto-orient/strip|imageView2/2/w/708/format/webp)
-
-##### 3.2.2 将cJSON库改为可选
-
-在上面cJSONdemo2的基础上，新建`cJSONConfig.h.in`并相应修改`test.c`。目录如下：
-
-
-
-```css
-cJSONdemo3  
-  │── test.c
-  │── cJSONConfig.h.in
-  │── CMakeLists.txt 
-  └── lib 
-      ├── cJScJSON_UtilsON1.h
-      ├── cJSON_Utils.c
-      ├── cJSON.h
-      ├── cJSON.c
-      └── CMakeLists.txt 
-```
-
-**cJSONConfig.h.in**：
-
-
-
-```bash
-#cmakedefine USE_CJSON
-```
-
-**test.c**：
-
-
-
-```cpp
-#include <stdio.h>
-#include <stdlib.h>
-#ifdef USE_MYMATH
-#include "lib/cJSON.h"
-
-void parser(char* text) {
-    char *out;
-    cJSON *json;
-
-    json = cJSON_Parse(text);
-    if (!json) {
-        printf("Error before: [%s]\n", cJSON_GetErrorPtr());
-    }else {
-        out = cJSON_Print(json);
-        cJSON_Delete(json);
-        printf("%s\n", out);
-        free(out);
-    }
-}
-
+#ifdef HAVE_POW
+    printf("Now we use the standard library. \n");
+    double result = pow(base, exponent);
+#else
+    printf("Now we use our own Math library. \n");
+    double result = power(base, exponent);
 #endif
-
-int main(int argc, char * argv[]) {
-    char text[]="[\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"]";
-    #ifdef USE_MYMATH
-        parser(text);
-    #else
-        printf("use other json library\n");
-    #endif
-
-    return 0;
-}
 ```
 
-最终效果如下：
-
-![img](https:////upload-images.jianshu.io/upload_images/3084440-2622f2db371dd5f9.png?imageMogr2/auto-orient/strip|imageView2/2/w/886/format/webp)
 
 
+### 添加版本号
 
-以上只是通过一些简单的示例来说明了CMake基础及相关应用。更多高级功能需要日常的实践及查询CMake官方文档。
+>  本节对应的源代码所在目录：[Demo7](https://github.com/qiuyeyijian/cmake-demo/tree/main/Demo07)。
+
+```
+- build
+- main.cpp
+- config.h.in
+- CMakeLists.txt
+```
+
+给项目添加和维护版本号是一个好习惯，这样有利于用户了解每个版本的维护情况，并及时了解当前所用的版本是否过时，或是否可能出现不兼容的情况。
+
+首先修改顶层 `CMakeLists `文件，在项目名称后面加上版本
+
+```cmake
+# 设置项目名称和版本
+project(Demo07 VERSION 3.4)
+```
+
+也可以分别指定当前的项目的主版本号和副版本号。
+
+```cmake
+# 分别设置系统主版本号和副版本号
+set(Demo07_VERSION_MAJOR 5)
+set(Demo07_VERSION_MINOR 6)
+```
+
+之后，为了在代码中获取版本信息，我们可以修改 `config.h.in`文件，添加两个预定义变量。之后就可以在项目中使用变量了。
+
+```
+// the configured options and settings for Tutorial
+#define Demo_VERSION_MAJOR @Demo_VERSION_MAJOR@
+#define Demo_VERSION_MINOR @Demo_VERSION_MINOR@
+```
+
+
+
+
+
+## Reference
+
+* [CMake 入门实战](https://www.hahack.com/codes/cmake/)
+
+
+
+
 
