@@ -15,6 +15,12 @@ https://www.cnblogs.com/52php/p/5684588.html
 
 
 
+
+
+https://github.com/BrightXiaoHan/CMakeTutorial
+
+
+
 编写CMakeLists.txt时候，关键字不区分大小写，但要统一
 
 ```cmake

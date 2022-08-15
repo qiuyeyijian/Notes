@@ -15,7 +15,7 @@ npm config ls
 ```shell
 npm config set cache "D:\Node\node_cache"
 npm config set prefix "D:\Node\node_global"
-npm config set registry https://registry.npm.taobao.org
+npm config set registry https://registry.npmmirror.com
 ```
 
 
