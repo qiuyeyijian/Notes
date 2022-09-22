@@ -6,6 +6,8 @@ Gtest是google开发的一个开源的C++测试框架，可在Linux, Windows,Mac
 
 使用Gtest本质就是编写断言（assertions），断言语句会检测条件是否为真。**一个断言可存在三种结果：success（成功），nonfatal failure（非致命失败）和fatal failure（致命失败）。**当出现致命失败时，终止当前函数；否则程序继续执行。
 
+![在这里插入图片描述](assets/README/d3d29dbc71884ce18948d76b1919050d.png)
+
 ### 测试用例和测试特例
 
 > **测试用例（Test Case）是为某个特殊目标而编制的一组测试输入、执行条件以及预期结果，以便测试某个程序路径或核实是否满足某个特定需求**
@@ -454,96 +456,78 @@ EST_P 大致与TEST_F相同，都是第一个参数是一个已定义类名，�
 
 ## 预处理事件机制
 
-#### 测试特例级别处理
-
-First测试特例中，我们修改了data的数据（23行），第24行验证了修改的有效性和正确性。在second的测试特例中，一开始就检测了data数据（第28行），如果First特例中修改data（23行）影响了基础数据，则本次检测将失败。我们将First和Second测试特例的实现定义成一样的逻辑，可以避免编译器造成的执行顺序不确定从而影响测试结果。
+#### 测试用例级别处理
 
 ```cpp
-class TestFixtures : public ::testing::Test {
+#include <gtest/gtest.h>
+#include <gtest/gtest-param-test.h>
+
+class CTestEnvironment : public testing::Environment
+{
 public:
-    TestFixtures() {
-        printf("\n==========TestFixtures construct==========\n");
-    };
-    ~TestFixtures() {
-        printf("\n========TestFixtures distroyed=============\n");
-    }
-protected:
-    void SetUp() {
-        printf("\n=========测试特例处理开始==========\n");
-    };
-    void TearDown() {
-        printf("\n=========测试特例处理结束==========\n");
-    };
+	CTestEnvironment()
+	{
+		//仅仅是类的初始化函数，可以在这里做一些成员变量的初始化。
+		//具体测试业务的初始化在SetUp中编写
+	}
+	virtual ~CTestEnvironment()
+	{
+	}
+
 public:
-    int data = 0;
+	virtual void SetUp();
+	virtual void TearDown();
 };
- 
-TEST_F(TestFixtures, First) {
-    EXPECT_EQ(data, 0);
-    data =  1;
-    EXPECT_EQ(data, 1);
+
+
+class CTestFixture : public ::testing::Test
+{
+public:
+	CTestFixture()
+	{
+	}
+	~CTestFixture()
+	{
+	}
+protected:
+	virtual void SetUp();
+	virtual void TearDown();
+	static void SetUpTestSuite();
+	static void TearDownTestSuite();
+};
+
+void CTestEnvironment::SetUp()
+{
+
 }
- 
-TEST_F(TestFixtures, Second) {
-    EXPECT_EQ(data, 0);
-    data =  1;
-    EXPECT_EQ(data, 1);
+
+void CTestEnvironment::TearDown()
+{
+
+}
+
+void CTestFixture::SetUpTestSuite()
+{
+	printf("\n\nCTestFixture: start before executing the first testcase\n\n");
+}
+
+void CTestFixture::TearDownTestSuite()
+{
+	printf("\n\nCTestFixture: start after executing the last testcase\n\n");
+}
+
+void CTestFixture::SetUp()
+{
+	printf("\n\nCTestFixture: start before executing every testcase\n\n");
+}
+
+void CTestFixture::TearDown()
+{
+	printf("\n\nCTestFixture: start after executing every testcase\n\n");
 }
 ```
 
 从最终的结果输出来看，所有局部测试都是正确的，验证了Test Fixtures类中数据的恒定性。我们从输出应该可以看出来，每个测试特例都是要新建一个新的Test Fixtures对象，并在该测试特例结束时销毁它。这样可以保证数据的干净。
-
-
-
-#### 测试用例级别处理
-
-这种预处理方式也是要使用Test Fixtures。不同的是，我们需要定义几个静态成员：
-
-- 静态成员变量，用于指向数据。
-- 静态方法`SetUpTestCase()`
-- 静态方法`TearDownTestCase()`
-
-举个例子，我们需要自定义测试用例开始和结束时的行为
-
-- 测试开始时输出Start Test Case
-- 测试结束时统计结果
-
-````cpp
-class TestFixtures : public ::testing::Test {
-public:
-    TestFixtures() {
-        printf("\n==========TestFixtures construct==========\n");
-    }
-    ~TestFixtures() {
-        printf("\n========TestFixtures distroyed=============\n");
-    }
-protected:
-    void SetUp() {
-        printf("\n=========测试特例处理开始==========\n");
-    }
-    void TearDown() {
-        printf("\n=========测试特例处理结束==========\n");
-    }
-
-    static void SetUpTestCase() {
-        printf("\n==============测试用例处理开始=================\n");
-    }
-
-    static void TearDownTestCase() {
-        printf("\n===============测试用例处理结束=================\n");
-    }
-};
-
-TEST_F(TestFixtures, success) {
-    EXPECT_EQ(1, 1);
-}
-
-TEST_F(TestFixtures, FAI) {
-    EXPECT_EQ(1, 2);
-}
-````
-
-从输出上看，SetUpTestCase在测试用例一开始时就被执行了，然后里面执行的是测试特例，TearDownTestCase在测试用例结束前被执行了。
 
 
 
@@ -552,28 +536,27 @@ TEST_F(TestFixtures, FAI) {
 顾名思义，它是在测试用例之上的一层初始化逻辑。如果我们要使用该特性，则要声明一个继承于::testing::Environment的类，并实现其SetUp/TearDown方法。这两个方法的关系和之前介绍Test Fixtures类是一样的。
 
 ```cpp
-class EnvironmentTest : public ::testing::Environment {
+class emtest_environment : public ::testing::Environment
+{
 public:
-    EnvironmentTest() {
-        printf("\n======EnvironmentTest construct=========\n");
-    }
-    ~EnvironmentTest() {
-        printf("\n=======EnvironmentTest distroyed========\n");
-    }
+	emtest_environment()
+	{
+		printf("\n======emtest_environment construct=========\n");
+	}
+	~emtest_environment()
+	{
+		printf("\n=======emtest_environment distroyed========\n");
+	}
 public:
-    void SetUp() {
-        printf("\n=========全局处理开始============\n");
-    }
-    void TearDown() {
-        printf("\n========全局处理结束============\n");
-    }
+	virtual void SetUp() override
+	{
+		printf("\n=========emtest_environment 全局处理开始============\n");
+	}
+	virtual void TearDown() override
+	{
+		printf("\n========emtest_environment 全局处理结束============\n");
+	}
 };
-
-int main(int argc, char** argv) {
-    ::testing::AddGlobalTestEnvironment(new EnvironmentTest);
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
 ```
 
 
@@ -757,6 +740,8 @@ TEST_F(DISABLED_BarTest, DoesXyz) {...}
 
 ## Reference
 
+- https://zhuanlan.zhihu.com/p/369466622
+
 * https://blog.csdn.net/W_Y2010/article/details/92405343
 
 * [GTest使用教程](https://www.cnblogs.com/jycboy/p/gtest_AdvancedGuide.html)
@@ -764,3 +749,5 @@ TEST_F(DISABLED_BarTest, DoesXyz) {...}
 * [玩转Google开源C++单元测试框架Google Test系列(gtest)](https://www.cnblogs.com/coderzh/archive/2009/04/06/1430364.html)
 
 * [技术: Gtest测试框架](https://wizardmerlin.github.io/posts/140bfd50/#%E5%BC%95%E5%AD%90)
+
+* https://www.jianshu.com/p/215edbfc2e0a

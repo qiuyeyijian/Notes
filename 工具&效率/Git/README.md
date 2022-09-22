@@ -1,9 +1,7 @@
 # Git
 
 
-> 学习Git时记录的一些笔记。随着学习的不断深入，会不断对文章进行修改。文章内对其他文
-
-
+> 学习Git时记录的一些笔记。随着学习的不断深入，会不断对文章进行修改。
 
 ## 基本概念
 
@@ -554,6 +552,12 @@ git revert命令用来撤销某次操作，此次操作之前和之后的commit�
 用git reset --hard (commitid) 可以恢复到相应的版本。
 
 
+
+### 更改默认编辑器
+
+```bash
+git config --global --replace core.editor "code --wait"
+```
 
 
 

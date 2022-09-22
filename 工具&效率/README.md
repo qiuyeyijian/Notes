@@ -170,9 +170,40 @@ https://www.likecs.com/show-203839382.html
 
 
 
+## PowerShell 命令提示符中隐藏完整文件路径
 
+1、打开Posershell终端，查看是否有Powershell配置文件
 
+```powershell
+test-path $profile
+```
 
+2、如果没有，则继续输入下面命令
+
+```powershell
+new-item -path $profile -itemtype file -force
+```
+
+3、使用记事本打开刚才创建的文件
+
+```powershell
+notepad $profile
+```
+
+4、粘贴下面的命令，然后保存
+
+```powershell
+function prompt {
+  $p = Split-Path -leaf -path (Get-Location)
+  "$p> "
+}
+```
+
+5、返回Powershell终端，输出下面命令
+
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 
 
 

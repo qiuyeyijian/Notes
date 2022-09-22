@@ -30,8 +30,6 @@
 
 #### 5.TS与JS的区别
 
-![1657037907209](C:\Users\11\AppData\Roaming\Typora\typora-user-images\1657037907209.png)
-
 | JavaScript                 | TypeScript                                             |
 | -------------------------- | ------------------------------------------------------ |
 | 动态语言                   | 具有静态语言的特点                                     |
@@ -619,7 +617,6 @@ console.log(goddassName.firstName);
 console.log(goddassName.lastName);
 
 
-
 function say({firstName, lastName}:IFullName):void {
   console.log(`我的姓名是:${firstName}_${lastName}`);
 }
@@ -684,8 +681,6 @@ let beauty:IInfo = {
 - 格式: 如`[props: string]:any`
 - 应用场景: 解决参数问题
 
-
-
 ```typescript
 export default {}
 
@@ -708,9 +703,10 @@ let goddass2:IFullName = {firstName: "邱", lastName: "淑贞", age: 18};
 
 
 // 多一个或者多多个属性
-// 方案一：使用变量
+// 方案一：使用变量，不推荐
 let info = {firstName: "邱", lastName: "淑贞", age: 18, singName: "赌王", dance: "芭蕾"};
 let goddass3:IFullName = info
+console.log(goddass3);
 
 // 方案二: 使用类型断言
 let goddass4:IFullName = ({firstName: "邱", lastName: "淑贞", age: 18, singName: "赌王", dance: "芭蕾"}) as IFullName;
@@ -731,7 +727,7 @@ interface Iage {
 
 let afe:Iage = {age1: 18, age2: 20};
 
-// 方案三: 索引签名
+// 方案三: 索引签名, IFullName 里面增加了[props: string]: any
 let goddass5:IFullName = {firstName: "邱", lastName: "淑贞", age: 18, singName: "赌王", dance: "芭蕾"};
 ```
 
@@ -802,6 +798,7 @@ let lady:IName = {
 interface IFatherMoney {
   m1: number
 }
+
 interface IMotherMoney {
   m2: number
 }
@@ -830,19 +827,22 @@ console.log(`儿子一共有${money.m1 + money.m2 + money.s}万元`);
 ```typescript
 export default {}
 
-// 在接口中有多种类型进行混合
+// 声明一个接口, 如果只有(start: number): string一个成员，那么这个接口就是函数接口，
+// 如果同时还具有其他两个成员，可以用来描述对象的属性和方法，这样就构成了一个混合接口。
 interface Counter {
-  (start: number): string;
-  interval: number;
-  reset(): void;
+    (start: number): string;
+    interval: number;
+    reset(): void;
 }
 
 function getCounter(): Counter {
-  let counter = <Counter>function (start: number) { };
-  counter.interval = 123;
-  counter.reset = function() { };
+    // 通过类型断言，将函数对象转换为Counter类型，
+    //转换后的对象不但实现了函数接口的描述，使之成为一个函数，还具有interval属性和reset()方法。
+    let counter = <Counter>function (start: number) { };
+    counter.interval = 123;
+    counter.reset = function () { };
 
-  return counter;
+    return counter;
 }
 
 let c = getCounter();
@@ -851,7 +851,7 @@ c.reset();
 c.interval = 5.0;
 ```
 
-
+函数签名相同，返回值非void类型的函数可以赋值给返回值是void类型的函数。
 
 #### 7.接口与类型别名的异同
 
@@ -925,7 +925,7 @@ let starInfo:Istar2 = {
 
 // 不同点：
 // 1.type可以声明基本数据类型，联合类型，数组等
-//   interface只能声明变量
+//   interface只能声明对象
 type age = number;
 type info = string | number | boolean;
 type beautyList = [string | number];
@@ -946,6 +946,7 @@ type beautyList = [string | number];
 interface mygoddassName {
   name: string
 } 
+
 interface mygoddassName {
   name: string
   age: number
@@ -966,8 +967,6 @@ let goddass:mygoddassName = {
 - 介绍
 
   函数是JavaScript应用程序的基础。 它帮助你实现抽象层，模拟类，信息隐藏和模块。 在TypeScript里，虽然已经支持类，命名空间和模块，但函数仍然是主要的定义 *行为*的地方。 TypeScript为JavaScript函数添加了额外的功能，让我们可以更容易地使用
-
-
 
 - 函数定义的方式
 
@@ -1089,7 +1088,6 @@ var res = new Function ([arg1[, arg2[, ...argN]],] functionBody)
 
 ```typescript
 export default {}
-
 
 // 构造函数
 var myFunction = new Function("a", "b", "return a * b"); 
@@ -1220,8 +1218,6 @@ star(1,"爱你");
   - 使用this参数，改变指向
   - 传入this参数，禁止调用this
 
-
-
 ```typescript
 export default {};
 
@@ -1294,8 +1290,6 @@ class Rectangle2 {
   相反，如果我们在函数中写了返回值，我们的返回值是有效的。
 
 - 如果我们定义函数的时候明确指出，返回值为void，那么我们将除undefined 和 null 以外的值进行返回都会进行报错
-
-
 
 ```typescript
 export default {}
@@ -1405,7 +1399,6 @@ class Person {
   }
 }
 
-
 class Student extends Person {
   score: string;
 
@@ -1500,8 +1493,7 @@ class Student extends Person {
     console.log(this.name);
     console.log(this.age);
     // console.log(this.sex);
-    console.log(this.score);
-    
+    console.log(this.score); 
   }
 }
 
@@ -1511,8 +1503,9 @@ p.say();
 let s = new Student("王心凌", 18, "女", "A");
 s.show();
 
-// 思考题: 如果我们给 constructor 加上 protected 会出现什么情况？
-
+// 思考题: 如果我们给 constructor 加上 protected 会出现什么情况，加上private呢？
+// 答案：该类不能被实例化，但是继承该类的子类可以被实例化。因为protected修饰的函数可以被其自身以及其子类访问
+// 加上private会导致该类不能实例化
 
 // readonly: 字段的前缀可以是 readonly 修饰符。这可以防止在构造函数之外对该字段进行赋值。
 class PrintConsole {
@@ -1521,7 +1514,7 @@ class PrintConsole {
   readonly str3: string;
   readonly str4: string;
 
-  constructor(str2: string, str3:string, str4:string) {
+  constructor(str2: string, str3:=, str4:string) {
     this.str2 = str2;
     this.str3 = str3;
     this.str4 = str4;
@@ -1546,7 +1539,9 @@ let pc = new PrintConsole("我的头发去哪了, 颈椎康复指南",
 **注意点:**
 
 > 如果存在 get ，但没有 set ，则该属性自动是只读的
+>
 > 如果没有指定 setter 参数的类型，它将从 getter 的返回类型中推断出来
+>
 > 访问器和设置器必须有相同的成员可见性
 
 ```typescript
@@ -1590,7 +1585,7 @@ console.log(starname.fullName);
 
   抽象方法必须包含 `abstract`关键字并且可以包含访问修饰符
 
-  接口中只能定义约束, 不能定义具体实现。而抽象类中既可以定义约束, 又可以定义具体实现
+  **接口中只能定义约束, 不能定义具体实现**。而抽象类中既可以定义约束, 又可以定义具体实现
 
 ```typescript
 export default {}
@@ -2119,7 +2114,6 @@ type res = MyType<string>
 // 2.应用场景：解决函数重载问题
 type Condition<T> = T extends string ? IName : IAge
 
-
 function reLoad<T extends number | string>(idOrName: T): Condition<T> {
   throw ""
 }
@@ -2217,7 +2211,8 @@ interface IPerson {
   age: number;
 }
 
-// 只读
+// 只读， Readonly关键字的内部实现
+// 实际可以直接使用，Partial，Record等关键字同理
 type Readonly1<T> = {
   readonly [P in keyof T]: T[P];
 }
@@ -2249,13 +2244,6 @@ type res = ReadonlyPartial<IPerson2>;
 interface IPerson3 {
   name: string;
   age: number;
-}
-
-type Readonly<T> = {
-  readonly [P in keyof T]: T[P];
-}
-type Partial<T> = {
-  [P in keyof T]?: T[P];
 }
 
 type res1 = Readonly<IPerson3>;
@@ -2398,7 +2386,7 @@ console.log(z)
 
   根据初始化值自动推断
 
-  **注意点：**  如果是先定义在初始化, 那么是无法自动推断的
+  **注意点：**  如果是先定义再初始化, 那么是无法自动推断的
 
 - 上下文类型推论
 
@@ -2427,7 +2415,6 @@ let x = [0, 1, null];
 window.onmousedown = function (mouseEvent) {
   console.log(mouseEvent.button);
 };
- 
 ```
 
 #### 2.对象类型兼容性
@@ -2840,7 +2827,7 @@ interface NotEmpty<T> {
 - 类装饰器就在类声明之前被声明
 - 类装饰器被应用于类的构造函数，可以用来观察、修改或替换类定义
 - 类装饰器不能用在声明文件中( .d.ts)，也不能用在任何外部上下文中（比如declare的类）
-- 类装饰器表达式会在运行时当作函数被调用，类的构造函数作为其唯一的参数
+- **类装饰器表达式会在运行时当作函数被调用，类的构造函数作为其唯一的参数**
 - 如果类装饰器返回一个值，它会使用提供的构造函数来替换类的声明。
 
 ```typescript

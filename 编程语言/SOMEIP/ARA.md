@@ -1,0 +1,14 @@
+
+
+
+
+## AUTOSAR Runtime for Adaptive Applications (ARA)
+
+![247477461_14_20220625080936972](assets/ARA/247477461_14_20220625080936972-16625185587102.png)
+
+
+
+
+
+
+

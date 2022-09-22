@@ -407,7 +407,7 @@ string中单个字符存取方式有两种
 
 ### 子串
 
-* `string substr(int pos = 0, int n = npos) const;`   //返回由pos开始的n个字符组成的字符串
+* `string substr(int pos = 0, int n = npos) const;`   //返回由pos开始的n个字符组成 的字符串
 
 ```cpp
 string str = "123456";
@@ -696,7 +696,7 @@ C++ STL中标准关联容器set, multiset, map, multimap内部采用的就是一
 
 `set` 和 `multiset `都是集合类模板，其元素值称为关键字。`set`中元素的关键字是唯一的、`multiset`中元素的关键字可以不唯一，而且**默认情况下会对元素按关键字自动进行升序排列**，所以查找速度比较快，同时支持，交，差和并等一些集合上的运算，如果需要集合中的元素允许重复，那么可以使用multiset。
 
-由于`set`中没有相同关键字的元素，在向set中插入元素，如果已经存在则不插入。multiset中允许存在两个相同关键字的元素，在删除操作时删除multiset中值等于elem的所有元素，若删除成功返回删除个数，否则返回0。
+由于`set`中没有相同关键字的元素，在向set中插入元素，如果已经存在则不插入。multiset中允许存在两个相同关键字的元素，**在删除操作时删除multiset中值等于elem的所有元素**，若删除成功返回删除个数，否则返回0。
 
 * set不可以插入重复数据，而multiset可以
 * set插入数据的同时会返回插入结果，表示插入是否成功
@@ -946,7 +946,7 @@ priority_queue< type, container, function >
 ```cpp
 // 由于C++默认为大顶堆，因此在初始化大顶堆时，后两个参数可以省略，
 priority_queue< int, vector<int>, less<int> > pq;
-
+Z
 // 创建小顶堆
 priority_queue< int, vector<int>, greater<int> > pq;
 
@@ -959,6 +959,18 @@ priority_queue 有优先级，要求元素可比较。
 queue 和 priority_queue 默认的底层存储结构也不同。queue 默认用的是 deque 双端队列，priority_queue 用的是 vector。
 
 priority_queue 实现使用的默认比较是 operator< ,是最大堆数据结构，即队列头元素值最大
+
+```
+和队列基本操作相同:
+
+top 访问队头元素
+empty 队列是否为空
+size 返回队列内元素个数
+push 插入元素到队尾 (并排序)
+emplace 原地构造一个元素并插入队列
+pop 弹出队头元素
+swap 交换内容
+```
 
 
 

@@ -80,12 +80,6 @@ class Wechat {
 
 
 
-
-
-
-
-
-
 ## 变量声明
 
 C++11新标准，可以使用`{}`在定义变量的时候初始化，也可以使用`()`，省略`=`。
@@ -880,6 +874,24 @@ https://blog.csdn.net/zhengnianli/article/details/87386078
 2.使用swprintf_s代替sprintf_s
 
 3.使用TEXT函数或者是_L修饰const char[]类型的[字符串](https://so.csdn.net/so/search?q=字符串&spm=1001.2101.3001.7020)
+
+
+
+
+
+## C++ 拷贝文件最简洁、高效的做法
+
+```cpp
+#include <fstream>
+
+int main()
+{
+    std::ifstream  src("from.ogv", std::ios::binary);
+    std::ofstream  dst("to.ogv",   std::ios::binary);
+
+    dst << src.rdbuf();
+}
+```
 
 
 

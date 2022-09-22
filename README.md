@@ -15,9 +15,17 @@
 
 
 
+## 待了解
+
+### LSP语言服务器协议
+
+[什么是Language Server protocol（LSP）?](https://blog.csdn.net/u012930117/article/details/79291677)
 
 
 
+### python多线程是假的！速度慢！效率低下！不升反降！
+
+https://blog.csdn.net/winter2121/article/details/115280178
 
 
 

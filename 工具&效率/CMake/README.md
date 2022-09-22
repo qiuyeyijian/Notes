@@ -674,8 +674,7 @@ message([<mode>] "message to display" ...)
 ```
 
 参数说明：
- mode：
- 可选的值为none，STATUS，WARNING，AUTHOR_WARNING，SEND_ERROR，FATAL_ERROR，DEPRECATION。
+ mode：可选的值为none，STATUS，WARNING，AUTHOR_WARNING，SEND_ERROR，FATAL_ERROR，DEPRECATION。
  使用示例：
 
 ```bash
