@@ -511,33 +511,41 @@ git revert命令用来撤销某次操作，此次操作之前和之后的commit�
 
 
 
-## git commit 提交规范
-
-### 格式
+## Commit 提交规范
 
 ```
 type: description
 ```
 
-### type 类型
+type 是 commit 的类别，只允许如下几种标识。
 
-type 是 commit 的类别，只允许如下几种标识：
+description 是对本次提交的简短描述。不超过50个字符。推荐以动词开头，如： 设置、修改、增加、删减、撤销等。
 
-- fix: 修复bug
-- add: 新功能
-- update: 更新
-- style : 代码格式改变
-- test: 增加测试代码
-- revert: 撤销上一次的commit
-- build: 构建工具或构建过程等的变动，如：gulp 换成了 webpack，webpack 升级等
+| type      | description                                                  |
+| --------- | ------------------------------------------------------------ |
+| `fix`     | 修复bug                                                      |
+| `docs`    | 文档相关                                                     |
+| `release` | 发布版本                                                     |
+| `update`  | 常规更新项目代码                                             |
+| `feat`    | 特性，功能                                                   |
+| `build`   | 构建工具或构建过程等的变动，如：gulp 换成了 webpack，webpack 升级等 |
+| `test`    | 增加测试代码                                                 |
+| `style`   | 代码格式改变                                                 |
+| `revert`  | 撤销上一次的commit                                           |
 
-### description
 
-description 是对本次提交的简短描述。
 
-不超过50个字符。
+## CHANGELOG规范
 
-推荐以动词开头，如： 设置、修改、增加、删减、撤销等
+### [版本]（2022-08-08）
+
+#### Bug Fixes
+
+
+
+### Features
+
+
 
 
 

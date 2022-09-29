@@ -19,25 +19,76 @@ Gtest是google开发的一个开源的C++测试框架，可在Linux, Windows,Mac
 如果一个test出现崩溃或有一个失败的断言，则该test是fails，否则是succeeds。。当一个test suite中的多个test需要共享一些通用对象和子程序时，可将其放入一个测试套件（Test Fixtures），具体请看宏测试下面的`TEST_F`宏。
 
 ```cpp
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
+#include <gtest/gtest-param-test.h>
 
-// 定义一个Base类，里面实现一个加法函数
-class Base {
+class CTestEnvironment : public testing::Environment
+{
 public:
-    int add(int a, int b) {
-        return a + b;
-    }
+	CTestEnvironment()
+	{
+		//仅仅是类的初始化函数，可以在这里做一些成员变量的初始化。
+		//具体测试业务的初始化在SetUp中编写
+	}
+	virtual ~CTestEnvironment()
+	{
+	}
+
+public:
+	virtual void SetUp();
+	virtual void TearDown();
 };
 
-// 第一个参数是test_suite_name，也就是测试用例名，这里测试Base类，所以命名成类的名字
-// 第二个参数是test_name，也就是测试用例下的一个测试特例名，这里命名成Base类下的add函数名
-// 说明是测试Base类下的add函数
-TEST(Base, add) {
-    Base base;
-    ASSERT_EQ(base.add(1, 1), 2);
+
+class CTestFixture : public ::testing::Test
+{
+public:
+	CTestFixture()
+	{
+	}
+	~CTestFixture()
+	{
+	}
+protected:
+	virtual void SetUp();
+	virtual void TearDown();
+	static void SetUpTestSuite();
+	static void TearDownTestSuite();
+};
+
+void CTestEnvironment::SetUp()
+{
+
+}
+
+void CTestEnvironment::TearDown()
+{
+
+}
+
+void CTestFixture::SetUpTestSuite()
+{
+	printf("\n\nCTestFixture: start before executing the first testcase\n\n");
+}
+
+void CTestFixture::TearDownTestSuite()
+{
+	printf("\n\nCTestFixture: start after executing the last testcase\n\n");
+}
+
+void CTestFixture::SetUp()
+{
+	printf("\n\nCTestFixture: start before executing every testcase\n\n");
+}
+
+void CTestFixture::TearDown()
+{
+	printf("\n\nCTestFixture: start after executing every testcase\n\n");
 }
 
 int main(int argc, char* argv[]) {
+    // 创建测试环境
+     ::testing::AddGlobalTestEnvironment(new CTestEnvironment);
     // gtest的测试案例允许接收一系列的命令行参数，因此，我们将命令行参数传递给gtest，进行一些初始化操作。
     ::testing::InitGoogleTest(&argc, argv);
 
@@ -73,6 +124,36 @@ RUN_ALL_TESTS()是一个宏，将其实现为函数，在这里，调用了UnitT
 4. TestInfo::Run()
 
 5. Test::Run()
+
+
+
+## 安装
+
+### Linux
+
+```bash
+sudo apt-get install libgtest-dev
+```
+
+安装完成之后，就可以在项目中使用gtest了。之后使用`g++`编译，注意后面需要加上`-lgtest`和`-lpthread`
+
+```bash
+g++ test.cpp -lgtest -lpthread
+```
+
+也可以使用CMake
+
+```cmake
+cmake_minimum_required(VERSION 3.0.0)
+project(demo01)
+
+add_executable(main main.cpp)
+target_link_libraries(main gtest pthread)
+```
+
+
+
+
 
 
 
@@ -458,75 +539,6 @@ EST_P 大致与TEST_F相同，都是第一个参数是一个已定义类名，�
 
 #### 测试用例级别处理
 
-```cpp
-#include <gtest/gtest.h>
-#include <gtest/gtest-param-test.h>
-
-class CTestEnvironment : public testing::Environment
-{
-public:
-	CTestEnvironment()
-	{
-		//仅仅是类的初始化函数，可以在这里做一些成员变量的初始化。
-		//具体测试业务的初始化在SetUp中编写
-	}
-	virtual ~CTestEnvironment()
-	{
-	}
-
-public:
-	virtual void SetUp();
-	virtual void TearDown();
-};
-
-
-class CTestFixture : public ::testing::Test
-{
-public:
-	CTestFixture()
-	{
-	}
-	~CTestFixture()
-	{
-	}
-protected:
-	virtual void SetUp();
-	virtual void TearDown();
-	static void SetUpTestSuite();
-	static void TearDownTestSuite();
-};
-
-void CTestEnvironment::SetUp()
-{
-
-}
-
-void CTestEnvironment::TearDown()
-{
-
-}
-
-void CTestFixture::SetUpTestSuite()
-{
-	printf("\n\nCTestFixture: start before executing the first testcase\n\n");
-}
-
-void CTestFixture::TearDownTestSuite()
-{
-	printf("\n\nCTestFixture: start after executing the last testcase\n\n");
-}
-
-void CTestFixture::SetUp()
-{
-	printf("\n\nCTestFixture: start before executing every testcase\n\n");
-}
-
-void CTestFixture::TearDown()
-{
-	printf("\n\nCTestFixture: start after executing every testcase\n\n");
-}
-```
-
 从最终的结果输出来看，所有局部测试都是正确的，验证了Test Fixtures类中数据的恒定性。我们从输出应该可以看出来，每个测试特例都是要新建一个新的Test Fixtures对象，并在该测试特例结束时销毁它。这样可以保证数据的干净。
 
 
@@ -534,32 +546,6 @@ void CTestFixture::TearDown()
 #### 全局级别处理
 
 顾名思义，它是在测试用例之上的一层初始化逻辑。如果我们要使用该特性，则要声明一个继承于::testing::Environment的类，并实现其SetUp/TearDown方法。这两个方法的关系和之前介绍Test Fixtures类是一样的。
-
-```cpp
-class emtest_environment : public ::testing::Environment
-{
-public:
-	emtest_environment()
-	{
-		printf("\n======emtest_environment construct=========\n");
-	}
-	~emtest_environment()
-	{
-		printf("\n=======emtest_environment distroyed========\n");
-	}
-public:
-	virtual void SetUp() override
-	{
-		printf("\n=========emtest_environment 全局处理开始============\n");
-	}
-	virtual void TearDown() override
-	{
-		printf("\n========emtest_environment 全局处理结束============\n");
-	}
-};
-```
-
-
 
 我们可以关注下`::testing::AddGlobalTestEnvironment(new EnvironmentTest);`这句，我们要在调用RUN_ALL_TESTS之前，使用该函数将全局初始化对象加入到框架中。
 
