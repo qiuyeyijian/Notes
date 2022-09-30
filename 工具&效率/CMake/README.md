@@ -7,6 +7,14 @@ CMakeLists.txt 的语法比较简单，由命令、注释和空格组成，其�
 ## 快速开始
 
 ```cmake
+cmake_minimum_required(VERSION 3.0.0)
+project(demo01)
+
+add_executable(main main.cpp)
+target_link_libraries(main gtest pthread)
+```
+
+```cmake
 1、指定 cmake 的最小版本
 cmake_minimum_required(VERSION 3.4.1)
 
