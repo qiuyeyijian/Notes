@@ -15,3 +15,4 @@ Mac和Linux：仅仅使用了换行符LF
 当我在windows环境下克隆代码的时候，autocrlf属性默认为true，换行符为CRLF，二者不兼容所以会报错
 
 **点击VSCode右下角LF/CRLF，然后根据弹窗进行修改即可**
+

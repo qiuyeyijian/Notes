@@ -80,29 +80,7 @@ deb http://mirrors.aliyun.com/kali-security/ kali-rolling main contrib non-free
 deb-src http://mirrors.aliyun.com/kali-security/ kali-rolling main contrib non-free
 ```
 
-> 3、更新源
->
-> > apt-get update
->
-> 4、更新软件包
->
-> > apt-get upgrade
->
-> 5、更新系统
->
-> > apt-get dist-upgrade
->
-> 6、自动删除不需要的软件包
->
-> > apt-get autoremove
->
-> 7、自动清除软件包
->
-> > apt-get autoclean
->
-> 8、重启系统
->
-> > reboot
+> 
 
 
 
